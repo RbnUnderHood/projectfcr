@@ -1,0 +1,200 @@
+/* ===================== Records > History (scoped) ===================== */
+
+/* Header: keep layout; (colors/borders already defined elsewhere if any) */
+#recordsTab #historyTab .history-header{
+  display: grid !important;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  margin-bottom: 0;
+}
+#recordsTab #historyTab .history-header{
+  /* keep the 3-col grid you already use to center the title */
+  background: var(--history-header-bg, #FFA000);
+  color: var(--history-header-fg, #000000);
+  border-radius: 12px 12px 0 0;    /* rounded top corners */
+  padding: 1px 1px;
+  margin: 0 0 0 0;                 /* sit flush to the table */
+}
+/* ==== History compact tune (scoped to the History panel only) ==== */
+#historyTab{
+  --hist-font: clamp(11px, 2.9vw, 15px);
+  --hist-font-small: clamp(12px, 2.6vw, 14px);
+  --hist-cell-py: 6px;   /* vertical cell padding */
+  --hist-cell-px: 10px;  /* horizontal cell padding */
+  --hist-radius: 10px;
+}
+/* Table: fonts + tighter, consistent padding */
+#historyTab table,
+#historyTab .history-table{
+  width: 100%;
+  font-size: var(--hist-font);
+  border-collapse: separate;
+  border-spacing: 0;
+}
+.tab-content .tab-header h2{
+  font-size: clamp(20px, 5.2vw, 26px);
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: 0.2px;
+  margin: 8px 0 12px;
+  text-align: center;
+}
+
+#recordsTab #historyTab .history-title{
+  grid-column: 2 !important;
+  justify-self: center !important;
+  margin: 0;
+}
+/* History/Calendar padding cleanup — History half */
+#recordsTab #historyTab{
+  padding: 0 !important;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+
+/* “Clear all” ghost icon button */
+#recordsTab #historyTab #clearAllBtn.icon-btn{
+  grid-column: 3 !important;
+  justify-self: end !important;
+  all: unset;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  width: 36px; height: 36px;
+  font-size: 16px; line-height: 1;
+  color: #E65B39;
+  border-radius: 8px;
+}
+#recordsTab #historyTab #clearAllBtn.icon-btn:hover{ background: rgba(230,91,57,.08); }
+#recordsTab #historyTab #clearAllBtn.icon-btn:focus-visible{
+  outline: 2px solid #c9482d; outline-offset: 2px; border-radius: 6px;
+}
+
+/* Table fundamentals */
+#recordsTab #historyTab .history-table{
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  table-layout: fixed;
+}
+
+/* Sticky header row */
+#recordsTab #historyTab .history-table thead th{
+  position: sticky;
+  top: -1px;                 /* tucks under banner neatly */
+  z-index: 4;
+  background-clip: padding-box;
+}
+
+/* Scroll container (if you use the split head/body layout) */
+#recordsTab #historyTab .history-head{
+  box-sizing: border-box;
+}
+#recordsTab #historyTab .history-scroll{
+  max-height: calc(100vh - 260px);
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Zebra rows (only inside the scroll area if used) */
+#recordsTab #historyTab .history-table tr:nth-child(even){
+  background-color: #FFF8E1;
+}
+
+/* Hide Date column (col 1) in UI */
+#recordsTab #historyTab .history-table th:nth-child(1),
+#recordsTab #historyTab .history-table td:nth-child(1){
+  display: none !important;
+}
+
+/* Visible columns sizing (Flock, Feed, Eggs, FCR, Weather) */
+#recordsTab #historyTab .history-table th:nth-child(2),
+#recordsTab #historyTab .history-table td:nth-child(2){  /* Flock */
+  width: 34% !important;
+}
+#recordsTab #historyTab .history-table th:nth-child(3),
+#recordsTab #historyTab .history-table td:nth-child(3){  /* Feed (kg) */
+  width: 14% !important; text-align: center;
+}
+#recordsTab #historyTab .history-table th:nth-child(4),
+#recordsTab #historyTab .history-table td:nth-child(4){  /* Eggs */
+  width: 14% !important; text-align: center;
+}
+#recordsTab #historyTab .history-table th:nth-child(5),
+#recordsTab #historyTab .history-table td:nth-child(5){  /* FCR */
+  width: 18% !important; text-align: center;
+}
+#recordsTab #historyTab .history-table th:nth-child(6),
+#recordsTab #historyTab .history-table td:nth-child(6){  /* Weather */
+  width: 20% !important; text-align: center;
+}
+
+/* Prevent ellipsis on numbers/badges; allow Flock to truncate only */
+#recordsTab #historyTab .history-table td:not(:nth-child(2)){
+  white-space: nowrap; overflow: visible; text-overflow: clip;
+}
+
+/* FCR cell: uniform number box */
+#recordsTab #historyTab .history-table td:nth-child(5) .fcr-val{
+  display: inline-block;
+  min-width: 3.4ch;
+  text-align: center;
+  line-height: 1.15;
+  font-variant-numeric: tabular-nums;
+}
+
+/* FCR color classes */
+#recordsTab #historyTab .history-table td.fcr-good {  color:#1b5e20; font-weight:700; }  /* ≤ 2.0 */
+#recordsTab #historyTab .history-table td.fcr-ok   {  color:#2ecc71; font-weight:600; }  /* 2.1–2.4 */
+#recordsTab #historyTab .history-table td.fcr-fair {  color:#ef6c00; }                   /* 2.5–2.8 */
+#recordsTab #historyTab .history-table td.fcr-poor {  color:#c62828; font-weight:700; }  /* > 2.8 */
+
+/* Optional: “gold” chip for excellent FCR */
+#recordsTab #historyTab .chip{ display:inline-block; padding: 2px 6px; border-radius: 999px; line-height: 1.1; }
+#recordsTab #historyTab .chip--gold{
+  background: linear-gradient(#fff9e3, #fff3c4);
+  border: 1px solid #e5c455;
+  box-shadow: inset 0 0 0 1px rgba(229,196,85,.25);
+}
+
+/* Flock picker (compact select in header) */
+#recordsTab #historyTab th.col-flock{ padding: 4px 6px !important; }
+#recordsTab #historyTab .flock-head{ display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+#recordsTab #historyTab #historyFlockFilter{
+  font-size: 11px;
+  line-height: 1.05;
+  padding: 1px 6px;
+  height: 25px;
+  border: 1px solid rgba(0,0,0,0.15);
+  border-radius: 8px;
+  background: #fff;
+  max-width: 90px;
+  appearance: auto;       /* keep native caret */
+  min-height: 0 !important;
+}
+
+/* History is view-only (no pointer on rows) */
+#recordsTab #historyTab .history-table tr { cursor: default; }
+
+#recordsTab #historyTab .history-table{
+  border-collapse: separate;
+  border-spacing: 0;
+  margin-top: 0 !important;
+}
+/* === Records → History: attach orange banner to table, tint thead, compact header === */
+#recordsTab #historyTab .history-header{
+  margin-bottom: 0 !important; /* eliminate gap above the table */
+}
+.history-section{margin-top:25px}
+.history-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.history-title{font-size:1.2rem;font-weight:700;color:#5D4037;display:flex;align-items:center;gap:8px}
+.history-wrapper{overflow-x:hidden;border-radius:12px;border:2px solid #EFEBE9}
+.history-table{width:100%;border-collapse:collapse;font-size:.85rem;min-width:0}
+.history-table th,.history-table td{padding:12px 10px;text-align:left;border-bottom:1px solid #EFEBE9}
+.history-table th{background:#FBE9E7;font-weight:600;color:#5D4037;position:sticky;top:0}
+.history-table tr:nth-child(even){background-color:#FFF8E1}
+.row-click{cursor:pointer}
+
+.delete-btn{background:#FF7043;color:#fff;border:none;border-radius:50%;width:40px;height:40px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .3s ease;font-size:18px;font-weight:bold}

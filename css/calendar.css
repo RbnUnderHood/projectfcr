@@ -1,0 +1,126 @@
+/* ===================== Records → Calendar (scoped, preferred look) ===================== */
+
+
+/* Blue header: stacked title + month controls, stable height */
+#recordsTab #calendarTab .calendar-header{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 0px 0;                   /* ← no left/right padding */
+  min-height: 40px;
+  margin: 0 0 6px 0;
+  background: #5590ff;
+  color: #000000;
+  border-radius: 8px;
+}
+
+/* Title line */
+#recordsTab #calendarTab .calendar-title{
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 10px;
+  font-weight: 700;
+  font-size: 15px;                  /* compact title */
+  line-height: 1.2;
+}
+
+/* Month switcher row */
+#recordsTab #calendarTab .calendar-nav{
+  display: grid;
+  grid-template-columns: 50px 1fr 28px; /* compact */
+  align-items: center;
+  width: 100%;
+  gap: 2px;
+}
+/* Borderless arrows (same look on all platforms) */
+#recordsTab #calendarTab .calendar-nav-btn{
+  appearance: none;
+  border: 0;
+  background: transparent;
+  width: 28px; height: 28px;
+  display: grid; place-items: center;
+  color: #111;      /* chevrons only */
+  border-radius: 9999px;
+}
+
+#recordsTab #calendarTab #calendarWeekdays > *,
+#recordsTab #calendarTab .calendar-weekday{
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+  font-size: 14px;           /* fits the chip */
+  color: #965d4c;
+  background: #FBE9E7;
+  border-radius: 8px;
+  padding: 4px 2px;
+  line-height: 1.1;
+}
+/* Selected day highlight */
+#recordsTab #calendarTab .calendar-day.is-selected{
+  border-color: #823bb1;
+  box-shadow: inset 0 0 0 2px #ffb81ed2;
+}
+
+/* 7× grid that always fits; no overflow */
+#recordsTab #calendarTab #calendarDays,
+#recordsTab #calendarTab .calendar-grid{
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0,1fr));
+  gap: 1px;                 /* smaller cards without changing container width */
+  width: 100%;
+  align-content: start;
+}
+
+#recordsTab #calendarTab .calendar-day{
+  display: grid;
+  grid-template-rows: 16px 1fr;     /* top lane for emojis, large row below */
+  justify-items: center;
+  align-items: stretch;
+  padding: 4px;                     /* slightly tighter */
+  border: 2px solid #CFE8D6;
+  border-radius: 12px;
+  background: #F1F8E9;
+  box-sizing: border-box;
+  aspect-ratio: 1 / 1;              /* square cells */
+  min-height: clamp(35px, 10.5vw, 99px); /* scales down cleanly */
+}
+
+#recordsTab #calendarTab .calendar-dot.excellent{ background:#4CAF50; }
+#recordsTab #calendarTab .calendar-dot.good{      background:#8BC34A; }
+#recordsTab #calendarTab .calendar-dot.average{   background:#FFA000; }
+#recordsTab #calendarTab .calendar-dot.poor{      background:#FF7043; }
+
+
+/* === Calendar: events panel (below the grid) === */
+#recordsTab #calendarTab .calendar-events{
+  margin: 10px 0 12px 0;
+  padding: 12px;
+  border: 2px solid #EFEBE9;
+  border-radius: 12px;
+  background: #cdf0ca;
+}
+
+/* Title "Add entry for <date>" */
+#recordsTab #calendarTab .calendar-events .selected-title{
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  margin: 0 0 8px 0;
+}
+
+
+/* Event item cards */
+#recordsTab #calendarTab #calendarEventsList{
+  display: grid;
+  gap: 10px;
+}
+#recordsTab #calendarTab .calendar-event{
+  border: 2px solid #EFEBE9;
+  border-left-width: 8px;
+  border-radius: 12px;
+  background: #fff;
+  padding: 10px;
+}

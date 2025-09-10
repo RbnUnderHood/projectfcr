@@ -1,0 +1,41 @@
+/* ===== Bottom navigation (fixed at bottom; content padded) ===== */
+html, body { height: 100%; }
+
+/* Reserve space so content isn't hidden behind the fixed bar */
+body { padding-bottom: calc(56px + env(safe-area-inset-bottom)); }
+
+.bottom-nav{
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  height: 56px;
+  background: #fff;
+  border-top: 1px solid rgba(0,0,0,0.1);
+  /* Keep the nav BELOW modals (your .modal z-index is 1000) */
+  z-index: 900;
+  padding-bottom: env(safe-area-inset-bottom);
+  visibility: visible;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.bottom-nav button{
+  appearance: none;
+  background: none;
+  border: 0;
+  padding: 6px 10px;
+  font: inherit;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  cursor: pointer;
+}
+
+.bottom-nav .nav-label{
+  font-size: 12px;
+  line-height: 1.1;
+}

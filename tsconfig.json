@@ -1,0 +1,12 @@
+{
+"compilerOptions": {
+"allowJs": true,
+"checkJs": true,
+"noEmit": true,
+"target": "ES2020",
+"module": "ESNext",
+"lib": ["ES2020", "DOM"],
+"strict": false
+},
+"include": ["projectfcr/**/*.js"]
+}

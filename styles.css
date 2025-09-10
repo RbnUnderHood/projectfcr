@@ -1,0 +1,250 @@
+/* === Base (global) — keep in styles.css === */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  background: #FFF3E0;
+  color: #3E2723;
+}
+
+.container { max-width: 960px; margin: 0 auto; padding: 18px; overflow-x: hidden; }
+
+/* shared panel shell used across views and inner tabs */
+.tab-content {
+  display: none;
+  background: #fff;
+  border: 2px solid #EFEBE9;
+  border-radius: 16px;
+  padding: 18px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.06);
+}
+/* Calendar tab uses a flat canvas (no outer grey border/shadow) */
+#calendarTab.tab-content{
+  border: 0;
+  box-shadow: none;
+  background: transparent; /* show the cream page bg behind it */
+}
+
+.tab-content.active { display: block; }
+
+/* shared form system */
+.input-section { display: grid; grid-template-columns: 1fr; gap: 16px; margin-bottom: 16px; }
+.input-group   { display: grid; gap: 8px; }
+.input-label   { font-weight: 600; color: #5D4037; font-size: 1rem; display: flex; align-items: center; gap: 8px; }
+.input-hint    { font-size: .9rem; color: #8D6E63; }
+
+.input-field {
+  padding: 18px 16px;
+  border: 2px solid #EFEBE9;
+  border-radius: 16px;
+  font-size: 1.05rem;
+  font-weight: 500;
+  transition: all .3s ease;
+  background: #FFF8E1;
+  min-height: 58px;
+  width: 100%;
+  -webkit-appearance: none;
+}
+.input-field:focus {
+  outline: none;
+  border-color: #4CAF50;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(76,175,80,.2);
+}
+
+/* shared results layout */
+.results-section { display: none; grid-template-columns: 1fr; gap: 16px; margin-top: 16px; }
+.results-section.show { display: grid; }
+
+.result-value { font-size: 1.8rem; font-weight: 700; margin-bottom: 10px; }
+.result-value.excellent { color: #4CAF50; }
+.result-value.good      { color: #8BC34A; }
+.result-value.average   { color: #FFA000; }
+.result-value.poor      { color: #FF7043; }
+.result-description { color: #8D6E63; font-size: .95rem; line-height: 1.6; }
+
+
+/* === Design tokens (defaults) === */
+:root{
+  --bg-canvas: #FFFFFF;                 /* page/tab background */
+  --bg-card:   #FFFFFF;                 /* card background */
+  --card-border: 1px solid rgba(0,0,0,0.06);
+  --card-radius: 12px;
+  --card-shadow: 0 1px 2px rgba(0,0,0,0.04);
+  --outer-pad-x: 12px;                  /* horizontal padding inside tabs */
+  --outer-pad-y: 8px;
+}
+
+/* === Reusable building blocks === */
+.tab-canvas{
+  background: var(--bg-canvas);
+  padding: var(--outer-pad-y) var(--outer-pad-x);
+}
+
+.card{
+  background: var(--bg-card);
+  border: var(--card-border);
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow);
+}
+
+/* Small spacing utility (optional) */
+.mb-10{ margin-bottom: 10px; }
+
+/* Form modifier: center just this input group’s label (and optionally the field) */
+.input-group--center .input-label { 
+  display: block; 
+  text-align: center; 
+}
+
+
+/* === Form system: vertical layout, centered labels === */
+:root{
+  --form-gap: 10px;                     /* space between groups */
+  --form-label-size: clamp(14px, 3.2vw, 16px);
+  --form-label-weight: 600;
+  --form-label-mb: 6px;                 /* space below label */
+}
+
+.form-vertical{
+  display: grid;
+  gap: var(--form-gap);
+}
+
+/* Each input group stacks label above field */
+.form-vertical .input-group{
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;                 /* field spans full width */
+}
+
+/* Labels centered, consistent spacing */
+.form-vertical .input-label{
+  display: block;
+  text-align: center;
+  margin: 0 0 var(--form-label-mb) 0;
+  font-size: var(--form-label-size);
+  font-weight: var(--form-label-weight);
+  line-height: 1.2;
+}
+
+/* Inputs fill available width neatly */
+.form-vertical .input-field,
+.form-vertical textarea,
+.form-vertical select{
+  width: 100%;
+  max-width: 100%;
+  margin: 0;                            /* avoid stray centering margins */
+  box-sizing: border-box;
+}
+/* Center ALL labels above their fields (keeps your icon + gap) */
+.form-vertical .input-label{
+  display: flex;              /* keep flex so the emoji and text stay side by side */
+  justify-content: center;    /* <-- horizontal centering */
+  align-items: center;        /* vertical alignment for the emoji/text */
+  gap: 8px;                   /* same gap you already use */
+  text-align: center;         /* harmless, but fine to keep */
+}
+/* ==== Compact-10 bundle (whole app, safe + reversible) ==== */
+/* Tokens */
+:root{
+  --ui-font-body: clamp(14px, 3.2vw, 16px);     /* base text */
+  --ui-font-label: clamp(13px, 2.9vw, 15px);    /* form labels */
+  --ui-font-small: clamp(12px, 2.6vw, 14px);    /* nav labels, hints */
+  --ui-font-title: clamp(16px, 3.6vw, 20px);    /* small titles/cards */
+  --ui-pad-v: 8px;                               /* vertical padding (reduced) */
+  --ui-pad-h: 12px;                              /* horizontal padding */
+  --ui-min-tap: 44px;                            /* min touch size */
+  --ui-radius: 10px;                             /* slightly tighter corners */
+}
+
+/* 1) Forms: labels + fields */
+.input-label{
+  font-size: var(--ui-font-label);
+  line-height: 1.2;
+}
+.input-field,
+select,
+textarea{
+  font-size: var(--ui-font-body);
+  padding: calc(var(--ui-pad-v) - 2px) var(--ui-pad-h);
+  min-height: var(--ui-min-tap);
+  border-radius: var(--ui-radius);
+  box-sizing: border-box;
+}
+/* ——— reusable info icon + mini hints ——— */
+.input-label.has-i{ position: relative; padding-right: 18px; }
+.input-label.has-i::after{
+  content: "i";
+  display: inline-flex;
+  align-items: center; justify-content: center;
+  width: 14px; height: 14px;
+  margin-left: 6px;
+  border-radius: 50%;
+  border: 1px solid rgba(0,0,0,0.25);
+  font-size: 10px; font-weight: 700;
+  line-height: 1; color: #37474F; background: #fff;
+  vertical-align: middle;
+}
+.mini-hint{
+  font-size: 11px;
+  color: #6b6b6b;
+  line-height: 1.3;
+}
+
+/* Smaller title + tiny info bubble */
+.metric-title.small { font-size: 0.95rem; }
+.metric-title .info{
+  display:inline-block;
+  font-size: 0.75rem;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  width: 1.1em; height: 1.1em; line-height: 1.1em;
+  text-align: center;
+  margin-left: 6px;
+  opacity: 0.75;
+}
+.metric-title .info:hover{ opacity: 1; }
+/* DHP performance colors */
+.metric-card.dhp.great { background: #E6F4EA; }   /* green tint */
+.metric-card.dhp.ok    { background: #FFF7E0; }   /* amber tint */
+.metric-card.dhp.low   { background: #FFE9D6; }   /* orange tint */
+.metric-card.dhp.poor  { background: #FFE3E3; }   /* red tint */
+
+/* Edit Entry: lock fields that must be changed in Edit Flock */
+#editModal label[for="editDate"],      #editModal #editDate,
+#editModal label[for="editBirds"],     #editModal #editBirds,
+#editModal label[for="editEggWeight"], #editModal #editEggWeight{
+  display:none !important;
+}
+
+/* Edit Entry: inline toggle row like Calculator */
+#editModal #editAltToggleRow{
+  display: flex; align-items: center; gap: 8px;
+}
+/* Quick Entry: inline toggle row like Calculator */
+#quickEntryModal #qeAltToggleRow{ display:flex; align-items:center; gap:8px; }
+
+/* Share the altfeed-box style with Quick Entry too */
+#quickEntryModal .altfeed-box{
+  --alt-radius: 10px; --frame-offset: 8px; --frame-width: 4px;
+  position: relative; border: none; border-radius: var(--alt-radius);
+  background: #ceebd0; padding: 8px 10px; margin-top: 6px;
+}
+#quickEntryModal .altfeed-box::before{
+  content:""; position:absolute; inset: calc(var(--frame-offset) * -1);
+  border: var(--frame-width) dashed #c7c7c7;
+  border-radius: calc(var(--alt-radius) + var(--frame-offset));
+  pointer-events:none;
+}
+#quickEntryModal .altfeed-box .input-field{ background:#FFF8E1; border-color:#D7CCC8; }
+#quickEntryModal .altfeed-box .input-hint{ font-size:12px; line-height:1.2; color:#5d4037; margin-top:6px; }
+#quickEntryModal .altfeed-box .input-hint::before{ content:"💡 "; font-size:12px; }
+
+/* Grey out disabled controls in Edit modal */
+#editModal [disabled]{ opacity:.5; cursor:not-allowed; }
+
+
+

@@ -1,0 +1,58 @@
+/* === Reference tab: inner panels + layout === */
+#referenceTab .tab-content{ display:none; }
+#referenceTab .tab-content.active{ display:block; }
+
+/* Flatten the small top card that only holds the segmented buttons */
+#referenceTab > .result-card:first-of-type{
+  background: transparent;
+  box-shadow: none;
+  border: 0;
+  padding: 0;
+  margin-bottom: 10px; /* small gap under the pill */
+  text-align: center;  /* centers the segmented control */
+}
+
+/* Tiny spacing tune for the main content card */
+#referenceTab .result-title{ margin-bottom: 8px; }
+
+/* (keeps any .card inside Reference a bit tighter if present) */
+#referenceTab .card{ padding: 12px 12px; }
+
+/* === Benchmarks table (responsive, no horizontal spill) === */
+#referenceTab .benchmarks-table{
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin-top: 12px;
+}
+
+#referenceTab .benchmarks-table th,
+#referenceTab .benchmarks-table td{
+  padding: 6px 8px;
+  white-space: normal;   /* allow wrapping */
+  word-break: break-word;
+}
+
+/* sensible widths for 3 columns: FCR / Category / Notes */
+#referenceTab .benchmarks-table th:nth-child(1),
+#referenceTab .benchmarks-table td:nth-child(1){ width: 28%; }
+
+#referenceTab .benchmarks-table th:nth-child(2),
+#referenceTab .benchmarks-table td:nth-child(2){ width: 36%; }
+
+#referenceTab .benchmarks-table th:nth-child(3),
+#referenceTab .benchmarks-table td:nth-child(3){ width: 36%; }
+
+/* Reference header: flatten card + center title & pill (match Records) */
+#referenceTab > .result-card{
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  padding: 0;
+  margin: 4px 0 8px 0;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}

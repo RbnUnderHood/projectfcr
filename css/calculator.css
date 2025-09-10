@@ -1,0 +1,356 @@
+/* =========================== CALCULATOR (scoped) =========================== */
+
+/* A) Form section layout (local to Calculator only) */
+#calculatorTab .input-section{
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+#calculatorTab .input-group{ display: grid; gap: 8px; }
+
+/* B) Results area grid + visibility toggle */
+#calculatorTab .results-section{
+  display: none;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  margin-top: 16px;
+}
+#calculatorTab .results-section.show{ display: grid; }
+
+/* C) Cost metrics layout (left big card + right stack) */
+#calculatorTab #costMetricsGrid{
+  display: grid !important;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr) !important;
+  grid-template-rows: auto auto !important;
+  gap: 12px !important;
+  align-items: stretch !important;
+  width: 100%;
+}
+#calculatorTab #costMetricsGrid > .metric-card:first-child{
+  grid-column: 1 !important;
+  grid-row: 1 / span 2 !important;
+  margin: 0 !important;
+  height: 100% !important;
+}
+#calculatorTab #costMetricsGrid .cost-right{
+  grid-column: 2 !important;
+  grid-row: 1 / span 2 !important;
+  display: grid !important;
+  grid-template-rows: 1fr 1fr !important;
+  gap: 12px !important;
+  margin: 0 !important;
+}
+#calculatorTab #costMetricsGrid .metric-card{
+  margin: 0 !important;
+  height: 100% !important;
+}
+
+/* D) Alt feed module (green dashed card + darker input borders) */
+#calculatorTab .altfeed-box{
+  --alt-radius: 10px;
+  --frame-offset: 4px;
+  --frame-width: 2px;
+  position: relative;
+  border: none;
+  border-radius: var(--alt-radius);
+  background: #ceebd0;
+  padding: 8px 10px;
+  margin-top: 6px;
+}
+#calculatorTab .altfeed-box::before{
+  content:"";
+  position:absolute;
+  inset: calc(var(--frame-offset) * -1);
+  border: var(--frame-width) dashed #c7c7c7;
+  border-radius: calc(var(--alt-radius) + var(--frame-offset));
+  pointer-events:none;
+}
+#calculatorTab .altfeed-box .input-field{
+  background:#FFF8E1;
+  border-color:#D7CCC8;
+}
+#calculatorTab #altFeedToggleRow{
+  display:flex; align-items:center; gap:8px;
+}
+#calculatorTab #altFeedToggleRow .input-hint{ display:none !important; } /* remove helper above */
+#calculatorTab .altfeed-box .input-hint{
+  font-size:12px; line-height:1.2; color:#5d4037; margin-top:6px;
+}
+#calculatorTab .altfeed-box .input-hint::before{ content:"💡 "; font-size:12px; }
+
+/* E) Alerts (alt-feed ratio warnings) — scoped here for Calculator */
+#calculatorTab .alert { margin: 10px 0 0; }
+#calculatorTab .alert.notice{
+  background:#FFF8E1; border:1px solid #FFECB3; color:#6D4C41;
+}
+#calculatorTab .alert.warning{
+  background:#FFEBEE; border:1px solid #FFCDD2; color:#C62828; font-weight:600;
+}
+
+/* F) Disabled Calculate button */
+#calculatorTab .calculate-btn[disabled]{
+  opacity:.5; pointer-events:none; filter: grayscale(.4);
+}
+
+/* G) Export area spacing (clear bottom-nav) */
+#calculatorTab .export-section{
+  margin-top:4px;
+  margin-bottom: calc(25px + env(safe-area-inset-bottom)) !important;
+}
+
+/* H) Metric variants (colors you already use) */
+#calculatorTab .metric-card.dhp.great { background:#E6F4EA; }
+#calculatorTab .metric-card.dhp.ok    { background:#FFF7E0; }
+#calculatorTab .metric-card.dhp.low   { background:#FFE9D6; }
+#calculatorTab .metric-card.dhp.poor  { background:#FFE3E3; }
+
+#calculatorTab .metric-card.fpbd.great{ background:#E6F4EA; }
+#calculatorTab .metric-card.fpbd.ok   { background:#FFF7E0; }
+#calculatorTab .metric-card.fpbd.low  { background:#FFE9D6; }
+#calculatorTab .metric-card.fpbd.poor { background:#FFE3E3; }
+
+/* I) TEMP verify marker — remove after confirmation */
+#calculatorTab .result-title::after{
+  content:" •";
+  color:#2e7d32;
+  font-weight:900;
+  margin-left:4px;
+}
+
+ /* Make the first metrics card (dailyFeedCost) span two rows */
+#costMetricsGrid .metric-card--tall {
+  grid-row: span 2;
+}
+/* Cost metrics layout: two columns always
+   [ Today's Feed Cost ] [ Cost per Egg ]
+   [ Today's Feed Cost ] [ ≈ Saved Today ]  */
+#costMetricsGrid.cost-wrap{
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;  /* left a bit wider */
+  grid-template-rows: auto auto;     /* two rows */
+  gap: 12px;
+  align-items: stretch;
+}
+
+#costMetricsGrid.cost-wrap > .metric-card:first-child{
+  grid-column: 1;
+  grid-row: 1 / span 2;  /* tall left card spans both rows */
+  height: 100%;
+}
+
+#costMetricsGrid .cost-right{
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  display: grid;
+  grid-template-rows: 1fr 1fr;  /* stack right column evenly */
+  gap: 12px;
+}
+
+#costMetricsGrid .cost-right .metric-card{
+  height: 100%;
+}
+/* Normalize spacing inside the cost metrics layout */
+#costMetricsGrid .metric-card {
+  margin: 0 !important;        /* remove extra top/bottom margin */
+  height: 100%;
+}
+#costMetricsGrid .cost-right {
+  margin: 0 !important;        /* ensure no extra offset on the right column */
+  display: grid;
+  grid-template-rows: 1fr 1fr; /* stack Cost per Egg over ≈ Saved Today evenly */
+  row-gap: 12px;
+}
+/* Cost metrics layout (id-scoped so global .metrics-grid rules can't override) */
+#costMetricsGrid{
+  display: grid !important;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr) !important;
+  grid-template-rows: auto auto !important;
+  gap: 12px !important;
+  align-items: stretch !important;
+  width: 100%;
+}
+
+#costMetricsGrid > .metric-card:first-child{
+  grid-column: 1 !important;
+  grid-row: 1 / span 2 !important;  /* tall left card */
+  margin: 0 !important;
+  height: 100% !important;
+}
+
+#costMetricsGrid > .cost-right{
+  grid-column: 2 !important;
+  grid-row: 1 / span 2 !important;
+  display: grid !important;
+  grid-template-rows: 1fr 1fr !important;  /* Cost/egg over Saved Today */
+  gap: 12px !important;
+  margin: 0 !important;
+}
+
+#costMetricsGrid .metric-card{
+  margin: 0 !important;   /* kill stray margins from global styles */
+  height: 100% !important;
+}
+/* Lower cost section layout */
+#costMetricsGrid{
+  display: grid !important;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr) !important;
+  grid-auto-rows: 1fr;
+  gap: 12px !important;
+  align-items: stretch !important;
+}
+#costMetricsGrid > .metric-card:first-child{
+  grid-column: 1 !important;
+  grid-row: 1 / span 2 !important;  /* tall left card */
+  margin: 0 !important;
+  height: 100% !important;
+}
+#costMetricsGrid .metric-card{
+  margin: 0 !important;
+  height: 100% !important;
+}
+/* Lower cost section: two equal-height cards side-by-side */
+#costMetricsGrid.two-col-even{
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 12px !important;
+  align-items: stretch !important;
+}
+
+/* Ensure both cards fill the same height; cancel earlier span rules */
+#costMetricsGrid.two-col-even > .metric-card{
+  margin: 0 !important;
+  height: 100% !important;
+}
+#costMetricsGrid.two-col-even > .metric-card:first-child{
+  grid-row: auto !important; /* overrides any old "span 2 rows" rule */
+}
+
+/* Alt feed box */
+#calculatorTab .altfeed-box{
+  border: 4px dashed #c7c7c7;
+  border-radius: 10px;
+  padding: 8px 10px;
+  margin-top: 6px;
+  background: #ceebd0;
+}
+
+/* Alternative feed card – dashed frame with OUTER offset */
+#calculatorTab .altfeed-box{
+  /* base box */
+  --alt-radius: 3px;
+  --frame-offset: 3px;   /* how far the dashed frame sits outside */
+  --frame-width: 2px;    /* dashed line thickness */
+
+  position: relative;    /* anchor for ::before */
+  border: none;          /* kill the old real border */
+  border-radius: var(--alt-radius);
+  background: #ceebd0;
+  padding: 8px 10px;
+  margin-top: 6px;
+}
+
+#calculatorTab .altfeed-box::before{
+  content: "";
+  position: absolute;
+  inset: calc(var(--frame-offset) * -1);            /* negative = outside */
+  border: var(--frame-width) dashed #c7c7c7;
+  border-radius: calc(var(--alt-radius) + var(--frame-offset));
+  pointer-events: none;                              /* don't block clicks */
+}
+/* Alt feed card: make its inputs match other fields + slightly darker borders */
+#calculatorTab .altfeed-box .input-field{
+  --alt-input-border: #D7CCC8;      /* a bit darker than #EFEBE9 */
+  background: #FFF8E1;              /* same as other inputs */
+  border-color: var(--alt-input-border);
+}
+
+/* Keep the same look even if the browser autofills */
+#calculatorTab .altfeed-box .input-field:-webkit-autofill{
+  -webkit-box-shadow: 0 0 0px 1000px #FFF8E1 inset;
+  -webkit-text-fill-color: inherit;
+  border-color: var(--alt-input-border);
+}
+
+/* 2) Make the Tip smaller and add a lightbulb icon */
+#calculatorTab .altfeed-box .input-hint{
+  font-size: 12px;          /* smaller text */
+  line-height: 1.2;
+  color: #5d4037;           /* slightly darker for contrast */
+  margin-top: 6px;
+}
+#calculatorTab .altfeed-box .input-hint::before{
+  content: "💡 ";
+  font-size: 12px;
+}
+/* Put the Alt feed checkbox inline after the label text */
+#calculatorTab #altFeedToggleRow{
+  display: flex;              /* override .input-group grid */
+  align-items: center;
+  gap: 8px;
+}
+
+#calculatorTab #altFeedToggleRow .input-hint{
+  display: none !important;   /* keep the helper text hidden */
+}
+
+/* tiny spacing tweak so the box doesn't stick to the text */
+#calculatorTab #altFeedToggleRow input[type="checkbox"]{
+  margin-left: 2px;
+}
+
+/* Alt feed card — shared style for Calculator + Edit Entry */
+#calculatorTab .altfeed-box,
+#editModal .altfeed-box{
+  /* base box */
+  --alt-radius: 10px;
+  --frame-offset: 4px;      /* distance of dashed frame (outside) */
+  --frame-width: 2px;       /* dashed line thickness */
+
+  position: relative;
+  border: none;             /* no real border */
+  border-radius: var(--alt-radius);
+  background: #ceebd0;      /* same green as Calculator */
+  padding: 8px 10px;
+  margin-top: 6px;
+}
+
+#calculatorTab .altfeed-box::before,
+#editModal .altfeed-box::before{
+  content: "";
+  position: absolute;
+  inset: calc(var(--frame-offset) * -1);   /* outside offset */
+  border: var(--frame-width) dashed #c7c7c7;
+  border-radius: calc(var(--alt-radius) + var(--frame-offset));
+  pointer-events: none;
+}
+
+/* Inputs inside the card: same look + slightly darker borders */
+#calculatorTab .altfeed-box .input-field,
+#editModal      .altfeed-box .input-field{
+  background: #FFF8E1;
+  border-color: #D7CCC8;
+}
+
+/* Tip: smaller with a lightbulb */
+#calculatorTab .altfeed-box .input-hint,
+#editModal      .altfeed-box .input-hint{
+  font-size: 12px;
+  line-height: 1.2;
+  color: #5d4037;
+  margin-top: 6px;
+}
+#calculatorTab .altfeed-box .input-hint::before,
+#editModal      .altfeed-box .input-hint::before{
+  content: "💡 ";
+  font-size: 12px;
+}
+
+/* 1) Remove the helper text above the card entirely */
+#calculatorTab #altFeedToggleRow .input-hint{
+  display: none !important;
+}
+
+#caculatorTab .export-section{margin-top:4px;display:flex;
+flex-direction:column;gap:12px;text-align:center;grid-column:1/-1}
+

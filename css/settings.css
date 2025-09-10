@@ -1,0 +1,48 @@
+/* =========================== SETTINGS (scoped) =========================== */
+
+/* A) Card spacing inside Settings panel */
+#settingsTab .result-card{
+  /* inherits shared card look from components.css; just tighten spacing */
+  padding: 14px 14px;
+}
+#settingsTab .result-title{
+  margin-bottom: 6px;
+}
+
+/* B) Form layout (uses your existing .input-section/.input-group) */
+#settingsTab .input-section{
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  margin-top: 8px;           /* a touch closer to the title */
+}
+#settingsTab .input-group{
+  display: grid;
+  gap: 6px;
+}
+
+/* C) Currency selector: compact + consistent with your inputs */
+#settingsTab #settingsCurrency{
+  /* it already has .input-field — we just trim & ensure compactness */
+  min-height: 44px;          /* slightly smaller than main form fields */
+  padding: 10px 12px;        /* matches your general look, slimmer */
+  border-radius: 12px;
+  font-size: 0.95rem;
+  appearance: auto;          /* keep native caret */
+}
+
+/* D) Hints under fields */
+#settingsTab .input-hint{
+  font-size: 12px;
+  line-height: 1.3;
+  color: #6d4c41;
+}
+
+/* E) (Optional) emphasize focus when we deep-link here from Flocks tip */
+#settingsTab #settingsCurrency:focus{
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(76,175,80,.18); /* soft green ring */
+  border-color: #4CAF50;
+  background: #fff;
+}
+

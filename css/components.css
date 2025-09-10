@@ -1,0 +1,227 @@
+/* =========================== COMPONENTS =========================== */
+/* Cards (shared look) */
+.result-card{
+  background:#fff;
+  border:2px solid #EFEBE9;
+  border-radius:16px;
+  padding:16px;
+  box-shadow:0 6px 16px rgba(0,0,0,.08);
+}
+.result-title{
+  font-size:1.2rem;
+  font-weight:700;
+  color:#5D4037;
+  margin-bottom:8px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+/* Metric cards + grids */
+.metrics-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:12px; }
+.metric-card{
+  border:2px solid #EFEBE9;
+  background:#FFF8E1;
+  border-radius:16px;
+  padding:12px;
+}
+.metric-title{ font-weight:700; color:#5D4037; margin-bottom:6px; }
+.metric-value{ font-size:1.2rem; font-weight:700; color:#3E2723; }
+
+/* Generic buttons */
+.calculate-btn{
+  width:100%; padding:18px; border-radius:16px;
+  background:linear-gradient(135deg,#4CAF50,#66BB6A);
+  color:#fff; border:none; font-size:1rem; font-weight:700; cursor:pointer;
+  box-shadow:0 6px 18px rgba(76,175,80,.3);
+}
+.calculate-btn:active{ transform:scale(.98); }
+.export-btn{ background:linear-gradient(135deg,#4CAF50,#66BB6A); }
+.clear-btn{  background:linear-gradient(135deg,#FF7043,#FF8A65); }
+.export-btn,.clear-btn{
+  color:#fff; border:none; padding:18px; font-size:1rem; font-weight:600;
+  border-radius:16px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center;
+  gap:8px; min-height:54px; width:100%; box-shadow:0 4px 10px rgba(0,0,0,.15);
+}
+
+/* Alerts */
+.alert{
+  margin:10px 0 0; padding:10px 12px; border-radius:8px; font-size:.95rem; line-height:1.3;
+}
+.alert.notice{  background:#FFF8E1; border:1px solid #FFECB3; color:#6D4C41; }
+.alert.warning{ background:#FFEBEE; border:1px solid #FFCDD2; color:#C62828; font-weight:600; }
+
+/* Badges / chips */
+.badge{ display:inline-flex; align-items:center; gap:6px; padding:6px 10px; border-radius:999px; font-weight:700; font-size:.8rem; }
+
+/* Modals */
+.modal{
+  display:none; position:fixed; inset:0; background-color:rgba(0,0,0,.5);
+  z-index:1000; justify-content:center; align-items:center; padding:20px;
+}
+.modal-content{
+  background:#fff; padding:25px; border-radius:20px; box-shadow:0 10px 30px rgba(0,0,0,.2);
+  width:100%; max-width:520px; text-align:center; max-height:80vh; overflow-y:auto; border:2px solid #EFEBE9;
+}
+.modal-title{ font-size:1.2rem; font-weight:700; color:#5D4037; margin-bottom:10px; }
+.modal-text{ color:#5D4037; line-height:1.6; font-size:1rem; margin-bottom:20px; }
+.modal-buttons{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+
+/* Reusable “Tip” box (dashed frame) */
+.input-hint.tip-box{
+  --tip-radius: 6px; --tip-frame-offset: 4px; --tip-frame-width: 2px;
+  position: relative; display:block; padding:6px 10px; margin-top:6px;
+  border-radius: var(--tip-radius); background:#ceebd0; line-height:1.2; font-size:13px; color:#5d4037;
+}
+.input-hint.tip-box::before{
+  content:""; position:absolute; inset: calc(var(--tip-frame-offset) * -1);
+  border: var(--tip-frame-width) dashed #c7c7c7;
+  border-radius: calc(var(--tip-radius) + var(--tip-frame-offset));
+  pointer-events:none;
+}
+.input-hint.tip-box .tip-link{ text-decoration: underline; font-weight: 600; }
+.input-hint.tip-box.tip-mini{ font-size:11px; padding:2px 6px; border-radius:6px; }
+.input-hint.tip-box.tip-right{ width:max-content; margin-left:auto; }
+
+.result-card{background:#fff;border-radius:16px;padding:16px;box-shadow:0 6px 16px rgba(0,0,0,.08);border:2px solid #EFEBE9}
+
+.metrics-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.metric-card{border:2px solid #EFEBE9;background:#FFF8E1;border-radius:16px;padding:12px}
+.metric-title{font-weight:700;color:#5D4037;margin-bottom:6px}
+.metric-value{font-size:1.2rem;font-weight:700;color:#3E2723}
+
+@media(min-width:640px){
+  .input-section{grid-template-columns:1fr 1fr}
+  .results-section.show{grid-template-columns:1fr 1fr}
+  .metrics-grid{grid-template-columns:repeat(4,1fr)}
+}
+
+.calculate-btn{width:100%;padding:18px;border-radius:16px;background:linear-gradient(135deg,#4CAF50,#66BB6A);color:#fff;border:none;font-size:1rem;font-weight:700;cursor:pointer;box-shadow:0 6px 18px rgba(76,175,80,.3)}
+.calculate-btn:active{transform:scale(.98)}
+
+/* Disabled Calculate button */
+.calculate-btn[disabled]{
+  opacity: .5;
+  pointer-events: none;
+  filter: grayscale(.4);
+}
+
+.export-btn,.clear-btn{color:#fff;border:none;padding:18px;font-size:1rem;font-weight:600;border-radius:16px;cursor:pointer;transition:all .3s ease;display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:54px;width:100%;box-shadow:0 4px 10px rgba(0,0,0,.15)}
+.export-btn{background:linear-gradient(135deg,#4CAF50,#66BB6A)}
+
+.clear-btn{background:linear-gradient(135deg,#FF7043,#FF8A65)}
+
+/* Alt-feed ratio alerts */
+.alert {
+  margin: 10px 0 0;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  line-height: 1.3;
+}
+.alert.notice {
+  background: #FFF8E1;
+  border: 1px solid #FFECB3;
+  color: #6D4C41;
+}
+.alert.warning {
+  background: #FFEBEE;
+  border: 1px solid #FFCDD2;
+  color: #C62828;
+  font-weight: 600;
+}
+/* Place the alt-feed alert nicely under the FCR card */
+#results > .alert {
+  margin: 0px 0 0px;
+}
+
+.badge{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;font-weight:700;font-size:.8rem;letter-spacing:.2px}
+
+.modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background-color:rgba(0,0,0,.5);z-index:1000;justify-content:center;align-items:center;padding:20px}
+.modal-content{background:#fff;padding:25px;border-radius:20px;box-shadow:0 10px 30px rgba(0,0,0,.2);width:100%;max-width:520px;text-align:center;max-height:80vh;overflow-y:auto;border:2px solid #EFEBE9}
+.modal-title{font-size:1.2rem;font-weight:700;color:#5D4037;margin-bottom:10px}
+.modal-text{color:#5D4037;line-height:1.6;font-size:1rem;margin-bottom:20px}
+.modal-buttons{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+/* Generic Tip box */
+.input-hint.tip-box{
+  /* tweak these as you like */
+  --tip-radius: 1px;
+  --tip-frame-offset: 4px;
+  --tip-frame-width: 2px;
+  --tip-bg: #ceebd0;      /* background */
+  --tip-border: #c7c7c7;  /* dashed color */
+
+  position: relative;
+  display: block;
+  padding: 4px 10px;
+  margin-top: 3px;
+  border-radius: var(--tip-radius);
+  background: var(--tip-bg);
+  line-height: 1.2;
+  font-size: 13px;
+}
+
+/* Dashed frame (outside the box) */
+.input-hint.tip-box::before{
+  content: "";
+  position: absolute;
+  inset: calc(var(--tip-frame-offset) * -1);
+  border: var(--tip-frame-width) dashed var(--tip-border);
+  border-radius: calc(var(--tip-radius) + var(--tip-frame-offset));
+  pointer-events: none;
+}
+
+/* Avoid double frames inside the Alt Feed card */
+.altfeed-box .input-hint.tip-box{ background: transparent; }
+.altfeed-box .input-hint.tip-box::before{ display: none; }
+
+/* Segmented control (canonical) */
+.segmented{
+  display: inline-flex;
+  align-items: center;
+  gap: 1px;                    /* was 6px */
+  padding: 3px;                /* was 4px */
+  border: 1px solid rgba(0,0,0,.12);
+  border-radius: 9999px;
+  background: #fff;
+  box-shadow: 0 4px 5px rgba(0,0,0,.08);
+}
+
+/* Buttons */
+.seg-btn{
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: #5D4037;
+  font-weight: 700;
+  font-size: 14px;             /* smaller text */
+  line-height: 1.1;
+  padding: 6px 10px;           /* was 6px 12px */
+  border-radius: 9999px;
+  cursor: pointer;
+  min-height: 28px;            /* keeps touch target ~44px with padding */
+}
+
+/* Active chip */
+.seg-btn.active{
+  background: rgba(0,0,0,.06);
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,.08);
+}
+
+/* Center the pill; no extra vertical margin (use container gap) */
+.result-card > .segmented{ margin: 0 auto; }
+
+/* Uniform tab header spacing (Records, Flocks, Reference) */
+#recordsTab > .result-card,
+#flocksTab > .result-card,
+#referenceTab > .result-card{
+  gap: 1px;                 /* ← tighten space between title and pill */
+}
+
+/* Remove default heading margins for header titles only */
+#recordsTab > .result-card > .result-title,
+#flocksTab > .result-card > .result-title,
+#referenceTab > .result-card > .result-title{
+  margin: 0;
+}

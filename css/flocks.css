@@ -1,0 +1,82 @@
+/* === Flocks tab (scoped) ========================================= */
+
+/* Show/hide inner panels (Add | Manage) */
+#flocksTab .tab-content{ display:none; }
+#flocksTab .tab-content.active{ display:block; }
+
+/* Card grid for “Flock Management” */
+#flocksTab .flock-grid{
+  display:grid;
+  gap:10px;
+  grid-template-columns: repeat(auto-fit, minmax(220px,1fr));
+}
+#flocksTab .flock-grid.single .flock-card{ grid-column:1 / -1; }
+
+#flocksTab .flock-card{
+  background: transparent;
+  border:1px solid rgba(0,0,0,.08);
+  border-radius:8px;
+  box-shadow:none;
+  padding:2px;
+}
+#flocksTab .flock-card .flock-title{
+  font-weight:700;
+  margin-bottom:6px;
+  display:flex; align-items:center; gap:6px;
+}
+#flocksTab .flock-card .flock-meta{
+  display:grid;
+  grid-template-columns:auto auto;
+  gap:1px 22px;
+  font-size:13px; line-height:1.2;
+}
+
+/* Add Flock panel — tips & spacing */
+#flocksTab .egg-tip{ font-size:12px; line-height:1.2; color:#5d4037; margin-top:6px; }
+#flocksTab .egg-tip::before{ content:"💡 "; font-size:12px; }
+
+#flocksTab .input-hint.tip-box{ margin-bottom:10px; }
+#flocksTab .input-hint.tip-box + .input-group{ margin-top:10px; }
+
+/* Currency symbol inside “Feed Cost per Bag” */
+#flocksTab .currency-wrap{ position: relative; }
+#flocksTab .currency-wrap::before{
+  content: attr(data-curr);
+  position: absolute;
+  left: 8px; top: 50%;
+  transform: translateY(-50%);
+  font-weight: 400; opacity: .60;
+  pointer-events: none;
+}
+#flocksTab .currency-wrap .input-field{ padding-left: 1.8em; }
+
+/* Spacing around cost-per-bag field and Add button */
+#flocksTab #field-cost-per-bag{ margin-top: 6px; }
+#flocksTab #field-cost-per-bag .currency-wrap{ margin-top: 4px; }
+#flocksTab #addFlockBtn{ margin-top: 14px; }
+
+/* Card grid styles (if not added yet) */
+#flocksTab .flock-grid{ display:grid; gap:12px; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); }
+#flocksTab .flock-grid.single .flock-card{ grid-column:1 / -1; }
+#flocksTab .flock-card{ border-radius:14px; box-shadow:0 2px 8px rgba(0,0,0,.06); padding:12px; background:#fff; }
+#flocksTab .flock-card .flock-title{ font-weight:700; margin-bottom:6px; display:flex; align-items:center; gap:6px; }
+#flocksTab .flock-card .flock-meta{ display:grid; grid-template-columns:auto auto; gap:4px 12px; font-size:13px; line-height:1.2; }
+#flocksTab .flock-card .meta-label{ opacity:.7; }
+#flocksTab .flock-card .card-actions{ margin-top:10px; display:flex; gap:8px; }
+#flocksTab .flock-card .card-actions button{ font-size:12px; padding:6px 10px; border-radius:10px; }
+
+/* Flocks header: flatten card + center title & pill (match Records) */
+#flocksTab > .result-card{
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  padding: 0;
+  margin: 4px 0 8px 0;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+
+
