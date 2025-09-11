@@ -1,6 +1,78 @@
 'use strict';
 
 /* ========= Flocks: render & CRUD ========= */
+// === Flock pickers: render on boot + after save ===
+(function(){
+  // Change this list if your storage key is different
+  var FLOCK_KEYS = ['fcrFlocks','fcr.flocks','flocks','FLOCKS']; // prefer your real key
+
+  function readFlocks(){
+  if (Array.isArray(window.flocks)) return window.flocks;       // prefer in-memory if loaded
+  if (typeof getFlocks === 'function') return getFlocks();      // app getter, if any
+  for (var i=0;i<FLOCK_KEYS.length;i++){
+    try{
+      var raw = localStorage.getItem(FLOCK_KEYS[i]);
+      if (raw){
+        var arr = JSON.parse(raw);
+        if (Array.isArray(arr)) return arr;
+      }
+    }catch(e){}
+  }
+  return [];
+}
+
+
+  function norm(f){
+    var name = (f && (f.name || f.flockName || f.title || f.id)) || '';
+    var id   = (f && (f.id   || name)) || '';
+    return { id:String(id), name:String(name) };
+  }
+
+  // Renders ALL pickers we can reasonably detect
+  window.renderFlockPickers = function renderFlockPickers(){
+    var flocks = readFlocks().map(norm)
+      .filter(function(f){ return f.name.trim().length>0; })
+      .sort(function(a,b){ return a.name.localeCompare(b.name); });
+
+    // History header select + any explicit hooks you add later
+    var pickers = document.querySelectorAll(
+      '#recordsTab #historyTab .history-header select, .js-flock-picker, [data-flock-picker]'
+    );
+
+    pickers.forEach(function(sel){
+      var prev = sel.value;
+      sel.innerHTML = '';
+
+      var optAll = document.createElement('option');
+      optAll.value = '';
+      optAll.textContent = 'All flocks';
+      sel.appendChild(optAll);
+
+      flocks.forEach(function(f){
+        var o = document.createElement('option');
+        o.value = f.id;
+        o.textContent = f.name;
+        sel.appendChild(o);
+      });
+
+      if (prev && Array.prototype.some.call(sel.options, function(o){return o.value===prev;})){
+        sel.value = prev; // keep previous selection if still present
+      }
+    });
+  };
+
+  // If another tab edits flocks, refresh automatically
+  window.addEventListener('storage', function(e){
+    if (e && FLOCK_KEYS.indexOf(e.key) !== -1) window.renderFlockPickers();
+  });
+  // Populate pickers on first load
+if (document.readyState !== 'loading') {
+  window.renderFlockPickers();
+} else {
+  document.addEventListener('DOMContentLoaded', window.renderFlockPickers);
+}
+
+})();
 
 // Flock dropdown used in Calculator tab
 function renderFlockSelect() {

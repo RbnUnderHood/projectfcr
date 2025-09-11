@@ -194,6 +194,7 @@ function init() {
   } else {
     switchView(startView);
   }
+if (typeof renderFlockPickers === 'function') renderFlockPickers();
 
   // Ensure Reference shows something
   setReferenceMode('benchmarks');
