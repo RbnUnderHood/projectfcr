@@ -1,38 +1,37 @@
 /* === Base (global) — keep in styles.css === */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
-  font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  background: #FFF3E0;
-  color: #3E2723;
+  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  /* keep your existing background/color lines */
 }
-
-.container { max-width: 960px; margin: 0 auto; padding: 18px; overflow-x: hidden; }
 
 /* shared panel shell used across views and inner tabs */
 .tab-content {
   display: none;
-  background: #fff;
+  background: #ffffff;
   border: 2px solid #EFEBE9;
   border-radius: 16px;
-  padding: 18px;
+  padding: 8px;
   box-shadow: 0 8px 24px rgba(0,0,0,.06);
-}
-/* Calendar tab uses a flat canvas (no outer grey border/shadow) */
-#calendarTab.tab-content{
-  border: 0;
-  box-shadow: none;
-  background: transparent; /* show the cream page bg behind it */
 }
 
 .tab-content.active { display: block; }
 
+/* Reusable card (same look as .tab-content but not tied to tab logic) */
+.tab-card{
+  background:#fff;
+  border:2px solid #EFEBE9;
+  border-radius:16px;
+  padding:8px;
+  box-shadow:0 8px 24px rgba(0,0,0,.06);
+}
+
 /* shared form system */
 .input-section { display: grid; grid-template-columns: 1fr; gap: 16px; margin-bottom: 16px; }
 .input-group   { display: grid; gap: 8px; }
-.input-label   { font-weight: 600; color: #5D4037; font-size: 1rem; display: flex; align-items: center; gap: 8px; }
+.input-label   { font-weight: 700; color: #5D4037; font-size: 1rem; display: flex; align-items: center; gap: 8px; }
 .input-hint    { font-size: .9rem; color: #8D6E63; }
 
 .input-field {
@@ -49,8 +48,8 @@ body {
 }
 .input-field:focus {
   outline: none;
-  border-color: #4CAF50;
-  background: #fff;
+  border-color: #e9b1ff;
+  background: #fff9f9;
   box-shadow: 0 0 0 3px rgba(76,175,80,.2);
 }
 
@@ -65,59 +64,15 @@ body {
 .result-value.poor      { color: #FF7043; }
 .result-description { color: #8D6E63; font-size: .95rem; line-height: 1.6; }
 
-
-/* === Design tokens (defaults) === */
-:root{
-  --bg-canvas: #FFFFFF;                 /* page/tab background */
-  --bg-card:   #FFFFFF;                 /* card background */
-  --card-border: 1px solid rgba(0,0,0,0.06);
-  --card-radius: 12px;
-  --card-shadow: 0 1px 2px rgba(0,0,0,0.04);
-  --outer-pad-x: 12px;                  /* horizontal padding inside tabs */
-  --outer-pad-y: 8px;
-}
-
-/* === Reusable building blocks === */
-.tab-canvas{
-  background: var(--bg-canvas);
-  padding: var(--outer-pad-y) var(--outer-pad-x);
-}
-
-.card{
-  background: var(--bg-card);
-  border: var(--card-border);
-  border-radius: var(--card-radius);
-  box-shadow: var(--card-shadow);
-}
-
-/* Small spacing utility (optional) */
-.mb-10{ margin-bottom: 10px; }
-
 /* Form modifier: center just this input group’s label (and optionally the field) */
 .input-group--center .input-label { 
   display: block; 
   text-align: center; 
 }
 
-
-/* === Form system: vertical layout, centered labels === */
-:root{
-  --form-gap: 10px;                     /* space between groups */
-  --form-label-size: clamp(14px, 3.2vw, 16px);
-  --form-label-weight: 600;
-  --form-label-mb: 6px;                 /* space below label */
-}
-
 .form-vertical{
   display: grid;
   gap: var(--form-gap);
-}
-
-/* Each input group stacks label above field */
-.form-vertical .input-group{
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;                 /* field spans full width */
 }
 
 /* Labels centered, consistent spacing */
@@ -130,34 +85,18 @@ body {
   line-height: 1.2;
 }
 
-/* Inputs fill available width neatly */
-.form-vertical .input-field,
-.form-vertical textarea,
-.form-vertical select{
-  width: 100%;
-  max-width: 100%;
-  margin: 0;                            /* avoid stray centering margins */
-  box-sizing: border-box;
-}
-/* Center ALL labels above their fields (keeps your icon + gap) */
-.form-vertical .input-label{
-  display: flex;              /* keep flex so the emoji and text stay side by side */
-  justify-content: center;    /* <-- horizontal centering */
-  align-items: center;        /* vertical alignment for the emoji/text */
-  gap: 8px;                   /* same gap you already use */
-  text-align: center;         /* harmless, but fine to keep */
-}
 /* ==== Compact-10 bundle (whole app, safe + reversible) ==== */
 /* Tokens */
 :root{
-  --ui-font-body: clamp(14px, 3.2vw, 16px);     /* base text */
-  --ui-font-label: clamp(13px, 2.9vw, 15px);    /* form labels */
+  --ui-font-body: clamp(14px, 3.2vw, 19px);     /* base text */
+  --ui-font-label: clamp(13px, 2.9vw, 18px);    /* form labels */
   --ui-font-small: clamp(12px, 2.6vw, 14px);    /* nav labels, hints */
-  --ui-font-title: clamp(16px, 3.6vw, 20px);    /* small titles/cards */
-  --ui-pad-v: 8px;                               /* vertical padding (reduced) */
-  --ui-pad-h: 12px;                              /* horizontal padding */
+  --ui-font-title: clamp(45px, 3.6vw, 20px);    /* small titles/cards */
+  --ui-pad-v: 2px;                               /* vertical padding (reduced) */
+  --ui-pad-h: 8px;                              /* horizontal padding */
   --ui-min-tap: 44px;                            /* min touch size */
-  --ui-radius: 10px;                             /* slightly tighter corners */
+  --ui-radius: 15px;                             /* slightly tighter corners */
+  
 }
 
 /* 1) Forms: labels + fields */
@@ -187,11 +126,6 @@ textarea{
   font-size: 10px; font-weight: 700;
   line-height: 1; color: #37474F; background: #fff;
   vertical-align: middle;
-}
-.mini-hint{
-  font-size: 11px;
-  color: #6b6b6b;
-  line-height: 1.3;
 }
 
 /* Smaller title + tiny info bubble */
@@ -245,6 +179,13 @@ textarea{
 
 /* Grey out disabled controls in Edit modal */
 #editModal [disabled]{ opacity:.5; cursor:not-allowed; }
+
+#recordsTab #historyTab { 
+  padding-top: 0px; 
+  padding-left: 4px; 
+  padding-right: 4px; 
+  /* keep bottom at 8px if you like the extra space below, or set to 4px as well */
+}
 
 
 

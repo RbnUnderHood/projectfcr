@@ -1,142 +1,163 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Poultry FCR Calculator</title>
-  <link rel="stylesheet" href="styles.css"/>
-  <link rel="stylesheet" href="css/components.css">  
-  <link rel="stylesheet" href="css/records.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/nav.css">
   <link rel="stylesheet" href="css/reference.css">
-  <link rel="stylesheet" href="css/settings.css">
   <link rel="stylesheet" href="css/flocks.css">
   <link rel="stylesheet" href="css/history.css">
   <link rel="stylesheet" href="css/calendar.css">
+  <!-- keep project-specific extras at the end -->
+  <link rel="stylesheet" href="css/settings.css">
   <link rel="stylesheet" href="css/calculator.css">
-  <link rel="stylesheet" href="css/nav.css">
+
 
 </head>
-<body>
-  <div class="container">   
 
-    <!-- ===== Top-level views (no more side-scroll tabs) ===== -->
+<body>
+  <div class="container">
 
     <!-- Calculator View -->
-    <div id="calculatorTab" class="tab-content active">
-      <div class="header">
-      <h1>🐣 Poultry FCR Calculator</h1>
+    <div class="tab-canvas">
+      <div id="calculatorTab" class="tab-content active">
+        <div class="header">
+          <h1>🐣 Poultry FCR Calculator</h1>
+        </div>
+        <div class="result-card flat mb-10"></div>
+        <div id="calcInputCard" class="tab-card">
+          <div class="input-section">
+            <div class="input-group">
+              <label class="input-label" for="flockSelect">🐓 Flock</label>
+              <select id="flockSelect" class="input-field"></select>
+              <div class="input-hint" id="noFlockHint" style="display:none">
+                No flocks yet. Add one in the <b>Flocks</b> view.
+              </div>
+            </div>
+
+            <div class="input-group">
+              <label class="input-label " for="feedAmount">🌽 Feed Used Today (kg)</label>
+              <input type="text" id="feedAmount" class="input-field" inputmode="decimal" pattern="[0-9]*[.,]?[0-9]*"
+                placeholder="e.g., 25.5 or 25,5" autocomplete="off" autocapitalize="off" spellcheck="false">
+
+
+            </div>
+            <!-- Alternative feed (optional) -->
+            <div class="input-group" id="altFeedToggleRow">
+              <label class="input-label" for="altFeedToggle">🌿 Alternative feed (optional)</label>
+              <div style="display:flex;align-items:center;gap:8px">
+                <input type="checkbox" id="altFeedToggle" />
+                <span class="input-hint">Use when adding leaves, corn, BSFL, etc. (test ≥ 7 days)</span>
+              </div>
+            </div>
+
+            <div id="altFeedBox" class="altfeed-box" style="display:none">
+              <div class="input-group">
+                <label class="input-label" for="altFeedKg">🌿 Alt feed amount (kg)</label>
+                <input type="text" id="altFeedKg" class="input-field" inputmode="decimal" pattern="[0-9]*[.,]?[0-9]*"
+                  placeholder="e.g., 2.5" autocomplete="off">
+                
+              </div>
+              <div class="input-group">
+                <label class="input-label" for="altFeedName">🧾 Alt feed name</label>
+                <input type="text" id="altFeedName" class="input-field" placeholder="e.g., dried mulberry leaves"
+                  autocomplete="off" autocapitalize="off" spellcheck="false">
+
+              </div>
+              <div class="input-hint">Tip: keep the same alt feed & dose ≥ 7 days for meaningful comparison.</div>
+            </div>
+
+            <div class="input-group">
+              <label class="input-label" for="eggCount">🥚 Today's Eggs Collected</label>
+              <input type="number" id="eggCount" class="input-field" inputmode="numeric" step="1" min="0"
+                placeholder="e.g., 45" />
+            </div>
+            <div class="input-group" style="grid-column:1/-1">
+              <label class="input-label" for="notes">📝 Notes (optional)</label>
+              <textarea id="notes" class="input-field" rows="3"
+                placeholder="E.g., changed feed brand, moved to new coop, health notes..."></textarea>
+            </div>
+            <div class="input-group">
+              <label class="input-label" for="weather">🌤️ Weather Conditions</label>
+              <select id="weather" class="input-field">
+                <option value="">Select…</option>
+                <option value="EXTREME_HEAT">🔥 Extreme Heat</option>
+                <option value="TEMP_DROP">❄️ Temp Drop</option>
+                <option value="RAINY">🌧️ Rainy</option>
+                <option value="WINDY">💨 Windy</option>
+                <option value="OPTIMAL">✅ Optimal</option>
+              </select>
+            </div>
+            <button id="calcComputeBtn" type="button" class="btn-primary">Calculate FCR</button>
+          </div> <!-- .input-section -->
+        </div> <!-- #calcInputCard -->
+
+
+        <div class="results-section" id="results">
+          <div class="result-card" id="fcrCard">
+            <div class="result-title"><span>📊</span> Feed Conversion Ratio (FCR)</div>
+            <div class="result-value" id="fcrValue">-</div>
+            <div class="result-description" id="fcrDescription">-</div>
           </div>
+          <div id="altFeedAlert" class="alert" style="display:none"></div>
 
-      <div class="input-section">
-        <div class="input-group">
-          <label class="input-label" for="flockSelect">🐓 Flock</label>
-          <select id="flockSelect" class="input-field"></select>
-          <div class="input-hint" id="noFlockHint" style="display:none">
-            No flocks yet. Add one in the <b>Flocks</b> view.
+          <!-- RESULTS CARD (hidden at first) -->
+          <div id="calcResultsCard" class="tab-card" hidden>
+
+            <div class="metrics-grid">
+              <div class="metric-card fpbd" id="feedPerBirdCard">
+                <div class="metric-title">Feed per Bird/Day</div>
+                <div class="metric-value" id="feedPerBird">-</div>
+              </div>
+
+              <div class="metric-card dhp" id="dhpCard">
+                <div class="metric-title small">% of hens laying (DHP)</div>
+                <div class="metric-value" id="layingPercent">-</div>
+              </div>
+
+              <div class="metric-card">
+                <div class="metric-title">Feed per Egg</div>
+                <div class="metric-value" id="feedPerEgg">-</div>
+              </div>
+
+              <div class="metric-card">
+                <div class="metric-title">Cost per Egg</div>
+                <div class="metric-value" id="costPerEgg">-</div>
+              </div>
+            </div>
+
+            <div id="costMetricsGrid" class="two-col-even">
+              <div class="metric-card">
+                <div class="metric-title">Today’s Feed Cost</div>
+                <div class="metric-value" id="dailyFeedCost">-</div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-title">≈ Saved Today</div>
+                <div class="metric-value" id="savedToday">-</div>
+              </div>
+            </div>
+            <div class="export-section" id="exportSection" style="display:none">
+              <button class="export-btn" onclick="exportToCSV()">⬇️ Export CSV</button>
+            </div>
           </div>
         </div>
-
-        <div class="input-group">
-          <label class="input-label" for="entryDate">📅 Date</label>
-          <div style="display:flex; gap:8px; align-items:center">
-            <input type="date" id="entryDate" class="input-field" style="flex:1"/>
-                      </div>
-                  </div>
-
-        <div class="input-group">
-          <label class="input-label " for="feedAmount">🌽 Feed Used Today (kg)</label>
-          <input type="text" id="feedAmount" class="input-field" inputmode="decimal" pattern="[0-9]*[.,]?[0-9]*" placeholder="e.g., 25.5 or 25,5"/>
-
-        </div>
-        <!-- Alternative feed (optional) -->
-<div class="input-group" id="altFeedToggleRow">
-  <label class="input-label" for="altFeedToggle">🌿 Alternative feed (optional)</label>
-  <div style="display:flex;align-items:center;gap:8px">
-    <input type="checkbox" id="altFeedToggle"/>
-    <span class="input-hint">Use when adding leaves, corn, BSFL, etc. (test ≥ 7 days)</span>
-  </div>
-</div>
-
-<div id="altFeedBox" class="altfeed-box" style="display:none">
-  <div class="input-group">
-    <label class="input-label" for="altFeedKg">🌿 Alt feed amount (kg)</label>
-    <input type="text" id="altFeedKg" class="input-field" inputmode="decimal" pattern="[0-9]*[.,]?[0-9]*" placeholder="e.g., 2.5"/>
-  </div>
-  <div class="input-group">
-    <label class="input-label" for="altFeedName">🧾 Alt feed name</label>
-    <input type="text" id="altFeedName" class="input-field" placeholder="e.g., dried mulberry leaves"/>
-  </div>
-  <div class="input-hint">Tip: keep the same alt feed & dose ≥ 7 days for meaningful comparison.</div>
-</div>
-
-        <div class="input-group">
-          <label class="input-label" for="eggCount">🥚 Today's Eggs Collected</label>
-          <input type="number" id="eggCount" class="input-field" inputmode="numeric" step="1" min="0" placeholder="e.g., 45"/>
-        </div>
-        <div class="input-group" style="grid-column:1/-1">
-          <label class="input-label" for="notes">📝 Notes (optional)</label>
-          <textarea id="notes" class="input-field" rows="3" placeholder="E.g., changed feed brand, moved to new coop, health notes..."></textarea>
-        </div>
-        <div class="input-group">
-          <label class="input-label" for="weather">🌤️ Weather Conditions</label>
-          <select id="weather" class="input-field">
-            <option value="">Select…</option>
-  <option value="EXTREME_HEAT">🔥 Extreme Heat</option>
-  <option value="TEMP_DROP">❄️ Temp Drop</option>
-  <option value="RAINY">🌧️ Rainy</option>
-  <option value="WINDY">💨 Windy</option>
-  <option value="OPTIMAL">✅ Optimal</option>
-          </select>
-                  </div>
-        <button class="calculate-btn" onclick="checkForDuplicate()">Calculate FCR</button>
-      </div>
-
-      <div class="results-section" id="results">
-        <div class="result-card" id="fcrCard">
-          <div class="result-title"><span>📊</span> Feed Conversion Ratio (FCR)</div>
-          <div class="result-value" id="fcrValue">-</div>
-          <div class="result-description" id="fcrDescription">-</div>
-        </div>
-        <div id="altFeedAlert" class="alert" style="display:none"></div>
-
-        <div class="metrics-grid">
-          <div class="metric-card fpbd" id="feedPerBirdCard">
-<div class="metric-title">Feed per Bird/Day</div><div class="metric-value" id="feedPerBird">-</div></div>
-          <div class="metric-card dhp" id="dhpCard">
-<div class="metric-title small">% of hens laying (DHP)</div>
-
-<div class="metric-value" id="layingPercent">-</div></div>
-          <div class="metric-card"><div class="metric-title">Feed per Egg</div><div class="metric-value" id="feedPerEgg">-</div></div><div class="metric-card">
-  <div class="metric-title">Cost per Egg</div>
-  <div class="metric-value" id="costPerEgg">-</div>
-</div>
-
-        </div>
-        <div id="costMetricsGrid" class="two-col-even">
-  <div class="metric-card">
-    <div class="metric-title">Today’s Feed Cost</div>
-    <div class="metric-value" id="dailyFeedCost">-</div>
-  </div>
-  <div class="metric-card">
-    <div class="metric-title">≈ Saved Today</div>
-    <div class="metric-value" id="savedToday">-</div>
-  </div>
-</div>
-
-        <div class="export-section" id="exportSection" style="display:none">
-          <button class="export-btn" onclick="exportToCSV()">⬇️ Export CSV</button>
-        </div>
-      </div>
-    </div>
+      </div> <!-- /#calculatorTab -->
+    </div> <!-- /.tab-canvas -->
 
     <!-- Records View (History + Calendar) -->
     <div id="recordsTab" class="tab-content tab-canvas">
 
-      <div class="tab-header"><h2>Records</h2></div>
+      <div class="tab-header">
+        <h2>Records</h2>
+      </div>
 
-      <div class="result-card card mb-10">
-
-        <div class="result-title" role="heading" aria-level="2"></div>
+      <div class="result-card flat mb-10">
 
         <div class="segmented">
           <button id="recHistoryBtn" class="seg-btn active" onclick="setRecordsMode('history')">History</button>
@@ -149,36 +170,41 @@
         <div class="history-section">
           <div class="history-header">
             <div class="history-title"><span></span> History</div>
-            <button id="clearAllBtn" class="icon-btn" type="button"
-        title="Clear all data" aria-label="Clear all data">
-  <svg viewBox="0 0 24 24" width="18" height="18" fill="none"
-       stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-       aria-hidden="true" focusable="false">
-    <path d="M3 6h18"/>
-    <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-    <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
-    <line x1="10" y1="11" x2="10" y2="17"/>
-    <line x1="14" y1="11" x2="14" y2="17"/>
-  </svg>
-</button>
+            <button id="clearAllBtn" class="icon-btn" type="button" title="Clear all data" aria-label="Clear all data">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                <path d="M3 6h18" />
+                <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+                <line x1="10" y1="11" x2="10" y2="17" />
+                <line x1="14" y1="11" x2="14" y2="17" />
+              </svg>
+            </button>
 
 
           </div>
           <!-- Static header (non-scrolling) -->
-<div class="history-head">
-  <table class="history-table history-wide">
-    <thead>
-      <tr><th>Date</th><th class="col-flock"></th><th>Feed</th><th>🥚</th><th>FCR</th><th>Weather</th></tr>
-    </thead>
-  </table>
-</div>
+          <div class="history-head">
+            <table class="history-table history-wide">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th class="col-flock"></th>
+                  <th>Feed</th>
+                  <th>🥚</th>
+                  <th>FCR</th>
+                  <th>Weather</th>
+                </tr>
+              </thead>
+            </table>
+          </div>
 
-<!-- Scrollable body (rows only) -->
-<div class="history-scroll">
-  <table class="history-table history-wide">
-    <tbody id="historyTableBody"></tbody>
-  </table>
-</div>
+          <!-- Scrollable body (rows only) -->
+          <div class="history-scroll">
+            <table class="history-table history-wide">
+              <tbody id="historyTableBody"></tbody>
+            </table>
+          </div>
 
 
           <div id="noHistoryMessage" class="input-hint" style="text-align:center;padding:16px">
@@ -188,205 +214,236 @@
       </div>
 
       <!-- Calendar panel -->
-      <div id="calendarTab" class="tab-content">        
-          <div class="calendar-header">
-            <div class="calendar-title"><span>📅</span> Flock Management Calendar</div>
-            <div class="calendar-nav">
-              <button class="calendar-nav-btn" onclick="changeMonth(-1)">←</button>
-              <div class="calendar-month" id="calendarMonth">January 2025</div>
-              <button class="calendar-nav-btn" onclick="changeMonth(1)">→</button>
-            </div>
+      <div id="calendarTab" class="tab-content">
+        <div class="calendar-header">
+          <div class="calendar-title"><span>📅</span> Flock Management Calendar</div>
+          <div class="calendar-nav">
+            <button class="calendar-nav-btn" onclick="changeMonth(-1)">←</button>
+            <div class="calendar-month" id="calendarMonth">January 2025</div>
+            <button class="calendar-nav-btn" onclick="changeMonth(1)">→</button>
           </div>
-          <!-- START: calendar body card (wraps weekdays + grid) -->
-<div class="calendar-body-card">
+        </div>
+        <!-- START: calendar body card (wraps weekdays + grid) -->
+        <div class="calendar-body-card">
           <div class="calendar-grid" id="calendarWeekdays">
-            <div class="calendar-weekday">Sun</div><div class="calendar-weekday">Mon</div><div class="calendar-weekday">Tue</div>
-            <div class="calendar-weekday">Wed</div><div class="calendar-weekday">Thu</div><div class="calendar-weekday">Fri</div><div class="calendar-weekday">Sat</div>
+            <div class="calendar-weekday">Sun</div>
+            <div class="calendar-weekday">Mon</div>
+            <div class="calendar-weekday">Tue</div>
+            <div class="calendar-weekday">Wed</div>
+            <div class="calendar-weekday">Thu</div>
+            <div class="calendar-weekday">Fri</div>
+            <div class="calendar-weekday">Sat</div>
           </div>
           <div class="calendar-grid" id="calendarDays"></div>
         </div><!-- END: calendar-body-card -->
 
-          <div class="calendar-events">
-            <div class="selected-title"><span></span> </div>
-                        <div class="calendar-actions">
-  <button id="addEntryForDayBtn" class="calendar-add-btn" hidden>Add entry</button>
-</div>
-            <div id="calendarEventsList"></div>
+        <div class="calendar-events">
+          <div class="selected-title"><span></span> </div>
+          <div class="calendar-actions">
+            <button id="addEntryForDayBtn" class="calendar-add-btn" hidden>Add entry</button>
+          </div>
+          <div id="calendarEventsList"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Flocks View -->
+  <div id="flocksTab" class="tab-content tab-canvas">
+    <div class="tab-header">
+      <h2>My Flocks</h2>
+    </div>
+    <!-- small buttons (Flocks segmented) -->
+    <div class="result-card flat mb-10">
+      <div class="segmented">
+        <button id="flAddBtn" class="seg-btn active" onclick="setFlocksMode('add')">Add Flock</button>
+        <button id="flManageBtn" class="seg-btn" onclick="setFlocksMode('manage')">Manage Flocks</button>
+      </div>
+    </div>
+
+
+
+    <!-- Add Flock content -->
+    <div id="flocksAddPanel" class="tab-content active">
+      <div class="input-section" style="margin-top:10px">
+
+        <div class="input-group">
+          <label class="input-label" for="newFlockName">Name</label>
+          <input id="newFlockName" class="input-field" placeholder="e.g., Barn A, Isa Brown layers 01" />
+        </div>
+
+        <div class="input-group">
+          <label class="input-label" for="newFlockBirds">Birds</label>
+          <input id="newFlockBirds" type="number" min="1" step="1" class="input-field" placeholder="e.g., 120" />
+        </div>
+
+        <div class="input-group">
+          <label class="input-label" for="newFlockAgeWeeks">📅 Age (weeks, optional)</label>
+          <input id="newFlockAgeWeeks" type="number" min="0" step="1" class="input-field" placeholder="e.g., 20" />
+        </div>
+
+        <div class="input-group">
+          <label class="input-label" for="newFlockEggWeight">Average Egg Weight (g)</label>
+          <input id="newFlockEggWeight" type="number" min="0" step="1" class="input-field" placeholder="e.g., 60" />
+        </div>
+        <div class="input-hint tip-box egg-tip">💡 Tip: weigh ~10 eggs weekly and update this number to keep FCR
+          realistic. 1–2 g can make a big difference</div>
+
+        <div class="input-group">
+          <label class="input-label" for="newFlockBagKg">Feed Bag Size (kg)</label>
+          <input id="newFlockBagKg" type="number" min="0" step="1" class="input-field" placeholder="e.g., 40" />
+        </div>
+
+        <div class="input-group" id="field-cost-per-bag">
+          <label class="input-label" for="newFlockBagCost">Feed Cost per Bag</label>
+          <div class="currency-wrap" id="newFlockBagCostWrap" data-curr="₲">
+            <input id="newFlockBagCost" type="number" min="0" step="1" class="input-field" placeholder="e.g., 180000" />
+          </div>
+          <div class="input-hint tip-box tip-mini tip-right">
+            💡 change currency in <a href="#" class="tip-link" onclick="openSettingsFromHint(event)">Settings</a>.
           </div>
         </div>
+
+        <div class="input-group">
+          <label class="input-label" for="newFlockNotes">Notes (optional)</label>
+          <textarea id="newFlockNotes" class="input-field" rows="2"></textarea>
+        </div>
+
+        <button id="addFlockBtn" class="calculate-btn" onclick="addFlock()">Add Flock</button>
       </div>
     </div>
 
-   <!-- Flocks View -->
-<div id="flocksTab" class="tab-content">
-  <div class="tab-header"><h2>My Flocks</h2></div>
-  <!-- small buttons (Flocks segmented) -->
-<div class="result-card card mb-10 u-text-center" id="flocksSegCard">
-  <div class="segmented">
-    <button id="flAddBtn" class="seg-btn active" onclick="setFlocksMode('add')">Add Flock</button>
-    <button id="flManageBtn" class="seg-btn" onclick="setFlocksMode('manage')">Manage Flocks</button>
-  </div>
-</div>
-
-  
-
-  <!-- Add Flock content -->
-  <div id="flocksAddPanel" class="tab-content active">
-    <div class="input-section" style="margin-top:10px">
-
-      <div class="input-group">
-        <label class="input-label" for="newFlockName">Name</label>
-        <input id="newFlockName" class="input-field" placeholder="e.g., Barn A, Isa Brown layers 01"/>
-      </div>
-
-      <div class="input-group">
-        <label class="input-label" for="newFlockBirds">Birds</label>
-        <input id="newFlockBirds" type="number" min="1" step="1" class="input-field" placeholder="e.g., 120"/>
-      </div>
-
-      <div class="input-group">
-        <label class="input-label" for="newFlockAgeWeeks">📅 Age (weeks, optional)</label>
-        <input id="newFlockAgeWeeks" type="number" min="0" step="1" class="input-field" placeholder="e.g., 20"/>
-      </div>
-
-      <div class="input-group">
-        <label class="input-label" for="newFlockEggWeight">Average Egg Weight (g)</label>
-        <input id="newFlockEggWeight" type="number" min="0" step="1" class="input-field" placeholder="e.g., 60"/>
-      </div>
-      <div class="input-hint tip-box egg-tip">💡 Tip: weigh ~10 eggs weekly and update this number to keep FCR realistic. 1–2 g can make a big difference</div>
-
-      <div class="input-group">
-        <label class="input-label" for="newFlockBagKg">Feed Bag Size (kg)</label>
-        <input id="newFlockBagKg" type="number" min="0" step="1" class="input-field" placeholder="e.g., 40"/>
-      </div>
-
-      <div class="input-group" id="field-cost-per-bag">
-        <label class="input-label" for="newFlockBagCost">Feed Cost per Bag</label>
-        <div class="currency-wrap" id="newFlockBagCostWrap" data-curr="₲">
-          <input id="newFlockBagCost" type="number" min="0" step="1" class="input-field" placeholder="e.g., 180000"/>
-        </div>
-        <div class="input-hint tip-box tip-mini tip-right">
-          💡 change currency in <a href="#" class="tip-link" onclick="openSettingsFromHint(event)">Settings</a>.
-        </div>
-      </div>
-
-      <div class="input-group">
-        <label class="input-label" for="newFlockNotes">Notes (optional)</label>
-        <textarea id="newFlockNotes" class="input-field" rows="2"></textarea>
-      </div>
-
-      <button id="addFlockBtn" class="calculate-btn" onclick="addFlock()">Add Flock</button>
+    <!-- Flock Management content -->
+    <div id="flocksManagePanel" class="tab-content">
+      <div class="section-title" style="margin-top:10px"><span>📋</span> Flock Management</div>
+      <div id="flocksCardsGrid" class="flock-grid" aria-live="polite"></div>
     </div>
   </div>
 
-  <!-- Flock Management content -->
-  <div id="flocksManagePanel" class="tab-content">
-    <div class="section-title" style="margin-top:10px"><span>📋</span> Flock Management</div>
-    <div id="flocksCardsGrid" class="flock-grid" aria-live="polite"></div>
+  </div><!-- end #flocksTab -->
+
+
+  <!-- Reference View (Benchmarks + Settings) -->
+  <div id="referenceTab" class="tab-content tab-canvas">
+    <div class="tab-header"><span></span>
+      <h2>Reference</h2>
+    </div>
+
+    <div class="result-card flat mb-10">
+      <div class="segmented">
+        <button id="refBenchBtn" class="seg-btn active" onclick="setReferenceMode('benchmarks')">Benchmarks</button>
+        <button id="refSettingsBtn" class="seg-btn" onclick="setReferenceMode('settings')">Settings</button>
+      </div>
+    </div>
+
+    <!-- Benchmarks panel -->
+    <div id="benchmarksTab" class="tab-content active">
+      <div class="result-title"><span>📈</span> Benchmark Reference (Layers)</div>
+      <div class="input-hint">These are typical ranges, your flocks may vary by breed, age, and management.</div>
+      <table class="history-table benchmarks-table">
+        <thead>
+          <tr>
+            <th>FCR</th>
+            <th>Category</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>≤ 2.0</td>
+            <td style="color:#4CAF50;font-weight:600">Excellent</td>
+            <td>Optimal efficiency</td>
+          </tr>
+          <tr>
+            <td>2.1–2.4</td>
+            <td style="color:#8BC34A;font-weight:600">Good</td>
+            <td>Healthy performance</td>
+          </tr>
+          <tr>
+            <td>2.5–2.8</td>
+            <td style="color:#FFA000;font-weight:600">Average</td>
+            <td>Watch management</td>
+          </tr>
+          <tr>
+            <td>＞ 2.8</td>
+            <td style="color:#FF7043;font-weight:600">Needs Improvement</td>
+            <td>Review feed/health</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
-</div>
 
-</div><!-- end #flocksTab -->
-
-
-    <!-- Reference View (Benchmarks + Settings) -->
-    <div id="referenceTab" class="tab-content">
-      <div class="tab-header"><span></span><h2>Reference</h2></div>
-      <div class="result-card" style="margin-bottom:10px">
-        <div class="result-title"></div>
-        <div class="segmented">
-          <button id="refBenchBtn" class="seg-btn active" onclick="setReferenceMode('benchmarks')">Benchmarks</button>
-          <button id="refSettingsBtn" class="seg-btn" onclick="setReferenceMode('settings')">Settings</button>
-        </div>
-      </div>
-
-      <!-- Benchmarks panel -->
-      <div id="benchmarksTab" class="tab-content active">
-        <div class="result-card">
-          <div class="result-title"><span>📈</span> Benchmark Reference (Layers)</div>
-          <div class="input-hint">These are typical ranges, your flocks may vary by breed, age, and management.</div>
-          <table class="history-table benchmarks-table">
-            <thead><tr><th>FCR</th><th>Category</th><th>Notes</th></tr></thead>
-            <tbody>
-              <tr><td>≤ 2.0</td><td style="color:#4CAF50;font-weight:600">Excellent</td><td>Optimal efficiency</td></tr>
-              <tr><td>2.1–2.4</td><td style="color:#8BC34A;font-weight:600">Good</td><td>Healthy performance</td></tr>
-              <tr><td>2.5–2.8</td><td style="color:#FFA000;font-weight:600">Average</td><td>Watch management</td></tr>
-              <tr><td>＞ 2.8</td><td style="color:#FF7043;font-weight:600">Needs Improvement</td><td>Review feed/health</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- Settings panel -->
-      <div id="settingsTab" class="tab-content">
-        <div class="result-card">
-          <div class="result-title"><span>⚙️</span> Settings</div>
-          <div class="input-section" style="margin-top:10px">
-            <div class="input-group">
-              <label class="input-label" for="settingsCurrency">💱 Currency</label>
-              <select id="settingsCurrency" class="input-field">
-                <option value="PYG">₲ PYG – Paraguayan Guaraní</option>
-                <option value="USD">$ USD – US Dollar</option>
-                <option value="BRL">R$ BRL – Brazilian Real</option>
-                <option value="ARS">AR$ ARS – Argentine Peso</option>
-                <option value="UYU">$U UYU – Uruguayan Peso</option>
-                <option value="PEN">S/ PEN – Peruvian Sol</option>
-                <option value="BOB">Bs BOB – Boliviano</option>
-                <option value="COP">$ COP – Colombian Peso</option>
-                <option value="CLP">$ CLP – Chilean Peso</option>
-                <option value="MXN">$ MXN – Mexican Peso</option>
-                <option value="PAB">B/. PAB – Panamanian Balboa</option>
-                <option value="EUR">€ EUR – Euro</option>
-                <option value="GBP">£ GBP – British Pound</option>
-              </select>
-              <div class="input-hint">Applies to all costs including feed prices in Flocks and results.</div>
-            </div>
-          </div>
+  <!-- Settings panel -->
+  <div id="settingsTab" class="tab-content">
+    <div class="result-card">
+      <div class="result-title"><span>⚙️</span> Settings</div>
+      <div class="input-section" style="margin-top:10px">
+        <div class="input-group">
+          <label class="input-label" for="settingsCurrency">💱 Currency</label>
+          <select id="settingsCurrency" class="input-field">
+            <option value="PYG">₲ PYG – Paraguayan Guaraní</option>
+            <option value="USD">$ USD – US Dollar</option>
+            <option value="BRL">R$ BRL – Brazilian Real</option>
+            <option value="ARS">AR$ ARS – Argentine Peso</option>
+            <option value="UYU">$U UYU – Uruguayan Peso</option>
+            <option value="PEN">S/ PEN – Peruvian Sol</option>
+            <option value="BOB">Bs BOB – Boliviano</option>
+            <option value="COP">$ COP – Colombian Peso</option>
+            <option value="CLP">$ CLP – Chilean Peso</option>
+            <option value="MXN">$ MXN – Mexican Peso</option>
+            <option value="PAB">B/. PAB – Panamanian Balboa</option>
+            <option value="EUR">€ EUR – Euro</option>
+            <option value="GBP">£ GBP – British Pound</option>
+          </select>
+          <div class="input-hint">Applies to all costs including feed prices in Flocks and results.</div>
         </div>
       </div>
     </div>
+  </div>
+  </div>
 
   </div><!-- /.container -->
 
   <!-- Modals (unchanged) -->
   <!-- Modals -->
-<div id="duplicateModal" class="modal">
-  <div class="modal-content">
-    <div class="modal-title">⚠️ Entry already exists ⚠️</div>
-    <div class="modal-text">
-      You’ve already logged this flock for the selected date.<br>
-      To keep data accurate, a flock can only be recorded once per day.<br><br>
-      Replace the existing entry with your new values?
-    </div>
-    <div class="modal-buttons">
-      <button class="clear-btn" onclick="cancelDuplicate()">Cancel</button>
-      <button class="export-btn" onclick="confirmDuplicate()">Replace Entry</button>
-    </div>
-  </div>
-</div>
-<div id="logConfirmModal" class="modal" style="display:none">
-  <div class="modal-content">
-    <div class="modal-title">Save this day?</div>
-    <div class="modal-text" id="logConfirmText">Log day?</div>
-    <div class="modal-buttons">
-      <button class="clear-btn" onclick="cancelLogConfirm()">No</button>
-      <button class="export-btn" onclick="confirmLogConfirm()">Yes, Save</button>
+  <div id="duplicateModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-title">⚠️ Entry already exists ⚠️</div>
+      <div class="modal-text">
+        You’ve already logged this flock for the selected date.<br>
+        To keep data accurate, a flock can only be recorded once per day.<br><br>
+        Replace the existing entry with your new values?
+      </div>
+      <div class="modal-buttons">
+        <button class="clear-btn" onclick="cancelDuplicate()">Cancel</button>
+        <button class="export-btn" onclick="confirmDuplicate()">Replace Entry</button>
+      </div>
     </div>
   </div>
-</div>
+  <div id="logConfirmModal" class="modal" style="display:none">
+    <div class="modal-content">
+      <div class="modal-title">Save this day?</div>
+      <div class="modal-text" id="logConfirmText">Log day?</div>
+      <div class="modal-buttons">
+        <button class="clear-btn" onclick="cancelLogConfirm()">No</button>
+        <button class="export-btn" onclick="confirmLogConfirm()">Yes, Save</button>
+      </div>
+    </div>
+  </div>
 
-<div id="validationModal" class="modal" style="display:none">
-  <div class="modal-content">
-    <div class="modal-title">Entry Not Accepted</div>
-    <div class="modal-text" id="validationMessage">
-      <!-- message is filled by JS -->
-    </div>
-    <div class="modal-buttons">
-      <button class="export-btn" id="validationOkBtn" onclick="closeValidationModal()">OK</button>
+  <div id="validationModal" class="modal" style="display:none">
+    <div class="modal-content">
+      <div class="modal-title">Entry Not Accepted</div>
+      <div class="modal-text" id="validationMessage">
+        <!-- message is filled by JS -->
+      </div>
+      <div class="modal-buttons">
+        <button class="export-btn" id="validationOkBtn" onclick="closeValidationModal()">OK</button>
 
+      </div>
     </div>
   </div>
-</div>
 
   <div id="deleteModal" class="modal">
     <div class="modal-content">
@@ -412,28 +469,35 @@
       <div class="modal-title">✏️ Edit Entry</div>
       <div class="input-section" style="margin-top:10px">
 
-        <div class="input-group"><label class="input-label" for="editFeed">🌽 Feed (kg)</label><input type="number" id="editFeed" class="input-field" step="0.01" min="0"/></div>
-        <div class="input-group"><label class="input-label" for="editAltToggle">🌿 Alternative feed (optional)  <input type="checkbox" id="editAltToggle" /></label>
+        <div class="input-group"><label class="input-label" for="editFeed">🌽 Feed (kg)</label><input type="number"
+            id="editFeed" class="input-field" step="0.01" min="0" /></div>
+        <div class="input-group"><label class="input-label" for="editAltToggle">🌿 Alternative feed (optional) <input
+              type="checkbox" id="editAltToggle" /></label>
 
-</div>
-<div class="altfeed-box" id="editAltBox" style="display:none">
-  <div class="input-group">
-    <label class="input-label" for="editAltKg">🌿 Alt feed amount (kg)</label>
-    <input id="editAltKg" class="input-field" inputmode="decimal" placeholder="e.g., 2.5"/>
-  </div>
-  <div class="input-group">
-    <label class="input-label" for="editAltName">🧾 Alt feed name</label>
-    <input id="editAltName" class="input-field" placeholder="e.g., dried mulberry leaves"/>
-  </div>
-  <div class="input-hint tip-box">💡 Tip: keep the same alt feed &amp; dose ≥ 7 days for meaningful comparison.</div>
+        </div>
+        <div class="altfeed-box" id="editAltBox" style="display:none">
+          <div class="input-group">
+            <label class="input-label" for="editAltKg">🌿 Alt feed amount (kg)</label>
+            <input id="editAltKg" class="input-field" inputmode="decimal" placeholder="e.g., 2.5" />
+          </div>
+          <div class="input-group">
+            <label class="input-label" for="editAltName">🧾 Alt feed name</label>
+            <input id="editAltName" class="input-field" placeholder="e.g., dried mulberry leaves" />
+          </div>
+          <div class="input-hint tip-box">💡 Tip: keep the same alt feed &amp; dose ≥ 7 days for meaningful comparison.
+          </div>
 
-</div>
-        <div class="input-group"><label class="input-label" for="editEggs">🥚 Eggs</label><input type="number" id="editEggs" class="input-field" step="1" min="0"/></div><!-- Alt feed (Edit Entry) -->
-        
+        </div>
+        <div class="input-group"><label class="input-label" for="editEggs">🥚 Eggs</label><input type="number"
+            id="editEggs" class="input-field" step="1" min="0" /></div><!-- Alt feed (Edit Entry) -->
 
-        <div class="input-group"><label class="input-label" for="editBirds">🐤 Birds</label><input type="number" id="editBirds" class="input-field" step="1" min="1"/></div>
-                <div class="input-group" style="grid-column:1/-1"><label class="input-label" for="editWeather">🌤️ Weather</label><select id="editWeather" class="input-field"></select></div>
-        <div class="input-group" style="grid-column:1/-1"><label class="input-label" for="editNotes">📝 Notes</label><textarea id="editNotes" class="input-field" rows="3"></textarea></div>
+
+        <div class="input-group"><label class="input-label" for="editBirds">🐤 Birds</label><input type="number"
+            id="editBirds" class="input-field" step="1" min="1" /></div>
+        <div class="input-group" style="grid-column:1/-1"><label class="input-label" for="editWeather">🌤️
+            Weather</label><select id="editWeather" class="input-field"></select></div>
+        <div class="input-group" style="grid-column:1/-1"><label class="input-label" for="editNotes">📝
+            Notes</label><textarea id="editNotes" class="input-field" rows="3"></textarea></div>
       </div>
       <div class="modal-buttons" style="margin-top:8px">
         <button class="calendar-nav-btn" onclick="closeEditModal()">Cancel</button>
@@ -447,17 +511,25 @@
     <div class="modal-content">
       <div class="modal-title">✏️ Edit Flock</div>
       <div class="input-section" style="margin-top:10px">
-        <div class="input-group"><label class="input-label" for="efName">Name</label><input id="efName" class="input-field"/></div>
-        <div class="input-group"><label class="input-label" for="efBirds">Birds</label><input id="efBirds" type="number" class="input-field" min="1" step="1"/></div>
+        <div class="input-group"><label class="input-label" for="efName">Name</label><input id="efName"
+            class="input-field" /></div>
+        <div class="input-group"><label class="input-label" for="efBirds">Birds</label><input id="efBirds" type="number"
+            class="input-field" min="1" step="1" /></div>
         <div class="input-group">
-  <label class="input-label" for="efAgeWeeks">📅 Age (weeks, optional)</label>
-  <input id="efAgeWeeks" type="number" min="0" step="1" class="input-field" placeholder="e.g., 20"/>
-</div>
+          <label class="input-label" for="efAgeWeeks">📅 Age (weeks, optional)</label>
+          <input id="efAgeWeeks" type="number" min="0" step="1" class="input-field" placeholder="e.g., 20" />
+        </div>
 
-        <div class="input-group"><label class="input-label" for="efEggW">Average Egg Weight (g)</label><input id="efEggW" type="number" class="input-field" min="10" max="200" step="0.1"/><div class="input-hint">Tip: weigh ~10 eggs weekly and update.</div></div>
-        <div class="input-group"><label class="input-label" for="efBagKg">Feed Bag Size (kg)</label><input id="efBagKg" type="number" class="input-field" min="1" step="0.1"/></div>
-        <div class="input-group"><label class="input-label" for="efBagCost">Feed Cost per Bag</label><input id="efBagCost" type="number" class="input-field" min="0" step="0.01"/></div>
-        <div class="input-group" style="grid-column:1/-1"><label class="input-label" for="efNotes">Notes</label><textarea id="efNotes" class="input-field" rows="2"></textarea></div>
+        <div class="input-group"><label class="input-label" for="efEggW">Average Egg Weight (g)</label><input
+            id="efEggW" type="number" class="input-field" min="10" max="200" step="0.1" />
+          <div class="input-hint">Tip: weigh ~10 eggs weekly and update.</div>
+        </div>
+        <div class="input-group"><label class="input-label" for="efBagKg">Feed Bag Size (kg)</label><input id="efBagKg"
+            type="number" class="input-field" min="1" step="0.1" /></div>
+        <div class="input-group"><label class="input-label" for="efBagCost">Feed Cost per Bag</label><input
+            id="efBagCost" type="number" class="input-field" min="0" step="0.01" /></div>
+        <div class="input-group" style="grid-column:1/-1"><label class="input-label"
+            for="efNotes">Notes</label><textarea id="efNotes" class="input-field" rows="2"></textarea></div>
       </div>
       <div class="modal-buttons" style="margin-top:8px">
         <button class="calendar-nav-btn" onclick="closeEditFlock()">Cancel</button>
@@ -471,41 +543,45 @@
     <div class="modal-content">
       <div class="modal-title">➕ Add Entry</div>
       <div class="input-hint" id="qeDateText" style="margin-bottom:8px">-</div>
-      <input type="hidden" id="qeDate"/>
+      <input type="hidden" id="qeDate" />
       <div class="input-section" style="margin-top:6px">
-        <div class="input-group"><label class="input-label" for="qeFlock">🐓 Flock</label><select id="qeFlock" class="input-field"></select></div>
+        <div class="input-group"><label class="input-label" for="qeFlock">🐓 Flock</label><select id="qeFlock"
+            class="input-field"></select></div>
         <div class="input-group">
-  <label class="input-label" for="qeFeed">🌽 Feed (kg)</label>
-  <input id="qeFeed" type="text" class="input-field" inputmode="decimal" pattern="[0-9]*[.,]?[0-9]*" placeholder="e.g., 25.5 or 25,5"/>
-</div>
+          <label class="input-label" for="qeFeed">🌽 Feed (kg)</label>
+          <input id="qeFeed" type="text" class="input-field" inputmode="decimal" pattern="[0-9]*[.,]?[0-9]*"
+            placeholder="e.g., 25.5 or 25,5" />
+        </div>
 
-<!-- Alt feed toggle row (inline label + checkbox) -->
-<div class="input-group" id="qeAltToggleRow">
-  <label class="input-label" for="qeAltToggle">🌿 Alternative feed (optional)</label>
-  <input type="checkbox" id="qeAltToggle"/>
-</div>
+        <!-- Alt feed toggle row (inline label + checkbox) -->
+        <div class="input-group" id="qeAltToggleRow">
+          <label class="input-label" for="qeAltToggle">🌿 Alternative feed (optional)</label>
+          <input type="checkbox" id="qeAltToggle" />
+        </div>
 
-<!-- Alt feed card -->
-<div class="altfeed-box" id="qeAltBox" style="display:none">
-  <div class="input-group">
-    <label class="input-label" for="qeAltKg">🌿 Alt feed amount (kg)</label>
-    <input id="qeAltKg" class="input-field" inputmode="decimal" placeholder="e.g., 2.5"/>
-  </div>
-  <div class="input-group">
-    <label class="input-label" for="qeAltName">🧾 Alt feed name</label>
-    <input id="qeAltName" class="input-field" placeholder="e.g., dried mulberry leaves"/>
-  </div>
-  <div class="input-hint">💡 Tip: keep the same alt feed &amp; dose ≥ 7 days for meaningful comparison.</div>
-</div>
+        <!-- Alt feed card -->
+        <div class="altfeed-box" id="qeAltBox" style="display:none">
+          <div class="input-group">
+            <label class="input-label" for="qeAltKg">🌿 Alt feed amount (kg)</label>
+            <input id="qeAltKg" class="input-field" inputmode="decimal" placeholder="e.g., 2.5" />
+          </div>
+          <div class="input-group">
+            <label class="input-label" for="qeAltName">🧾 Alt feed name</label>
+            <input id="qeAltName" class="input-field" placeholder="e.g., dried mulberry leaves" />
+          </div>
+          <div class="input-hint">💡 Tip: keep the same alt feed &amp; dose ≥ 7 days for meaningful comparison.</div>
+        </div>
 
-<div class="input-group">
-  <label class="input-label" for="qeEggs">🥚 Eggs</label>
-  <input id="qeEggs" type="number" class="input-field" step="1" min="0" inputmode="numeric"/>
-</div>
+        <div class="input-group">
+          <label class="input-label" for="qeEggs">🥚 Eggs</label>
+          <input id="qeEggs" type="number" class="input-field" step="1" min="0" inputmode="numeric" />
+        </div>
 
 
-        <div class="input-group" style="grid-column:1/-1"><label class="input-label" for="qeWeather">🌤️ Weather</label><select id="qeWeather" class="input-field"></select></div>
-        <div class="input-group" style="grid-column:1/-1"><label class="input-label" for="qeNotes">📝 Notes (optional)</label><textarea id="qeNotes" class="input-field" rows="2"></textarea></div>
+        <div class="input-group" style="grid-column:1/-1"><label class="input-label" for="qeWeather">🌤️
+            Weather</label><select id="qeWeather" class="input-field"></select></div>
+        <div class="input-group" style="grid-column:1/-1"><label class="input-label" for="qeNotes">📝 Notes
+            (optional)</label><textarea id="qeNotes" class="input-field" rows="2"></textarea></div>
       </div>
       <div class="modal-buttons" style="margin-top:8px">
         <button class="calendar-nav-btn" onclick="closeQuickEntry()">Cancel</button>
@@ -516,7 +592,7 @@
 
   <!-- JS includes (unchanged from our split) -->
   <script src="js/utils.js"></script>
-  <script src="js/weather.js"></script>  <!-- centralized weather helpers -->
+  <script src="js/weather.js"></script> <!-- centralized weather helpers -->
   <script src="js/state.js"></script>
   <script src="js/settings.js"></script>
   <script src="js/flocks.js"></script>
@@ -533,856 +609,790 @@
   <script src="js/boot.js"></script>
   <script src="js/nav-safety.js"></script>
   <script src="js/records-tabs.js"></script>
-<script>
-/* History: sort newest day first (+ newest entry within day) and post-process */
-(function () {
-  // date-only, stable sorter
-  function sortHistoryByDateOnlyStable(){
-    const H = window.calculationHistory;
-    if (!Array.isArray(H)) return;
+  <script>
+    /* History: sort newest day first (+ newest entry within day) and post-process */
+    (function () {
+      // date-only, stable sorter
+      function sortHistoryByDateOnlyStable() {
+        const H = window.calculationHistory;
+        if (!Array.isArray(H)) return;
 
-    const deco = H.map((item, idx) => ({
-      item,
-      idx,
-      ymd: (String(item?.date || '')
-              .match(/^(\d{4})[-/](\d{2})[-/](\d{2})/) || [,'0000','00','00'])
+        const deco = H.map((item, idx) => ({
+          item,
+          idx,
+          ymd: (String(item?.date || '')
+            .match(/^(\d{4})[-/](\d{2})[-/](\d{2})/) || [, '0000', '00', '00'])
             .slice(1).join('-')
-    }));
+        }));
 
-    // newer day first; within the same day newer entry (later idx) first
-    deco.sort((a,b) => {
-      if (a.ymd < b.ymd) return 1;
-      if (a.ymd > b.ymd) return -1;
-      return b.idx - a.idx;
-    });
+        // newer day first; within the same day newer entry (later idx) first
+        deco.sort((a, b) => {
+          if (a.ymd < b.ymd) return 1;
+          if (a.ymd > b.ymd) return -1;
+          return b.idx - a.idx;
+        });
 
-    for (let i = 0; i < deco.length; i++) H[i] = deco[i].item;
-  }
-
-  // one unified wrapper: sort → render → polish
-  const prevRender = window.renderHistoryTable;
-window.renderHistoryTable = function () {
-  // 1) sort first
-  sortHistoryByDateOnlyStable?.();
-
-  // 2) let the original renderer draw the table
-  if (typeof prevRender === 'function') prevRender();
-
-  // 3) polish once, after DOM is drawn
-  requestAnimationFrame(() => {
-    truncateFlockCells?.();
-    applyFcrBenchmarkStyling?.();
-    disableHistoryEditing?.();   // keep History view-only
-    disableHistoryEditing?.();
-  });
-};
-
-
-document.addEventListener('DOMContentLoaded', () => {
-  sortHistoryByDateOnlyStable?.();
-  if (typeof truncateFlockCells === 'function') truncateFlockCells();
-  if (typeof applyFcrBenchmarkStyling === 'function') applyFcrBenchmarkStyling();
-  });
-
-})();
-</script>
-<script>
-/* Make History rows view-only: strip inline handlers + stop delegated clicks */
-(function () {
-  window.disableHistoryEditing = function () {
-    const tbody = document.getElementById('historyTableBody');
-    if (!tbody) return;
-
-    // Remove any inline onclick that might be set on rows
-    tbody.querySelectorAll('tr[onclick]').forEach(tr => tr.removeAttribute('onclick'));
-  }
-
-  // Intercept clicks on rows before any old handlers (capture phase),
-  // so no editor opens even if something is still attached elsewhere.
-  document.addEventListener('DOMContentLoaded', () => {
-    const tbody = document.getElementById('historyTableBody');
-    if (!tbody) return;
-    tbody.addEventListener('click', (e) => {
-      if (e.target.closest('tr')) {
-        e.stopImmediatePropagation();
-        e.preventDefault();
+        for (let i = 0; i < deco.length; i++) H[i] = deco[i].item;
       }
-    }, true); // capture
-  });
-})();
-</script>
-<script>
-/* History: flock dropdown in header + filtering (helpers only) */
-(function () {
-  const STORE_KEY = 'historyFilterFlock';
 
-  // Column index of the Flock header (we marked it with class="col-flock")
-  function getFlockColIndex() {
-    const thead = document.querySelector('#historyTab .history-table thead');
-    if (!thead) return -1;
-    const ths = Array.from(thead.querySelectorAll('th'));
-    const idx = ths.findIndex(th => th.classList.contains('col-flock'));
-    return idx >= 0 ? idx : -1;
-  }
+      // one unified wrapper: sort → render → polish
+      const prevRender = window.renderHistoryTable;
+      window.renderHistoryTable = function () {
+        // 1) sort first
+        sortHistoryByDateOnlyStable?.();
 
-    // Gather unique flock names (calculator → in-memory history → DOM fallback)
-  function getFlockNames() {
-    const names = new Set();
+        // 2) let the original renderer draw the table
+        if (typeof prevRender === 'function') prevRender();
 
-    // 1) Prefer Calculator dropdown (if present)
-    const sel = document.getElementById('flockSelect');
-    if (sel?.options?.length) {
-      Array.from(sel.options).forEach(o => {
-        const n = (o.textContent || '').trim();
-        if (n) names.add(n);
+        // 3) polish once, after DOM is drawn
+        requestAnimationFrame(() => {
+          truncateFlockCells?.();
+          applyFcrBenchmarkStyling?.();
+          disableHistoryEditing?.();   // keep History view-only
+          disableHistoryEditing?.();
+        });
+      };
+
+
+      document.addEventListener('DOMContentLoaded', () => {
+        sortHistoryByDateOnlyStable?.();
+        if (typeof truncateFlockCells === 'function') truncateFlockCells();
+        if (typeof applyFcrBenchmarkStyling === 'function') applyFcrBenchmarkStyling();
       });
-    }
 
-    // 2) From in-memory history (if loaded)
-    if (Array.isArray(window.calculationHistory) && window.calculationHistory.length) {
-      window.calculationHistory.forEach(r => {
-        if (r?.flock) names.add(String(r.flock).trim());
+    })();
+  </script>
+  <script>
+    /* Make History rows view-only: strip inline handlers + stop delegated clicks */
+    (function () {
+      window.disableHistoryEditing = function () {
+        const tbody = document.getElementById('historyTableBody');
+        if (!tbody) return;
+
+        // Remove any inline onclick that might be set on rows
+        tbody.querySelectorAll('tr[onclick]').forEach(tr => tr.removeAttribute('onclick'));
+      }
+
+      // Intercept clicks on rows before any old handlers (capture phase),
+      // so no editor opens even if something is still attached elsewhere.
+      document.addEventListener('DOMContentLoaded', () => {
+        const tbody = document.getElementById('historyTableBody');
+        if (!tbody) return;
+        tbody.addEventListener('click', (e) => {
+          if (e.target.closest('tr')) {
+            e.stopImmediatePropagation();
+            e.preventDefault();
+          }
+        }, true); // capture
       });
-    }
+    })();
+  </script>
+  <script>
+    /* History: flock dropdown in header + filtering (helpers only) */
+    (function () {
+      const STORE_KEY = 'historyFilterFlock';
 
-    // 3) Fallback: read flock names from the rendered table cells
-    if (!names.size) {
-      const thead = document.querySelector('#historyTab .history-table thead');
-      const tbody = document.getElementById('historyTableBody');
-      if (thead && tbody) {
+      // Column index of the Flock header (we marked it with class="col-flock")
+      function getFlockColIndex() {
+        const thead = document.querySelector('#historyTab .history-table thead');
+        if (!thead) return -1;
         const ths = Array.from(thead.querySelectorAll('th'));
-        const col = ths.findIndex(th => th.classList?.contains('col-flock')); // our marker
-        if (col >= 0) {
-          Array.from(tbody.rows).forEach(tr => {
-            const td = tr.cells[col];
-            const full = (td?.getAttribute('data-full') || td?.textContent || '').trim();
-            if (full) names.add(full);
+        const idx = ths.findIndex(th => th.classList.contains('col-flock'));
+        return idx >= 0 ? idx : -1;
+      }
+
+      // Gather unique flock names (calculator → in-memory history → DOM fallback)
+      function getFlockNames() {
+        const names = new Set();
+
+        // 1) Prefer Calculator dropdown (if present)
+        const sel = document.getElementById('flockSelect');
+        if (sel?.options?.length) {
+          Array.from(sel.options).forEach(o => {
+            const n = (o.textContent || '').trim();
+            if (n) names.add(n);
           });
         }
+
+        // 2) From in-memory history (if loaded)
+        if (Array.isArray(window.calculationHistory) && window.calculationHistory.length) {
+          window.calculationHistory.forEach(r => {
+            if (r?.flock) names.add(String(r.flock).trim());
+          });
+        }
+
+        // 3) Fallback: read flock names from the rendered table cells
+        if (!names.size) {
+          const thead = document.querySelector('#historyTab .history-table thead');
+          const tbody = document.getElementById('historyTableBody');
+          if (thead && tbody) {
+            const ths = Array.from(thead.querySelectorAll('th'));
+            const col = ths.findIndex(th => th.classList?.contains('col-flock')); // our marker
+            if (col >= 0) {
+              Array.from(tbody.rows).forEach(tr => {
+                const td = tr.cells[col];
+                const full = (td?.getAttribute('data-full') || td?.textContent || '').trim();
+                if (full) names.add(full);
+              });
+            }
+          }
+        }
+
+        return Array.from(names).sort((a, b) => a.localeCompare(b));
       }
-    }
-
-    return Array.from(names).sort((a, b) => a.localeCompare(b));
-  }
 
 
-  // Ensure a <select> lives inside the 🐓 header cell
-  function ensureSelectInHeader() {
-    const th = document.querySelector('#historyTab .history-table thead th.col-flock');
-    if (!th) return null;
+      // Ensure a <select> lives inside the 🐓 header cell
+      function ensureSelectInHeader() {
+        const th = document.querySelector('#historyTab .history-table thead th.col-flock');
+        if (!th) return null;
 
-    let sel = document.getElementById('historyFlockFilter');
-    if (sel) return sel; // already inserted
+        let sel = document.getElementById('historyFlockFilter');
+        if (sel) return sel; // already inserted
 
-    const wrap = document.createElement('div');
-    wrap.className = 'flock-head';
-    wrap.innerHTML = `
+        const wrap = document.createElement('div');
+        wrap.className = 'flock-head';
+        wrap.innerHTML = `
       <span aria-hidden="true"></span>
       <select id="historyFlockFilter" aria-label="Filter by flock"></select>
     `;
-    th.textContent = '';
-    th.appendChild(wrap);
+        th.textContent = '';
+        th.appendChild(wrap);
 
-    sel = wrap.querySelector('select');
-    sel.addEventListener('change', () => {
-      localStorage.setItem(STORE_KEY, sel.value || '');
-      applyHistoryFlockFilter();
-    });
-    return sel;
-  }
-// Show short label like "poned…01" but keep full value for filtering
-function shortenHeadTail(s, head=5, tail=2, minLen=12){
-  s = String(s || '').trim();
-  return (s.length <= minLen) ? s : (s.slice(0, head) + '…' + s.slice(-tail));
-}
+        sel = wrap.querySelector('select');
+        sel.addEventListener('change', () => {
+          localStorage.setItem(STORE_KEY, sel.value || '');
+          applyHistoryFlockFilter();
+        });
+        return sel;
+      }
+      // Show short label like "poned…01" but keep full value for filtering
+      function shortenHeadTail(s, head = 5, tail = 2, minLen = 12) {
+        s = String(s || '').trim();
+        return (s.length <= minLen) ? s : (s.slice(0, head) + '…' + s.slice(-tail));
+      }
 
-  // Fill options (All flocks + each name), keep previous choice if valid
-  function fillFlockOptions() {
-  const sel = ensureSelectInHeader();
-  if (!sel) return;
+      // Fill options (All flocks + each name), keep previous choice if valid
+      function fillFlockOptions() {
+        const sel = ensureSelectInHeader();
+        if (!sel) return;
 
-  const prev = localStorage.getItem(STORE_KEY) || '';
-  const names = getFlockNames();
+        const prev = localStorage.getItem(STORE_KEY) || '';
+        const names = getFlockNames();
 
-  sel.innerHTML = '';
+        sel.innerHTML = '';
 
-  const optAll = document.createElement('option');
-  optAll.value = '';
-  optAll.textContent = 'All flocks';
-  sel.appendChild(optAll);
+        const optAll = document.createElement('option');
+        optAll.value = '';
+        optAll.textContent = 'All flocks';
+        sel.appendChild(optAll);
 
-  names.forEach(n => {
-    const o = document.createElement('option');
-    o.value = n;                         // full name used for filtering
-    o.textContent = shortenHeadTail(n);  // short label for display
-    o.title = n;                         // tooltip shows full name
-    sel.appendChild(o);
-  });
+        names.forEach(n => {
+          const o = document.createElement('option');
+          o.value = n;                         // full name used for filtering
+          o.textContent = shortenHeadTail(n);  // short label for display
+          o.title = n;                         // tooltip shows full name
+          sel.appendChild(o);
+        });
 
-  sel.value = [...sel.options].some(o => o.value === prev) ? prev : '';
-}
+        sel.value = [...sel.options].some(o => o.value === prev) ? prev : '';
+      }
 
 
-  // Show/hide rows based on the current selection
-  function applyHistoryFlockFilter() {
-    const tbody = document.getElementById('historyTableBody');
-    if (!tbody) return;
+      // Show/hide rows based on the current selection
+      function applyHistoryFlockFilter() {
+        const tbody = document.getElementById('historyTableBody');
+        if (!tbody) return;
 
-    const col = getFlockColIndex();
-    if (col < 0) return;
+        const col = getFlockColIndex();
+        if (col < 0) return;
 
-    const want = (document.getElementById('historyFlockFilter')?.value || '').trim();
+        const want = (document.getElementById('historyFlockFilter')?.value || '').trim();
 
-    Array.from(tbody.rows).forEach(tr => {
-      const td = tr.cells[col];
-      const full = (td?.getAttribute('data-full') || td?.textContent || '').trim();
-      tr.style.display = (!want || full === want) ? '' : 'none';
-    });
-  }
+        Array.from(tbody.rows).forEach(tr => {
+          const td = tr.cells[col];
+          const full = (td?.getAttribute('data-full') || td?.textContent || '').trim();
+          tr.style.display = (!want || full === want) ? '' : 'none';
+        });
+      }
 
-  // Expose helpers so the existing render wrapper can call them
-  window.initHistoryFlockFilter  = function () { fillFlockOptions(); applyHistoryFlockFilter(); };
-  window.applyHistoryFlockFilter = applyHistoryFlockFilter;
+      // Expose helpers so the existing render wrapper can call them
+      window.initHistoryFlockFilter = function () { fillFlockOptions(); applyHistoryFlockFilter(); };
+      window.applyHistoryFlockFilter = applyHistoryFlockFilter;
 
-  // Build once on first load (safe even if table is empty initially)
-  document.addEventListener('DOMContentLoaded', () => {
-    initHistoryFlockFilter();
-  });
-})();
-</script>
+      // Build once on first load (safe even if table is empty initially)
+      document.addEventListener('DOMContentLoaded', () => {
+        initHistoryFlockFilter();
+      });
+    })();
+  </script>
 
-<script>
-/* Bottom-nav safety: ignore clicks on the already-active tab */
-(function () {
-  document.addEventListener('DOMContentLoaded', () => {
-    const nav = document.querySelector('.bottom-nav');
-    if (!nav) return;
+  <script>
+    /* Bottom-nav safety: ignore clicks on the already-active tab */
+    (function () {
+      document.addEventListener('DOMContentLoaded', () => {
+        const nav = document.querySelector('.bottom-nav');
+        if (!nav) return;
 
-    const MAP = {
-      calculator: 'calculatorTab',
-      records:    'recordsTab',
-      flocks:     'flocksTab',
-      reference:  'referenceTab'
-    };
+        const MAP = {
+          calculator: 'calculatorTab',
+          records: 'recordsTab',
+          flocks: 'flocksTab',
+          reference: 'referenceTab'
+        };
 
-    // Capture early so no other handler runs when we cancel
-    nav.addEventListener('click', (e) => {
-      const btn = e.target.closest('button');
+        // Capture early so no other handler runs when we cancel
+        nav.addEventListener('click', (e) => {
+          const btn = e.target.closest('button');
+          if (!btn) return;
+
+          const oc = btn.getAttribute('onclick') || '';
+          const m = oc.match(/switchView\('([^']+)'\)/);
+          if (!m) return;
+
+          const key = m[1];
+          const targetId = MAP[key];
+          const active = document.querySelector('.tab-content.active');
+
+          if (targetId && active && active.id === targetId) {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            return false; // already on that tab → do nothing
+          }
+        }, true);
+      });
+    })();
+  </script>
+  <script>
+    /* Safe no-op if truncateFlockCells hasn’t been defined yet */
+    window.truncateFlockCells = window.truncateFlockCells || function () { };
+  </script>
+  <script>
+    /* History: color FCR cells + normalize number width */
+    (function () {
+      window.applyFcrBenchmarkStyling = window.applyFcrBenchmarkStyling || function () {
+        const tbody = document.getElementById('historyTableBody');
+        if (!tbody) return;
+
+        tbody.querySelectorAll('tr').forEach(tr => {
+          const td = tr.querySelector('td:nth-child(5)'); // FCR column
+          if (!td) return;
+
+          // extract raw numeric text
+          let raw = td.querySelector('.fcr-val')?.textContent ?? td.textContent;
+          raw = String(raw).trim();
+
+          // ensure a uniform box for every value
+          let span = td.querySelector('.fcr-val');
+          if (!span) {
+            span = document.createElement('span');
+            span.className = 'fcr-val';
+            td.textContent = '';
+            td.appendChild(span);
+          }
+          span.textContent = raw;
+          span.classList.remove('is-excellent');
+
+          // reset color classes
+          td.classList.remove('fcr-good', 'fcr-ok', 'fcr-fair', 'fcr-poor');
+
+          const v = parseFloat(raw.replace(',', '.'));
+          if (!isFinite(v)) return;
+
+          // thresholds (match your reference table)
+          if (v <= 2.0) { td.classList.add('fcr-good'); span.classList.add('is-excellent'); }
+          else if (v <= 2.4) td.classList.add('fcr-ok');
+          else if (v <= 2.8) td.classList.add('fcr-fair');
+          else td.classList.add('fcr-poor');
+        });
+      };
+    })();
+  </script>
+
+  <script>
+    (function () {
+      const btn = document.getElementById('clearAllBtn');
       if (!btn) return;
 
-      const oc = btn.getAttribute('onclick') || '';
-      const m = oc.match(/switchView\('([^']+)'\)/);
-      if (!m) return;
 
-      const key = m[1];
-      const targetId = MAP[key];
-      const active = document.querySelector('.tab-content.active');
-
-      if (targetId && active && active.id === targetId) {
-        e.preventDefault();
-        e.stopImmediatePropagation();
-        return false; // already on that tab → do nothing
-      }
-    }, true);
-  });
-})();
-</script>
-<script>
-/* Safe no-op if truncateFlockCells hasn’t been defined yet */
-window.truncateFlockCells = window.truncateFlockCells || function () {};
-</script>
-<script>
-/* History: color FCR cells + normalize number width */
-(function () {
-  window.applyFcrBenchmarkStyling = window.applyFcrBenchmarkStyling || function () {
-    const tbody = document.getElementById('historyTableBody');
-    if (!tbody) return;
-
-    tbody.querySelectorAll('tr').forEach(tr => {
-      const td = tr.querySelector('td:nth-child(5)'); // FCR column
-      if (!td) return;
-
-      // extract raw numeric text
-      let raw = td.querySelector('.fcr-val')?.textContent ?? td.textContent;
-      raw = String(raw).trim();
-
-      // ensure a uniform box for every value
-      let span = td.querySelector('.fcr-val');
-      if (!span) {
-        span = document.createElement('span');
-        span.className = 'fcr-val';
-        td.textContent = '';
-        td.appendChild(span);
-      }
-      span.textContent = raw;
-      span.classList.remove('is-excellent');
-
-      // reset color classes
-      td.classList.remove('fcr-good','fcr-ok','fcr-fair','fcr-poor');
-
-      const v = parseFloat(raw.replace(',', '.'));
-      if (!isFinite(v)) return;
-
-      // thresholds (match your reference table)
-      if (v <= 2.0) { td.classList.add('fcr-good'); span.classList.add('is-excellent'); }
-      else if (v <= 2.4) td.classList.add('fcr-ok');
-      else if (v <= 2.8) td.classList.add('fcr-fair');
-      else td.classList.add('fcr-poor');
-    });
-  };
-})();
-</script>
-
-<script>
-(function(){
-  const btn = document.getElementById('clearAllBtn');
-  if (!btn) return;
-
-
-  // 2) Fallback: prompt + clear known localStorage keys (adjust the list!)
-  const KEYS = ['fcr_history', 'fcr_records', 'records']; // <-- adjust to your actual keys
-  btn.addEventListener('click', () => {
-    if (!confirm('Delete ALL history entries? This cannot be undone.')) return;
-    let removed = 0;
-    try {
-      KEYS.forEach(k => {
-        if (localStorage.getItem(k) !== null) {
-          localStorage.removeItem(k);
-          removed++;
+      // 2) Fallback: prompt + clear known localStorage keys (adjust the list!)
+      const KEYS = ['fcr_history', 'fcr_records', 'records']; // <-- adjust to your actual keys
+      btn.addEventListener('click', () => {
+        if (!confirm('Delete ALL history entries? This cannot be undone.')) return;
+        let removed = 0;
+        try {
+          KEYS.forEach(k => {
+            if (localStorage.getItem(k) !== null) {
+              localStorage.removeItem(k);
+              removed++;
+            }
+          });
+          // Let the app repaint if you have listeners
+          document.dispatchEvent(new CustomEvent('history:cleared'));
+          alert(removed ? 'History cleared.' : 'No history data found.');
+          location.reload(); // simplest refresh
+        } catch (e) {
+          console.error('Clear-all failed:', e);
+          alert('Could not clear history. See console for details.');
         }
       });
-      // Let the app repaint if you have listeners
-      document.dispatchEvent(new CustomEvent('history:cleared'));
-      alert(removed ? 'History cleared.' : 'No history data found.');
-      location.reload(); // simplest refresh
-    } catch (e) {
-      console.error('Clear-all failed:', e);
-      alert('Could not clear history. See console for details.');
-    }
-  });
-  console.warn('[history] using fallback clear (localStorage). Update KEYS to match your app.');
-})();
-</script>
-<script>
-(function(){
-  const btn = document.getElementById('clearAllBtn');
-  if (!btn) return;
-
-  // 1) Try to find an existing clear function you might already have
-  const candidates = [
-    'clearAll', 'clearAllData', 'clearHistory',
-    'clearRecords', 'handleClearAll', 'onClearAll'
-  ];
-  const existing = candidates.find(name => typeof window[name] === 'function');
-  if (existing) {
-    btn.addEventListener('click', () => window[existing]());
-    console.log(`[history] wired to existing function: ${existing}()`);
-    return;
-  }
-
-  // 2) Fallback: prompt + clear known localStorage keys (adjust the list!)
-  const KEYS = ['fcr_history', 'fcr_records', 'records']; // <-- adjust to your actual keys
-  btn.addEventListener('click', () => {
-    if (!confirm('Delete ALL history entries? This cannot be undone.')) return;
-    let removed = 0;
-    try {
-      KEYS.forEach(k => {
-        if (localStorage.getItem(k) !== null) {
-          localStorage.removeItem(k);
-          removed++;
-        }
-      });
-      // Let the app repaint if you have listeners
-      document.dispatchEvent(new CustomEvent('history:cleared'));
-      alert(removed ? 'History cleared.' : 'No history data found.');
-      location.reload(); // simplest refresh
-    } catch (e) {
-      console.error('Clear-all failed:', e);
-      alert('Could not clear history. See console for details.');
-    }
-  });
-  console.warn('[history] using fallback clear (localStorage). Update KEYS to match your app.');
-})();
-</script>
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-  const btn = document.getElementById('clearAllBtn');
-  if (!btn) return;
-  btn.addEventListener('click', () => {
-    if (typeof window.clearHistory === 'function') {
-      window.clearHistory();   // uses the function’s own confirm + refresh
-    } else {
-      console.warn('clearHistory() not found on window');
-    }
-  });
-});
-</script>
-<script>
-/* Calendar: toggle selected day (no date by default) */
-(function () {
-  const IDS = {
-    grid:       'calendarDays',
-    monthLabel: 'calendarMonth',        // e.g., "September 2025"
-    panelText:  'selectedDateText',
-    addBtn:     'addEntryForDayBtn',    // shows/hides based on selection
-    prev:       'changeMonth(-1)',      // we'll attach by id if present
-    next:       'changeMonth(1)'
-  };
-
-  let selectedYMD = null; // "YYYY-MM-DD" or null
-
-  const $ = (sel, root = document) => root.querySelector(sel);
-
-  function parseMonthLabel(label) {
-    const months = ["january","february","march","april","may","june","july","august","september","october","november","december"];
-    const parts = String(label||"").trim().toLowerCase().split(/\s+/);
-    const m = months.indexOf(parts[0]) + 1;
-    const y = parseInt(parts[1], 10);
-    return (m>0 && y) ? {y, m} : null;
-  }
-
-  function ymdFromCell(cell) {
-    // Prefer data-date="YYYY-MM-DD" if your renderer sets it
-    const attr = cell.getAttribute('data-date');
-    if (attr && /^\d{4}-\d{2}-\d{2}$/.test(attr)) return attr;
-
-    // Fallback: derive from month label + day number in cell
-    const label = $('#'+IDS.monthLabel)?.textContent || '';
-    const pm = parseMonthLabel(label);
-    const d = parseInt(cell.textContent, 10);
-    if (!pm || !d) return null;
-    const mm = String(pm.m).padStart(2, '0');
-    const dd = String(d).padStart(2, '0');
-    return `${pm.y}-${mm}-${dd}`;
-  }
-
-  function applyHighlight() {
-    const grid = $('#'+IDS.grid);
-    if (!grid) return;
-    grid.querySelectorAll(':scope > .is-selected').forEach(el => el.classList.remove('is-selected'));
-    if (!selectedYMD) return;
-    // Re-apply to the matching cell in the current month view
-    const cells = grid.children;
-    for (const cell of cells) {
-      if (ymdFromCell(cell) === selectedYMD) {
-        cell.classList.add('is-selected');
-        break;
-      }
-    }
-  }
-
-  function updatePanelUI() {
-    const txt = $('#'+IDS.panelText);
-    const btn = $('#'+IDS.addBtn);
-    if (txt) txt.textContent = selectedYMD ? selectedYMD : '–';
-    if (btn) btn.style.display = selectedYMD ? '' : 'none';
-  }
-
-  function toggleSelect(cell) {
-    const ymd = ymdFromCell(cell);
-    if (!ymd) return;                 // ignore empties/fillers
-    selectedYMD = (selectedYMD === ymd) ? null : ymd;
-    applyHighlight();
-    updatePanelUI();
-  }
-
-  // Delegate clicks to day cells
-  document.addEventListener('click', (evt) => {
-    const grid = $('#'+IDS.grid);
-    if (!grid) return;
-    const cell = evt.target.closest('#'+IDS.grid+' > *');
-    if (!cell || !grid.contains(cell)) return;
-    toggleSelect(cell);
-  });
-
-  // On month change, keep selection if the selected day exists in the new view
-  const prevBtn = document.getElementById('prevMonth');
-  const nextBtn = document.getElementById('nextMonth');
-  [prevBtn, nextBtn].forEach(btn => {
-    if (!btn) return;
-    btn.addEventListener('click', () => setTimeout(applyHighlight, 0));
-  });
-
-  // Initial state: nothing selected
-  document.addEventListener('DOMContentLoaded', () => {
-    selectedYMD = null;
-    updatePanelUI();
-    applyHighlight();
-  });
-
-  // Optional: expose getter if you need it elsewhere
-  window.getSelectedCalendarDate = () => selectedYMD;
-})();
-</script>
+      console.warn('[history] using fallback clear (localStorage). Update KEYS to match your app.');
+    })();
+  </script>
   <script>
-/* Calendar selection: toggle, persist across month renders, and show placeholder */
-(function () {
-  const IDS = {
-    grid: 'calendarDays',
-    monthLabel: 'calendarMonth',
-    panelText: 'selectedDateText',
-    addBtn: 'addEntryForDayBtn',
-    eventsList: 'calendarEventsList',
-    placeholder: 'eventsPlaceholder'
-  };
+    (function () {
+      const btn = document.getElementById('clearAllBtn');
+      if (!btn) return;
 
-  let selectedYMD = null; // "YYYY-MM-DD" or null
-  const $ = (sel, root = document) => root.querySelector(sel);
-
-  function parseMonthLabel(label) {
-    const months = ["january","february","march","april","may","june","july","august","september","october","november","december"];
-    const parts = String(label||"").trim().toLowerCase().split(/\s+/);
-    const m = months.indexOf(parts[0]) + 1;
-    const y = parseInt(parts[1], 10);
-    return (m>0 && y) ? {y, m} : null;
-  }
-
-  function ymdFromCell(cell) {
-    const attr = cell.getAttribute('data-date');
-    if (attr && /^\d{4}-\d{2}-\d{2}$/.test(attr)) return attr;
-    const label = $('#'+IDS.monthLabel)?.textContent || '';
-    const pm = parseMonthLabel(label);
-    const d = parseInt(cell.textContent, 10);
-    if (!pm || !d) return null;
-    const mm = String(pm.m).padStart(2, '0');
-    const dd = String(d).padStart(2, '0');
-    return `${pm.y}-${mm}-${dd}`;
-  }
-
-  function ensurePlaceholder() {
-    const list = $('#'+IDS.eventsList);
-    if (!list) return;
-    let ph = $('#'+IDS.placeholder);
-    if (!ph) {
-      ph = document.createElement('div');
-      ph.id = IDS.placeholder;
-      ph.className = 'input-hint events-placeholder';
-      ph.style.margin = '6px 0 8px 0';
-      list.prepend(ph);
-    }
-    return ph;
-  }
-function ensureNoEventsLine() {
-  const list = document.getElementById(IDS.eventsList);
-  if (!list) return;
-  let ne = document.getElementById('eventsNoLine');
-  if (!ne) {
-    ne = document.createElement('div');
-    ne.id = 'eventsNoLine';
-    ne.className = 'input-hint no-events';
-    ne.textContent = 'No events for this date.';
-    list.append(ne);
-  }
-  return ne;
-}
-
-function updateEventsEmptyState() {
-  const list = document.getElementById(IDS.eventsList);
-  if (!list) return;
-
-  // Count real event items (ignore our two helper rows)
-  const realItems = list.querySelectorAll(
-    ':scope > :not(#eventsPlaceholder):not(#eventsNoLine)'
-  ).length;
-
-  const ne = ensureNoEventsLine();
-  if (!ne) return;
-
-// Show ONLY when a date is selected AND it has no entries
-const show = !!selectedYMD && realItems === 0;
-  ne.style.display = show ? '' : 'none';
-}
-
-  function setPlaceholderVisible(show) {
-    const ph = ensurePlaceholder();
-    if (!ph) return;
-    ph.textContent = show ? 'Select a date to add an entry.' : '';
-    ph.style.display = show ? '' : 'none';
-  }
-
-  function applyHighlight() {
-    const grid = $('#'+IDS.grid);
-    if (!grid) return;
-    grid.querySelectorAll(':scope > .is-selected').forEach(el => el.classList.remove('is-selected'));
-    if (!selectedYMD) return;
-    for (const cell of grid.children) {
-      if (ymdFromCell(cell) === selectedYMD) {
-        cell.classList.add('is-selected');
-        break;
+      // 1) Try to find an existing clear function you might already have
+      const candidates = [
+        'clearAll', 'clearAllData', 'clearHistory',
+        'clearRecords', 'handleClearAll', 'onClearAll'
+      ];
+      const existing = candidates.find(name => typeof window[name] === 'function');
+      if (existing) {
+        btn.addEventListener('click', () => window[existing]());
+        console.log(`[history] wired to existing function: ${existing}()`);
+        return;
       }
-    }
-  }
 
-  function updatePanelUI() {
-  const txt  = $('#'+IDS.panelText);
-  const btn  = $('#'+IDS.addBtn);
-  const list = document.getElementById(IDS.eventsList);
-
-  if (txt) txt.textContent = selectedYMD ? selectedYMD : '–';
-  if (btn) btn.style.display = selectedYMD ? '' : 'none';
-
-  // NEW: when unselecting, clear any rendered cards
-  if (!selectedYMD && list) list.innerHTML = '';
-
-  setPlaceholderVisible(!selectedYMD);
-  updateEventsEmptyState();
-}
-
-
-  function toggleSelect(cell) {
-    const ymd = ymdFromCell(cell);
-    if (!ymd) return;
-    selectedYMD = (selectedYMD === ymd) ? null : ymd;
-    applyHighlight();
-    updatePanelUI();
-  }
-
-  // Click-to-select / unselect
-  document.addEventListener('click', (evt) => {
-    const grid = $('#'+IDS.grid);
-    if (!grid) return;
-    const cell = evt.target.closest('#'+IDS.grid+' > *');
-    if (!cell || !grid.contains(cell)) return;
-    toggleSelect(cell);
-  });
-
-  // Observe calendar grid re-renders (month change, etc.) and re-apply highlight
-  const setupObserver = () => {
-    const grid = $('#'+IDS.grid);
-    if (!grid) return;
-    const obs = new MutationObserver(() => { 
-   applyHighlight(); 
-   updateEventsEmptyState(); 
- });
-    obs.observe(grid, { childList: true });
-  };
-
-  document.addEventListener('DOMContentLoaded', () => {
-  // make sure helper rows exist
-  ensurePlaceholder();
-  ensureNoEventsLine();
-
-  // start with no selection
-  selectedYMD = null;
-
-  // paint UI and empty-state correctly on first load
-  updatePanelUI();         // (calls updateEventsEmptyState() inside)
-  applyHighlight();
-  setupObserver();
-
-  // extra safety: recompute empty-state once more after any async renders
-  requestAnimationFrame(updateEventsEmptyState);
-});
-
-
-  // Also reapply after explicit month nav clicks (belt & suspenders)
-  const prevBtn = document.getElementById('prevMonth');
-  const nextBtn = document.getElementById('nextMonth');
-  [prevBtn, nextBtn].forEach(btn => {
-    if (!btn) return;
-    btn.addEventListener('click', () => {
-      // wait for the calendar to re-render then re-apply highlight
-      requestAnimationFrame(() => requestAnimationFrame(applyHighlight));
+      // 2) Fallback: prompt + clear known localStorage keys (adjust the list!)
+      const KEYS = ['fcr_history', 'fcr_records', 'records']; // <-- adjust to your actual keys
+      btn.addEventListener('click', () => {
+        if (!confirm('Delete ALL history entries? This cannot be undone.')) return;
+        let removed = 0;
+        try {
+          KEYS.forEach(k => {
+            if (localStorage.getItem(k) !== null) {
+              localStorage.removeItem(k);
+              removed++;
+            }
+          });
+          // Let the app repaint if you have listeners
+          document.dispatchEvent(new CustomEvent('history:cleared'));
+          alert(removed ? 'History cleared.' : 'No history data found.');
+          location.reload(); // simplest refresh
+        } catch (e) {
+          console.error('Clear-all failed:', e);
+          alert('Could not clear history. See console for details.');
+        }
+      });
+      console.warn('[history] using fallback clear (localStorage). Update KEYS to match your app.');
+    })();
+  </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const btn = document.getElementById('clearAllBtn');
+      if (!btn) return;
+      btn.addEventListener('click', () => {
+        if (typeof window.clearHistory === 'function') {
+          window.clearHistory();   // uses the function’s own confirm + refresh
+        } else {
+          console.warn('clearHistory() not found on window');
+        }
+      });
     });
-  });
+  </script>
+  
+  <script>
+    /* Calendar selection: toggle, persist across month renders, and show placeholder */
+    (function () {
+      const IDS = {
+        grid: 'calendarDays',
+        monthLabel: 'calendarMonth',
+        panelText: 'selectedDateText',
+        addBtn: 'addEntryForDayBtn',
+        eventsList: 'calendarEventsList',
+        placeholder: 'eventsPlaceholder'
+      };
 
-  // expose getter if needed elsewhere
-  window.getSelectedCalendarDate = () => selectedYMD;
-})();
-</script>
-<script>
-/* History table: flock head…tail + FCR benchmark colors (single source) */
-(function () {
-  // Turn "Ponedoras 01" -> "pon…01" (keep 3 + 2 by default)
-  function shortenHeadTail(text, head = 3, tail = 2) {
-    if (text == null) return '';
-    const s = String(text).trim().replace(/\s+/g, ' ');
-    if (s.length <= head + tail + 1) return s;
-    return s.slice(0, head) + '…' + s.slice(-tail);
-  }
+      let selectedYMD = null; // "YYYY-MM-DD" or null
+      const $ = (sel, root = document) => root.querySelector(sel);
 
-  function truncateFlockCells() {
-    const tbody = document.getElementById('historyTableBody');
-    if (!tbody) return;
-    tbody.querySelectorAll('tr td:nth-child(2)').forEach(td => {
-      const full = td.getAttribute('data-full') || td.textContent.trim();
-      td.setAttribute('data-full', full);           // store original once
-      td.textContent = shortenHeadTail(full, 3, 2); // e.g., "pon…01"
-      td.title = full;                              // tooltip shows full name
-      td.setAttribute('aria-label', full);          // a11y
+      function parseMonthLabel(label) {
+        const months = ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"];
+        const parts = String(label || "").trim().toLowerCase().split(/\s+/);
+        const m = months.indexOf(parts[0]) + 1;
+        const y = parseInt(parts[1], 10);
+        return (m > 0 && y) ? { y, m } : null;
+      }
+
+      function ymdFromCell(cell) {
+        const attr = cell.getAttribute('data-date');
+        if (attr && /^\d{4}-\d{2}-\d{2}$/.test(attr)) return attr;
+        const label = $('#' + IDS.monthLabel)?.textContent || '';
+        const pm = parseMonthLabel(label);
+        const d = parseInt(cell.textContent, 10);
+        if (!pm || !d) return null;
+        const mm = String(pm.m).padStart(2, '0');
+        const dd = String(d).padStart(2, '0');
+        return `${pm.y}-${mm}-${dd}`;
+      }
+
+      function ensurePlaceholder() {
+        const list = $('#' + IDS.eventsList);
+        if (!list) return;
+        let ph = $('#' + IDS.placeholder);
+        if (!ph) {
+          ph = document.createElement('div');
+          ph.id = IDS.placeholder;
+          ph.className = 'input-hint events-placeholder';
+          ph.style.margin = '6px 0 8px 0';
+          list.prepend(ph);
+        }
+        return ph;
+      }
+      function ensureNoEventsLine() {
+        const list = document.getElementById(IDS.eventsList);
+        if (!list) return;
+        let ne = document.getElementById('eventsNoLine');
+        if (!ne) {
+          ne = document.createElement('div');
+          ne.id = 'eventsNoLine';
+          ne.className = 'input-hint no-events';
+          ne.textContent = 'No events for this date.';
+          list.append(ne);
+        }
+        return ne;
+      }
+
+      function updateEventsEmptyState() {
+        const list = document.getElementById(IDS.eventsList);
+        if (!list) return;
+
+        // Count real event items (ignore our two helper rows)
+        const realItems = list.querySelectorAll(
+          ':scope > :not(#eventsPlaceholder):not(#eventsNoLine)'
+        ).length;
+
+        const ne = ensureNoEventsLine();
+        if (!ne) return;
+
+        // Show ONLY when a date is selected AND it has no entries
+        const show = !!selectedYMD && realItems === 0;
+        ne.style.display = show ? '' : 'none';
+      }
+
+      function setPlaceholderVisible(show) {
+        const ph = ensurePlaceholder();
+        if (!ph) return;
+        ph.textContent = show ? 'Select a date to add an entry.' : '';
+        ph.style.display = show ? '' : 'none';
+      }
+
+      function applyHighlight() {
+        const grid = $('#' + IDS.grid);
+        if (!grid) return;
+        grid.querySelectorAll(':scope > .is-selected').forEach(el => el.classList.remove('is-selected'));
+        if (!selectedYMD) return;
+        for (const cell of grid.children) {
+          if (ymdFromCell(cell) === selectedYMD) {
+            cell.classList.add('is-selected');
+            break;
+          }
+        }
+      }
+
+      function updatePanelUI() {
+        const txt = $('#' + IDS.panelText);
+        const btn = $('#' + IDS.addBtn);
+        const list = document.getElementById(IDS.eventsList);
+
+        if (txt) txt.textContent = selectedYMD ? selectedYMD : '–';
+        if (btn) btn.style.display = selectedYMD ? '' : 'none';
+
+        // NEW: when unselecting, clear any rendered cards
+        if (!selectedYMD && list) list.innerHTML = '';
+
+        setPlaceholderVisible(!selectedYMD);
+        updateEventsEmptyState();
+        // Render events for the selected day
+        if (typeof window.showEventsForDate === 'function' && selectedYMD) {
+          window.showEventsForDate(selectedYMD);
+        }
+      }
+
+
+      function toggleSelect(cell) {
+        const ymd = ymdFromCell(cell);
+        if (!ymd) return;
+        selectedYMD = (selectedYMD === ymd) ? null : ymd;
+        applyHighlight();
+        updatePanelUI();
+      }
+
+      // Click-to-select / unselect
+      document.addEventListener('click', (evt) => {
+        const grid = $('#' + IDS.grid);
+        if (!grid) return;
+        const cell = evt.target.closest('#' + IDS.grid + ' > *');
+        if (!cell || !grid.contains(cell)) return;
+        toggleSelect(cell);
+      });
+
+      // Observe calendar grid re-renders (month change, etc.) and re-apply highlight
+      const setupObserver = () => {
+        const grid = $('#' + IDS.grid);
+        if (!grid) return;
+        const obs = new MutationObserver(() => {
+          applyHighlight();
+          updateEventsEmptyState();
+        });
+        obs.observe(grid, { childList: true });
+      };
+
+      document.addEventListener('DOMContentLoaded', () => {
+        // make sure helper rows exist
+        ensurePlaceholder();
+        ensureNoEventsLine();
+
+        // start with no selection
+        selectedYMD = null;
+
+        // paint UI and empty-state correctly on first load
+        updatePanelUI();         // (calls updateEventsEmptyState() inside)
+        applyHighlight();
+        setupObserver();
+
+        // extra safety: recompute empty-state once more after any async renders
+        requestAnimationFrame(updateEventsEmptyState);
+      });
+
+
+      // Also reapply after explicit month nav clicks (belt & suspenders)
+      const prevBtn = document.getElementById('prevMonth');
+      const nextBtn = document.getElementById('nextMonth');
+      [prevBtn, nextBtn].forEach(btn => {
+        if (!btn) return;
+        btn.addEventListener('click', () => {
+          // wait for the calendar to re-render then re-apply highlight
+          requestAnimationFrame(() => requestAnimationFrame(applyHighlight));
+        });
+      });
+
+      // expose getter if needed elsewhere
+      window.getSelectedCalendarDate = () => selectedYMD;
+    })();
+  </script>
+  <script>
+    /* History table: flock head…tail + FCR benchmark colors (single source) */
+    (function () {
+      // Turn "Ponedoras 01" -> "pon…01" (keep 3 + 2 by default)
+      function shortenHeadTail(text, head = 3, tail = 2) {
+        if (text == null) return '';
+        const s = String(text).trim().replace(/\s+/g, ' ');
+        if (s.length <= head + tail + 1) return s;
+        return s.slice(0, head) + '…' + s.slice(-tail);
+      }
+
+      function truncateFlockCells() {
+        const tbody = document.getElementById('historyTableBody');
+        if (!tbody) return;
+        tbody.querySelectorAll('tr td:nth-child(2)').forEach(td => {
+          const full = td.getAttribute('data-full') || td.textContent.trim();
+          td.setAttribute('data-full', full);           // store original once
+          td.textContent = shortenHeadTail(full, 3, 2); // e.g., "pon…01"
+          td.title = full;                              // tooltip shows full name
+          td.setAttribute('aria-label', full);          // a11y
+        });
+      }
+
+      // Color FCR cell by benchmark thresholds
+      // Benchmarks:
+      //  ≤ 2.0  -> Excellent (dark green)
+      //  2.1–2.4 -> Good (light green)
+      //  2.5–2.8 -> Average (orange)
+      //  > 2.8   -> Needs Improvement (red)
+      // Color FCR cell by benchmark thresholds AND decorate "excellent"
+      // Color FCR cell by benchmark thresholds AND normalize span
+      function applyFcrBenchmarkStyling() {
+        const tbody = document.getElementById('historyTableBody');
+        if (!tbody) return;
+
+        tbody.querySelectorAll('tr').forEach(tr => {
+          const td = tr.querySelector('td:nth-child(5)'); // FCR column
+          if (!td) return;
+
+          // unwrap any previous chip and read the raw numeric text
+          let raw = td.querySelector('.fcr-val')?.textContent ?? td.textContent;
+          raw = String(raw).trim();
+
+          // ensure span.fcr-val exists to keep width uniform for all rows
+          let span = td.querySelector('.fcr-val');
+          if (!span) {
+            span = document.createElement('span');
+            span.className = 'fcr-val';
+            td.textContent = '';
+            td.appendChild(span);
+          }
+          span.textContent = raw;
+          span.classList.remove('is-excellent');
+
+          // reset the color classes on the TD
+          td.classList.remove('fcr-good', 'fcr-ok', 'fcr-fair', 'fcr-poor');
+
+          const v = parseFloat(raw.replace(',', '.'));
+          if (!isFinite(v)) return;
+
+          // thresholds: ≤2.0 excellent, 2.1–2.4 good, 2.5–2.8 average, >2.8 poor
+          if (v <= 2.0) { td.classList.add('fcr-good'); span.classList.add('is-excellent'); }
+          else if (v <= 2.4) td.classList.add('fcr-ok');
+          else if (v <= 2.8) td.classList.add('fcr-fair');
+          else td.classList.add('fcr-poor');
+        });
+      }
+
+      // Run the helpers once when the DOM is ready (one-time)
+      document.addEventListener('DOMContentLoaded', () => {
+        console.log('[history] DOM ready: running helpers');
+        if (typeof truncateFlockCells === 'function') truncateFlockCells();
+        if (typeof applyFcrBenchmarkStyling === 'function') applyFcrBenchmarkStyling(); initHistoryFlockFilter?.();
+
+      });
+    })();
+  </script>
+
+  <script>
+    (function () {
+      // Map your bottom-nav hrefs to a short key used by CSS
+      const MAP = {
+        '#calculator': 'calculator',
+        '#recordsTab': 'records',
+        '#reference': 'reference',
+        '#flocks': 'flocks',
+        '#settings': 'settings'
+      };
+
+      function setActiveFromNav() {
+        const nav = document.querySelector('.bottom-nav');
+        if (!nav) return;
+
+        // Use the item already marked active, else the first item
+        let active = nav.querySelector('.nav-item.is-active, .nav-item[aria-current="page"]') || nav.querySelector('.nav-item');
+
+        // Sync aria/current + class for styling
+        nav.querySelectorAll('.nav-item').forEach(a => {
+          const isAct = a === active;
+          a.classList.toggle('is-active', isAct);
+          if (isAct) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+        });
+
+        // Tell CSS which tab is active (controls big banner vs compact header)
+        const href = active?.getAttribute('href') || '#calculator';
+        document.body.setAttribute('data-active-tab', MAP[href] || 'calculator');
+      }
+
+      document.addEventListener('click', (e) => {
+        const a = e.target.closest('.bottom-nav .nav-item[href]');
+        if (!a) return;
+        // Let your existing navigation do its thing; then sync styles
+        requestAnimationFrame(setActiveFromNav);
+      });
+
+      document.addEventListener('DOMContentLoaded', setActiveFromNav);
+    })();
+  </script>
+
+
+  <script>
+    /* WX Core — single list + picker hydration (emoji + text) */
+    (function () {
+      const WEATHER_BADGES = [
+        { key: 'EXTREME_HEAT', icon: '🔥', label: 'Extreme Heat' },
+        { key: 'TEMP_DROP', icon: '❄️', label: 'Temp Drop' },
+        { key: 'RAINY', icon: '🌧️', label: 'Rainy' },
+        { key: 'WINDY', icon: '💨', label: 'Windy' },
+        { key: 'OPTIMAL', icon: '✅', label: 'Optimal' },
+      ];
+
+      // legacy → canonical (so previous values still map)
+      const MAP_OLD = {
+        'EXTREME_HEAT': 'EXTREME_HEAT', 'TEMP_DROP': 'TEMP_DROP', 'RAINY': 'RAINY', 'WINDY': 'WINDY', 'OPTIMAL': 'OPTIMAL',
+        'HOT': 'EXTREME_HEAT', 'HEAT': 'EXTREME_HEAT', 'HEAT WAVE': 'EXTREME_HEAT', 'HEATWAVE': 'EXTREME_HEAT', '🔥': 'EXTREME_HEAT',
+        'COLD': 'TEMP_DROP', 'COLD SNAP': 'TEMP_DROP', 'FREEZE': 'TEMP_DROP', '❄️': 'TEMP_DROP',
+        'RAIN': 'RAINY', 'RAINY': 'RAINY', 'WET': 'RAINY', '🌧️': 'RAINY',
+        'WIND': 'WINDY', 'WINDY': 'WINDY', 'STORM': 'WINDY', '💨': 'WINDY',
+        'SUN': 'OPTIMAL', 'SUNNY': 'OPTIMAL', 'MILD': 'OPTIMAL', 'CLEAR': 'OPTIMAL', 'OK': 'OPTIMAL', '✅': 'OPTIMAL'
+      };
+      const norm = v => MAP_OLD[String(v || '').trim().toUpperCase()] || '';
+
+      function hydrateSelect(el) {
+        if (!el || el.dataset.wxHydrated === '1') return;
+        const prev = el.value;          // keep whatever was selected
+        el.innerHTML = '';              // remove legacy options
+
+        const o0 = document.createElement('option');
+        o0.value = ''; o0.textContent = 'Select…';
+        el.appendChild(o0);
+
+        WEATHER_BADGES.forEach(b => {
+          const opt = document.createElement('option');
+          opt.value = b.key;
+          opt.textContent = `${b.icon} ${b.label}`; // emoji + text
+          el.appendChild(opt);
+        });
+
+        el.value = norm(prev) || '';
+        el.dataset.wxHydrated = '1';
+      }
+
+      function hydrateAll() {
+        hydrateSelect(document.getElementById('weather'));      // Calculator
+        hydrateSelect(document.getElementById('editWeather'));  // Edit dialog (appears later)
+        hydrateSelect(document.getElementById('qeWeather'));    // Quick Entry (appears later)
+      }
+
+      // hydrate at load…
+      document.addEventListener('DOMContentLoaded', hydrateAll);
+      // …and whenever dialogs/quick-entry appear later
+      new MutationObserver(() => setTimeout(hydrateAll, 0))
+        .observe(document.body, { childList: true, subtree: true });
+
+      // expose for later steps
+      window.WEATHER_BADGES = WEATHER_BADGES;
+      window.WX_MAP_OLD = MAP_OLD;
+    })();
+  </script>
+  <!-- Bottom navigation -->
+  <div class="bottom-nav">
+    <button id="navCalculator" onclick="switchView('calculator')">🧮<span
+        style="font-size:14px">Calculator</span></button>
+    <button id="navRecords" onclick="switchView('records')">🗃️<span style="font-size:14px">Records</span></button>
+    <button id="navFlocks" onclick="switchView('flocks')">🐔<span style="font-size:14px">Flocks</span></button>
+    <button id="navReference" onclick="switchView('reference')">📚<span style="font-size:14px">Reference</span></button>
+  </div>
+
+  <script>
+    // Guarantee nav lives under <body> even if pasted elsewhere
+    window.addEventListener('load', function () {
+      var nav = document.querySelector('.bottom-nav');
+      if (nav && nav.parentElement !== document.body) document.body.appendChild(nav);
     });
-  }
+  </script>
+  <script>
+    (function () {
+      function hydrateFlocksFromStorage() {
+        var raw = localStorage.getItem('fcr.v1.flocks') || localStorage.getItem('fcrFlocks');
+        var arr = [];
+        try { arr = raw ? JSON.parse(raw) : []; } catch (e) { console.warn('Bad flocks JSON', e); }
+        window.flocks = Array.isArray(arr) ? arr : [];
+      }
 
-  // Color FCR cell by benchmark thresholds
-  // Benchmarks:
-  //  ≤ 2.0  -> Excellent (dark green)
-  //  2.1–2.4 -> Good (light green)
-  //  2.5–2.8 -> Average (orange)
-  //  > 2.8   -> Needs Improvement (red)
-  // Color FCR cell by benchmark thresholds AND decorate "excellent"
-// Color FCR cell by benchmark thresholds AND normalize span
-function applyFcrBenchmarkStyling() {
-  const tbody = document.getElementById('historyTableBody');
-  if (!tbody) return;
-
-  tbody.querySelectorAll('tr').forEach(tr => {
-    const td = tr.querySelector('td:nth-child(5)'); // FCR column
-    if (!td) return;
-
-    // unwrap any previous chip and read the raw numeric text
-    let raw = td.querySelector('.fcr-val')?.textContent ?? td.textContent;
-    raw = String(raw).trim();
-
-    // ensure span.fcr-val exists to keep width uniform for all rows
-    let span = td.querySelector('.fcr-val');
-    if (!span) {
-      span = document.createElement('span');
-      span.className = 'fcr-val';
-      td.textContent = '';
-      td.appendChild(span);
-    }
-    span.textContent = raw;
-    span.classList.remove('is-excellent');
-
-    // reset the color classes on the TD
-    td.classList.remove('fcr-good','fcr-ok','fcr-fair','fcr-poor');
-
-    const v = parseFloat(raw.replace(',', '.'));
-    if (!isFinite(v)) return;
-
-    // thresholds: ≤2.0 excellent, 2.1–2.4 good, 2.5–2.8 average, >2.8 poor
-    if (v <= 2.0) { td.classList.add('fcr-good'); span.classList.add('is-excellent'); }
-    else if (v <= 2.4) td.classList.add('fcr-ok');
-    else if (v <= 2.8) td.classList.add('fcr-fair');
-    else td.classList.add('fcr-poor');
-  });
-}
-
-// Run the helpers once when the DOM is ready (one-time)
-document.addEventListener('DOMContentLoaded', () => {
-  console.log('[history] DOM ready: running helpers'); 
-  if (typeof truncateFlockCells === 'function') truncateFlockCells();
-  if (typeof applyFcrBenchmarkStyling === 'function') applyFcrBenchmarkStyling();initHistoryFlockFilter?.();
-
-  });
-})();
-</script>
-
-<script>
-(function(){
-  // Map your bottom-nav hrefs to a short key used by CSS
-  const MAP = {
-    '#calculator': 'calculator',
-    '#recordsTab': 'records',
-    '#reference':  'reference',
-    '#flocks':     'flocks',
-    '#settings':   'settings'
-  };
-
-  function setActiveFromNav() {
-    const nav = document.querySelector('.bottom-nav');
-    if (!nav) return;
-
-    // Use the item already marked active, else the first item
-    let active = nav.querySelector('.nav-item.is-active, .nav-item[aria-current="page"]') || nav.querySelector('.nav-item');
-
-    // Sync aria/current + class for styling
-    nav.querySelectorAll('.nav-item').forEach(a => {
-      const isAct = a === active;
-      a.classList.toggle('is-active', isAct);
-      if (isAct) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+      document.addEventListener('DOMContentLoaded', function () {
+        hydrateFlocksFromStorage();
+        if (typeof renderFlockSelect === 'function') renderFlockSelect();
+      });
+    })();
+  </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var btn = document.getElementById('calcComputeBtn');
+      if (!btn) return;
+      // Use the original flow: preview → (maybe) confirm → save
+      btn.onclick = checkForDuplicate;
     });
+  </script>
 
-    // Tell CSS which tab is active (controls big banner vs compact header)
-    const href = active?.getAttribute('href') || '#calculator';
-    document.body.setAttribute('data-active-tab', MAP[href] || 'calculator');
-  }
-
-  document.addEventListener('click', (e) => {
-    const a = e.target.closest('.bottom-nav .nav-item[href]');
-    if (!a) return;
-    // Let your existing navigation do its thing; then sync styles
-    requestAnimationFrame(setActiveFromNav);
-  });
-
-  document.addEventListener('DOMContentLoaded', setActiveFromNav);
-})();
-</script>
-
-
-<script>
-/* WX Core — single list + picker hydration (emoji + text) */
-(function(){
-  const WEATHER_BADGES = [
-    { key:'EXTREME_HEAT', icon:'🔥', label:'Extreme Heat' },
-    { key:'TEMP_DROP',    icon:'❄️', label:'Temp Drop'    },
-    { key:'RAINY',        icon:'🌧️', label:'Rainy'        },
-    { key:'WINDY',        icon:'💨', label:'Windy'        },
-    { key:'OPTIMAL',      icon:'✅', label:'Optimal'      },
-  ];
-
-  // legacy → canonical (so previous values still map)
-  const MAP_OLD = {
-    'EXTREME_HEAT':'EXTREME_HEAT','TEMP_DROP':'TEMP_DROP','RAINY':'RAINY','WINDY':'WINDY','OPTIMAL':'OPTIMAL',
-    'HOT':'EXTREME_HEAT','HEAT':'EXTREME_HEAT','HEAT WAVE':'EXTREME_HEAT','HEATWAVE':'EXTREME_HEAT','🔥':'EXTREME_HEAT',
-    'COLD':'TEMP_DROP','COLD SNAP':'TEMP_DROP','FREEZE':'TEMP_DROP','❄️':'TEMP_DROP',
-    'RAIN':'RAINY','RAINY':'RAINY','WET':'RAINY','🌧️':'RAINY',
-    'WIND':'WINDY','WINDY':'WINDY','STORM':'WINDY','💨':'WINDY',
-    'SUN':'OPTIMAL','SUNNY':'OPTIMAL','MILD':'OPTIMAL','CLEAR':'OPTIMAL','OK':'OPTIMAL','✅':'OPTIMAL'
-  };
-  const norm = v => MAP_OLD[String(v||'').trim().toUpperCase()] || '';
-
-  function hydrateSelect(el){
-    if (!el || el.dataset.wxHydrated === '1') return;
-    const prev = el.value;          // keep whatever was selected
-    el.innerHTML = '';              // remove legacy options
-
-    const o0 = document.createElement('option');
-    o0.value = ''; o0.textContent = 'Select…';
-    el.appendChild(o0);
-
-    WEATHER_BADGES.forEach(b => {
-      const opt = document.createElement('option');
-      opt.value = b.key;
-      opt.textContent = `${b.icon} ${b.label}`; // emoji + text
-      el.appendChild(opt);
-    });
-
-    el.value = norm(prev) || '';
-    el.dataset.wxHydrated = '1';
-  }
-
-  function hydrateAll(){
-    hydrateSelect(document.getElementById('weather'));      // Calculator
-    hydrateSelect(document.getElementById('editWeather'));  // Edit dialog (appears later)
-    hydrateSelect(document.getElementById('qeWeather'));    // Quick Entry (appears later)
-  }
-
-  // hydrate at load…
-  document.addEventListener('DOMContentLoaded', hydrateAll);
-  // …and whenever dialogs/quick-entry appear later
-  new MutationObserver(()=> setTimeout(hydrateAll, 0))
-    .observe(document.body, { childList: true, subtree: true });
-
-  // expose for later steps
-  window.WEATHER_BADGES = WEATHER_BADGES;
-  window.WX_MAP_OLD = MAP_OLD;
-})();
-</script>
-<!-- Bottom navigation -->
-<div class="bottom-nav">
-  <button id="navCalculator" onclick="switchView('calculator')">🧮<span style="font-size:14px">Calculator</span></button>
-  <button id="navRecords"    onclick="switchView('records')">🗃️<span style="font-size:14px">Records</span></button>
-  <button id="navFlocks"     onclick="switchView('flocks')">🐔<span style="font-size:14px">Flocks</span></button>
-  <button id="navReference"  onclick="switchView('reference')">📚<span style="font-size:14px">Reference</span></button>
-</div>
-
-<script>
-  // Guarantee nav lives under <body> even if pasted elsewhere
-  window.addEventListener('load', function(){
-    var nav = document.querySelector('.bottom-nav');
-    if (nav && nav.parentElement !== document.body) document.body.appendChild(nav);
-  });
-</script>
 </body>
+
 </html>

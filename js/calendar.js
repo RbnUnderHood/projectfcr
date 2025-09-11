@@ -30,16 +30,7 @@ window.buildCalendarByDate = function buildCalendarByDate(year, monthIndex) {
   const yyyy = String(year);
   const mm = pad2(monthIndex + 1);
 
-  // EXAMPLE DATA (safe to delete later)
-  // Put 🌧️ on the 2nd, ✅ on the 5th, note on the 10th, select today if in month.
-  for (let d = 1; d <= daysInMonth; d++) {
-    const dd = pad2(d);
-    const key = `${yyyy}-${mm}-${dd}`;
-    // (leave empty unless you want to add something)
-    if (d === 2) base[key] = { emojis: ["🌧️"] };
-    if (d === 5) base[key] = { emojis: ["✅"] };
-    if (d === 10) base[key] = { emojis: ["💨"], hasNote: true };
-  }
+
   // Select today's date if it’s in this month
   const today = new Date();
   if (today.getFullYear() === year && today.getMonth() === monthIndex) {
@@ -59,72 +50,7 @@ function formatLongDate(yyyyMmDd){
   return dt.toLocaleDateString(undefined, { weekday:'long', month:'long', day:'numeric', year:'numeric' });
 }
 /**
- * calendarEventsByDate shape:
- * {
- *   "2025-09-10": [
- *      { type:"note", title:"Note", body:"asdasdasd", meta:"Weather: Optimal" },
- *      { type:"feed", title:"Feed", body:"10 kg · Starter", meta:"by Sam" }
- *   ]
- * }
- */
-window.calendarEventsByDate = window.calendarEventsByDate || {};
 
-function renderCalendarEventsPanel(dateStr){
-  const titleSpan = document.querySelector('#calendarTab .calendar-events .selected-title span');
-  const addBtn    = document.getElementById('addEntryForDayBtn');
-  const listWrap  = document.getElementById('calendarEventsList');
-
-  if (!titleSpan || !addBtn || !listWrap) return;
-
-  // Title
-  titleSpan.textContent = `Add entry for ${formatLongDate(dateStr)}`;
-
-  // Show the button now that a day is selected
-  addBtn.hidden = false;
-
-  // (Hook this to your real "open entry" function if you have one)
-  addBtn.onclick = function(){
-    if (typeof openQuickEntryForDate === 'function') {
-      openQuickEntryForDate(dateStr);
-    } else {
-      console.log('[calendar] addEntry for', dateStr);
-    }
-  };
-
-  // Render list
-  const items = window.calendarEventsByDate[dateStr] || [];
-  listWrap.textContent = ''; // clear
-
-  if (items.length === 0){
-    const empty = document.createElement('div');
-    empty.className = 'calendar-event event-empty';
-    empty.textContent = 'No entries yet.';
-    listWrap.appendChild(empty);
-    return;
-  }
-
-  items.forEach(ev => {
-    const card = document.createElement('div');
-    card.className = `calendar-event type-${(ev.type||'note')}`;
-
-    const h = document.createElement('div');
-    h.className = 'event-title';
-    h.textContent = ev.title || 'Entry';
-
-    const meta = document.createElement('div');
-    meta.className = 'event-meta';
-    meta.textContent = ev.meta || '';
-
-    const body = document.createElement('div');
-    body.className = 'event-body';
-    body.textContent = ev.body || '';
-
-    card.appendChild(h);
-    if (meta.textContent) card.appendChild(meta);
-    if (body.textContent) card.appendChild(body);
-    listWrap.appendChild(card);
-  });
-}
 
 function pad2(n){ return (n<10?'0':'')+n; }
 
@@ -246,6 +172,8 @@ function _todayYMD(){
 function _isFutureYMD(ymd){
   return String(ymd) > String(_todayYMD());
 }
+// zero-pad 1→"01"
+function pad2(n){ return String(n).padStart(2,'0'); }
 
 /* --- add: note-only event (used for future dates) --- */
 function addNoteEvent(dateStr, noteText, weather, flock){
@@ -427,7 +355,9 @@ if (daysGrid && !daysGrid.__wired){
       .forEach(el => el.classList.remove('is-selected'));
     cell.classList.add('is-selected');
 
-    renderCalendarEventsPanel(cell.dataset.date);
+    if (typeof openDay==='function') openDay(cell.dataset.date);
+    else if (typeof showEventsForDate==='function') showEventsForDate(cell.dataset.date);
+
   });
   daysGrid.__wired = true;
 }
@@ -435,7 +365,10 @@ if (daysGrid && !daysGrid.__wired){
 // On initial render: pick selected date (or first day) and render panel
 var selectedCell = document.querySelector('#calendarTab .calendar-day.is-selected')
                 || document.querySelector('#calendarTab .calendar-day[data-date]');
-if (selectedCell) renderCalendarEventsPanel(selectedCell.dataset.date);
+if (selectedCell){
+  if (typeof openDay==='function') openDay(selectedCell.dataset.date);
+  else if (typeof showEventsForDate==='function') showEventsForDate(selectedCell.dataset.date);
+}
 
 
 function changeMonth(delta) {
@@ -461,84 +394,85 @@ function openDay(dateStr) {
 }
 
 function showEventsForDate(dateStr) {
-  var list = byId('calendarEventsList');
+  const list = document.getElementById('calendarEventsList');
   if (!list) return;
 
-  var dayEvents = window.calendarEvents.filter(function(e){ return e.date === dateStr; });
-  if (!dayEvents.length) {
-    list.innerHTML = '<div class="input-hint" style="text-align:center;">No events for this date</div>';
+  const events = (window.calendarEvents || []).filter(e => e.date === dateStr);
+  list.innerHTML = '';
+
+  if (events.length === 0) {
+    const empty = document.createElement('div');
+    empty.className = 'input-hint';
+    empty.style.textAlign = 'center';
+    empty.textContent = 'No entries yet.';
+    list.appendChild(empty);
     return;
   }
 
-  // Build event items with data-ref so we can attach click listeners safely
-  var html = '';
-  for (var i=0;i<dayEvents.length;i++) {
-    var event = dayEvents[i];
-    // centralized weather label + emoji
-var wxKey   = (typeof window.normalizeWeather === 'function')
-  ? window.normalizeWeather(event.weather)
-  : String(event.weather || '').toUpperCase();
+  events.forEach(ev => {
+    // card container + performance class for left border
+    const card = document.createElement('div');
+    card.className = 'calendar-event-item';
+    let perf = (ev.type === 'note') ? 'noteonly' : String(ev.performance || '').toLowerCase();
+    if (perf === 'ok') perf = 'good';
+    if (perf === 'needs-improvement') perf = 'poor';
+    if (perf) card.classList.add(perf);
 
-var wxLabel = (typeof window.weatherFullName === 'function')
-  ? window.weatherFullName(wxKey)
-  : '';
+    // data for editors
+    card.dataset.ref  = ev.refId || '';
+    card.dataset.type = ev.type  || '';
+    card.dataset.date = ev.date  || '';
 
-var wxEmoji = (function(k){
-  var B = window.WEATHER_BADGES;
-  if (!B) return '';
-  if (Array.isArray(B)) {
-    for (var i=0;i<B.length;i++){ var b=B[i]; if (b && b.key===k) return b.emoji || b.icon || ''; }
-    return '';
-  }
-  return (B[k] && (B[k].emoji || B[k].icon)) || '';
-})(wxKey);
+    // header row: title | date
+    const header = document.createElement('div');
+    header.className = 'calendar-event-header';
 
-// normalize legacy perf keys (e.g., "ok" → "good")
-var perf = String(event.performance || '').toLowerCase();
-if (perf === 'ok') perf = 'good';
-    var dataRef = encodeURIComponent(event.refId || '');
-    html += ''
-  + (function(){
-    var pc = String(event.performance || '').toLowerCase().replace(/[\s_]+/g,'-');
-    if (pc === 'needs-improvement') pc = 'poor';
-    if (pc === 'ok') pc = 'good';
-    var cls = (event.type === 'note') ? 'calendar-event-item noteonly'
-                                  : 'calendar-event-item ' + (pc || 'manual');
-return '<div class="' + cls + '" data-ref="' + dataRef + '" data-date="' + event.date + '" data-type="' + (event.type || '') + '">';
-  })()
-  + ((event.type !== 'note' && wxEmoji) ? '<span class="wx-card-corner' + (wxKey === '...PTIMAL' ? ' wx-optimal' : '') + '">' + wxEmoji + '</span>' : '')
+    const hLeft  = document.createElement('div');
+    hLeft.textContent = (ev.title || (ev.type === 'note' ? 'Note' : (ev.flockName || ev.flock || 'Entry')));
 
+    const hRight = document.createElement('div');
+    hRight.textContent = ev.date || '';
 
-      + '<div class="calendar-event-header"><div>'
-      + (String(event.title || '').trim() || 'Unnamed Flock')
-      + '</div><div>' + event.date + '</div></div>'
-      +   '<div class="input-hint">' + (event.description || '')
-      +     +     ((event.type !== 'note' && wxLabel) ? ('<br><strong>Weather:</strong> ' + wxLabel) : '')
-      +     (event.notes ? ('<br><em>Notes: ' + event.notes + '</em>') : '')
-      +   '</div>'
-      + '</div>';
-  }
-  list.innerHTML = html;
+    header.append(hLeft, hRight);
+    card.append(header);
 
-  // Make each item clickable to edit the underlying record
-  var items = list.querySelectorAll('.calendar-event-item');
-for (var j = 0; j < items.length; j++) {
-  items[j].addEventListener('click', function() {
-    var ref = decodeURIComponent(this.getAttribute('data-ref') || '');
-    if (ref && typeof window.openEditByRefId === 'function') {
-      window.openEditByRefId(ref);
-      return;
-    }
-        // Note-only (no ref): open Edit Entry with only Notes editable
-    var d = this.getAttribute('data-date') || '';
-    if (d && typeof window.openEditNoteForDate === 'function') {
-      window.openEditNoteForDate(d);
-    }
+    // meta/description block
+    const meta = document.createElement('div');
+    meta.className = 'input-hint';
 
+    const wxKey   = (typeof window.normalizeWeather === 'function')
+      ? window.normalizeWeather(ev.weather)
+      : String(ev.weather || '').toUpperCase();
+    const wxLabel = (typeof window.weatherFullName === 'function')
+      ? window.weatherFullName(wxKey)
+      : '';
+
+    const bits = [];
+    if (ev.description) bits.push(ev.description);
+    if (ev.type !== 'note' && wxLabel) bits.push('<strong>Weather:</strong> ' + wxLabel);
+    if (ev.notes) bits.push('<em>Notes: ' + ev.notes + '</em>');
+    meta.innerHTML = bits.join('<br>');
+
+    if (meta.innerHTML) card.append(meta);
+
+    list.append(card);
+  });
+
+  // click-to-edit
+  list.querySelectorAll('.calendar-event-item').forEach(el => {
+    el.addEventListener('click', () => {
+      const ref = el.dataset.ref;
+      if (ref && typeof window.openEditByRefId === 'function') {
+        window.openEditByRefId(ref);
+        return;
+      }
+      if (el.dataset.type === 'note' && typeof window.openEditNoteForDate === 'function') {
+        window.openEditNoteForDate(el.dataset.date);
+      }
+    });
   });
 }
 
-}
 
 /* ----- Quick Entry modal (stay on Calendar) ----- */
 function openQuickEntryModal(dateStr) {

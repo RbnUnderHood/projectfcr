@@ -45,14 +45,4 @@
 #referenceTab .benchmarks-table td:nth-child(3){ width: 36%; }
 
 /* Reference header: flatten card + center title & pill (match Records) */
-#referenceTab > .result-card{
-  background: transparent;
-  border: 0;
-  box-shadow: none;
-  padding: 0;
-  margin: 4px 0 8px 0;
 
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}

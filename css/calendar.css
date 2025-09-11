@@ -13,6 +13,8 @@
   background: #5590ff;
   color: #000000;
   border-radius: 8px;
+  margin-bottom: 2px;
+  box-shadow:0 2px 4px rgba(0, 0, 0, 0.219);
 }
 
 /* Title line */
@@ -22,17 +24,18 @@
   gap: 8px;
   margin: 10px;
   font-weight: 700;
-  font-size: 15px;                  /* compact title */
+  font-size: 19px;                  /* compact title */
   line-height: 1.2;
 }
 
 /* Month switcher row */
 #recordsTab #calendarTab .calendar-nav{
   display: grid;
-  grid-template-columns: 50px 1fr 28px; /* compact */
+  grid-template-columns: 50px 1fr 50px; /* compact */
   align-items: center;
   width: 100%;
-  gap: 2px;
+  gap: 38px;
+  margin-bottom: 0px;
 }
 /* Borderless arrows (same look on all platforms) */
 #recordsTab #calendarTab .calendar-nav-btn{
@@ -51,11 +54,14 @@
   place-items: center;
   font-weight: 800;
   font-size: 14px;           /* fits the chip */
-  color: #965d4c;
-  background: #FBE9E7;
+  color: #9c682c;
+  background: #f8d095;
   border-radius: 8px;
   padding: 4px 2px;
   line-height: 1.1;
+  margin-top: 2px;
+  margin-bottom: 6px;
+  box-shadow:0 2px 4px rgba(0, 0, 0, 0.219);
 }
 /* Selected day highlight */
 #recordsTab #calendarTab .calendar-day.is-selected{
@@ -71,6 +77,7 @@
   gap: 1px;                 /* smaller cards without changing container width */
   width: 100%;
   align-content: start;
+  
 }
 
 #recordsTab #calendarTab .calendar-day{
@@ -81,11 +88,12 @@
   padding: 4px;                     /* slightly tighter */
   border: 2px solid #CFE8D6;
   border-radius: 12px;
-  background: #F1F8E9;
+  background: #f3ffe6;
   box-sizing: border-box;
   aspect-ratio: 1 / 1;              /* square cells */
-  min-height: clamp(35px, 10.5vw, 99px); /* scales down cleanly */
-}
+  min-height: clamp(32px, 10.5vw, 99px); /* scales down cleanly */
+  margin-bottom: 0px;
+  }
 
 #recordsTab #calendarTab .calendar-dot.excellent{ background:#4CAF50; }
 #recordsTab #calendarTab .calendar-dot.good{      background:#8BC34A; }
@@ -93,22 +101,24 @@
 #recordsTab #calendarTab .calendar-dot.poor{      background:#FF7043; }
 
 
-/* === Calendar: events panel (below the grid) === */
+/* Panel (no inner border; we’ll draw an outer dashed frame) */
 #recordsTab #calendarTab .calendar-events{
-  margin: 10px 0 12px 0;
-  padding: 12px;
-  border: 2px solid #EFEBE9;
-  border-radius: 12px;
+  position: relative;        /* enable absolute ::before frame */
+  margin: 18px 0 2px 0;
+  padding: 8px;
+  border: 0;                 /* remove inner dashed border */
+  border-radius: 9px;
   background: #cdf0ca;
-}
+  }
 
-/* Title "Add entry for <date>" */
-#recordsTab #calendarTab .calendar-events .selected-title{
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-weight: 700;
-  margin: 0 0 8px 0;
+/* Outer dashed frame offset outside the panel */
+#recordsTab #calendarTab .calendar-events::before{
+  content: "";
+  position: absolute;
+  inset: -2px;               /* how far outside; tweak -4px/-8px to taste */
+  border: 2px dashed #b6b6b6;
+  border-radius: calc(9px + 3px);  /* keep rounded corners */
+  pointer-events: none;      /* don’t block clicks */
 }
 
 
@@ -124,3 +134,48 @@
   background: #fff;
   padding: 10px;
 }
+
+/* Event cards (applies regardless of container) */
+.calendar-event-item{
+  background:#fffce7;
+  border:1px solid #a3a3a3;
+  border-left-width:8px;
+  border-radius:12px;
+  padding:8px;
+  box-shadow:0 2px 4px rgba(0, 0, 0, 0.219);
+}
+
+/* Left-border colors */
+.calendar-event-item.noteonly{ border-left-color:#8e44ad; } /* notes = purple */
+.calendar-event-item.excellent{ border-left-color:#1b5e20; }
+.calendar-event-item.good     { border-left-color:#2ecc71; }
+.calendar-event-item.average  { border-left-color:#ef6c00; }
+.calendar-event-item.poor     { border-left-color:#c62828; }
+
+/* Small header layout */
+.calendar-event-header{
+  display:flex; justify-content:space-between; align-items:center;
+  font-weight:700; margin-bottom:4px;
+}
+
+/* Use the button as the title */
+#recordsTab #calendarTab .calendar-events .selected-title{ display:none; }
+
+/* Full-width “Add entry for …” button */
+#recordsTab #calendarTab #addEntryForDayBtn{
+  display:block;            /* JS already toggles it on select */
+  width:100%;
+  background:#fff8d8;
+  border:2px dotted #777777;
+  border-radius:18px;
+  padding:4px 18px;
+  font-weight:700;
+  text-align:center;
+  cursor:pointer;
+  box-shadow:0 2px 4px rgba(0, 0, 0, 0.219);
+  margin-bottom:10px;
+}
+#recordsTab #calendarTab #addEntryForDayBtn:hover{
+  filter:brightness(0.80);
+}
+

@@ -17,10 +17,10 @@
 }
 /* ==== History compact tune (scoped to the History panel only) ==== */
 #historyTab{
-  --hist-font: clamp(11px, 2.9vw, 15px);
+  --hist-font: clamp(1px, 2.9vw, 15px);
   --hist-font-small: clamp(12px, 2.6vw, 14px);
-  --hist-cell-py: 6px;   /* vertical cell padding */
-  --hist-cell-px: 10px;  /* horizontal cell padding */
+  --hist-cell-py: 1px;   /* vertical cell padding */
+  --hist-cell-px: 2px;  /* horizontal cell padding */
   --hist-radius: 10px;
 }
 /* Table: fonts + tighter, consistent padding */
@@ -36,7 +36,7 @@
   font-weight: 800;
   line-height: 1.15;
   letter-spacing: 0.2px;
-  margin: 8px 0 12px;
+  margin: 1px 0 1px;
   text-align: center;
 }
 
@@ -45,14 +45,6 @@
   justify-self: center !important;
   margin: 0;
 }
-/* History/Calendar padding cleanup — History half */
-#recordsTab #historyTab{
-  padding: 0 !important;
-  background: transparent;
-  border: none;
-  box-shadow: none;
-}
-
 
 /* “Clear all” ghost icon button */
 #recordsTab #historyTab #clearAllBtn.icon-btn{
@@ -62,14 +54,10 @@
   cursor: pointer;
   display: grid;
   place-items: center;
-  width: 36px; height: 36px;
+  width: 42px; height: 42px;
   font-size: 16px; line-height: 1;
-  color: #E65B39;
-  border-radius: 8px;
-}
-#recordsTab #historyTab #clearAllBtn.icon-btn:hover{ background: rgba(230,91,57,.08); }
-#recordsTab #historyTab #clearAllBtn.icon-btn:focus-visible{
-  outline: 2px solid #c9482d; outline-offset: 2px; border-radius: 6px;
+  color: #e74b24;
+  border-radius: 12px;
 }
 
 /* Table fundamentals */
@@ -100,7 +88,7 @@
 
 /* Zebra rows (only inside the scroll area if used) */
 #recordsTab #historyTab .history-table tr:nth-child(even){
-  background-color: #FFF8E1;
+  background-color: #fff0c0;
 }
 
 /* Hide Date column (col 1) in UI */
@@ -124,26 +112,13 @@
 }
 #recordsTab #historyTab .history-table th:nth-child(5),
 #recordsTab #historyTab .history-table td:nth-child(5){  /* FCR */
-  width: 18% !important; text-align: center;
+  width: 10% !important; text-align: center;
 }
 #recordsTab #historyTab .history-table th:nth-child(6),
 #recordsTab #historyTab .history-table td:nth-child(6){  /* Weather */
-  width: 20% !important; text-align: center;
+  width: 28% !important; text-align: center;
 }
 
-/* Prevent ellipsis on numbers/badges; allow Flock to truncate only */
-#recordsTab #historyTab .history-table td:not(:nth-child(2)){
-  white-space: nowrap; overflow: visible; text-overflow: clip;
-}
-
-/* FCR cell: uniform number box */
-#recordsTab #historyTab .history-table td:nth-child(5) .fcr-val{
-  display: inline-block;
-  min-width: 3.4ch;
-  text-align: center;
-  line-height: 1.15;
-  font-variant-numeric: tabular-nums;
-}
 
 /* FCR color classes */
 #recordsTab #historyTab .history-table td.fcr-good {  color:#1b5e20; font-weight:700; }  /* ≤ 2.0 */
@@ -151,16 +126,8 @@
 #recordsTab #historyTab .history-table td.fcr-fair {  color:#ef6c00; }                   /* 2.5–2.8 */
 #recordsTab #historyTab .history-table td.fcr-poor {  color:#c62828; font-weight:700; }  /* > 2.8 */
 
-/* Optional: “gold” chip for excellent FCR */
-#recordsTab #historyTab .chip{ display:inline-block; padding: 2px 6px; border-radius: 999px; line-height: 1.1; }
-#recordsTab #historyTab .chip--gold{
-  background: linear-gradient(#fff9e3, #fff3c4);
-  border: 1px solid #e5c455;
-  box-shadow: inset 0 0 0 1px rgba(229,196,85,.25);
-}
-
 /* Flock picker (compact select in header) */
-#recordsTab #historyTab th.col-flock{ padding: 4px 6px !important; }
+#recordsTab #historyTab th.col-flock{ padding: 4px 6px; }
 #recordsTab #historyTab .flock-head{ display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
 #recordsTab #historyTab #historyFlockFilter{
   font-size: 11px;
@@ -170,9 +137,9 @@
   border: 1px solid rgba(0,0,0,0.15);
   border-radius: 8px;
   background: #fff;
-  max-width: 90px;
+  max-width: 98px;
   appearance: auto;       /* keep native caret */
-  min-height: 0 !important;
+  min-height: 0;
 }
 
 /* History is view-only (no pointer on rows) */
@@ -183,18 +150,19 @@
   border-spacing: 0;
   margin-top: 0 !important;
 }
-/* === Records → History: attach orange banner to table, tint thead, compact header === */
-#recordsTab #historyTab .history-header{
-  margin-bottom: 0 !important; /* eliminate gap above the table */
-}
+
 .history-section{margin-top:25px}
 .history-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
-.history-title{font-size:1.2rem;font-weight:700;color:#5D4037;display:flex;align-items:center;gap:8px}
+.history-title{font-size:1.2rem;font-weight:700;color:#5D4037;display:flex;align-items:center;
+  gap:8px}
 .history-wrapper{overflow-x:hidden;border-radius:12px;border:2px solid #EFEBE9}
 .history-table{width:100%;border-collapse:collapse;font-size:.85rem;min-width:0}
 .history-table th,.history-table td{padding:12px 10px;text-align:left;border-bottom:1px solid #EFEBE9}
-.history-table th{background:#FBE9E7;font-weight:600;color:#5D4037;position:sticky;top:0}
-.history-table tr:nth-child(even){background-color:#FFF8E1}
+.history-table th{background:#fff2e2;font-weight:600;color:#5D4037;position:sticky;top:0}
+.history-table tr:nth-child(even){background-color:#fffbf0}
 .row-click{cursor:pointer}
 
-.delete-btn{background:#FF7043;color:#fff;border:none;border-radius:50%;width:40px;height:40px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .3s ease;font-size:18px;font-weight:bold}
+.delete-btn{background:#FF7043;color:#fff;
+  border:none;border-radius:50%;width:40px;height:40px;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:all .3s ease;font-size:18px;font-weight:bold}

@@ -110,13 +110,6 @@
 #calculatorTab .metric-card.fpbd.low  { background:#FFE9D6; }
 #calculatorTab .metric-card.fpbd.poor { background:#FFE3E3; }
 
-/* I) TEMP verify marker — remove after confirmation */
-#calculatorTab .result-title::after{
-  content:" •";
-  color:#2e7d32;
-  font-weight:900;
-  margin-left:4px;
-}
 
  /* Make the first metrics card (dailyFeedCost) span two rows */
 #costMetricsGrid .metric-card--tall {
@@ -262,13 +255,6 @@
 #calculatorTab .altfeed-box .input-field{
   --alt-input-border: #D7CCC8;      /* a bit darker than #EFEBE9 */
   background: #FFF8E1;              /* same as other inputs */
-  border-color: var(--alt-input-border);
-}
-
-/* Keep the same look even if the browser autofills */
-#calculatorTab .altfeed-box .input-field:-webkit-autofill{
-  -webkit-box-shadow: 0 0 0px 1000px #FFF8E1 inset;
-  -webkit-text-fill-color: inherit;
   border-color: var(--alt-input-border);
 }
 
