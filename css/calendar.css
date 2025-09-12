@@ -202,3 +202,12 @@
 #recordsTab #calendarTab #addEntryForDayBtn:hover {
   filter: brightness(0.8);
 }
+@media (max-width: 400px) {
+  #calendarTab .calendar-day .dot-strip {
+    gap: 3px;
+  }
+  #calendarTab .calendar-day .dot {
+    width: 5px;
+    height: 5px;
+  }
+}

@@ -658,24 +658,27 @@ function decorateCalendarMonth(root = document) {
     wxBadge.textContent = '';
     strip.textContent = '';
 
-    // Pull events for that date (expects window.calendarEvents as an array)
+    // events for that date
     const all = /** @type {any[]} */ (window.calendarEvents || []);
     const events = all.filter((e) => e && (e.date === date || e.isoDate === date));
 
-    // note presence
+    // notes → 📝
     const hasNote = events.some((e) => String(e?.note || e?.notes || '').trim().length > 0);
     if (hasNote) noteBadge.textContent = '📝';
 
-    // weather (earliest entry with weather)
+    // weather → emoji ONLY (no raw text like "OPTIMAL")
     const wxEntry = events
       .filter((e) => e?.weather)
       .sort((a, b) => String(a.startTime || '').localeCompare(String(b.startTime || '')))[0];
+
     if (wxEntry) {
-      const normalize = /** @type {(x:any)=>string|undefined} */ (window.normalizeWeather);
+      const normalize =
+        typeof window.normalizeWeather === 'function'
+          ? window.normalizeWeather
+          : (x) => String(x || '').toUpperCase();
       const map = /** @type {Record<string, {emoji:string}>|undefined} */ (window.WEATHER_BADGES);
-      const key = normalize ? normalize(wxEntry.weather) : String(wxEntry.weather);
-      const emoji = map?.[key]?.emoji || String(wxEntry.weather);
-      wxBadge.textContent = emoji;
+      const key = normalize(wxEntry.weather).toUpperCase();
+      wxBadge.textContent = map && map[key] && map[key].emoji ? map[key].emoji : '';
     }
 
     // dots (max 3)
@@ -688,23 +691,31 @@ function decorateCalendarMonth(root = document) {
       strip.appendChild(dot);
     }
 
-    // aria label
+    // aria-label
     const counts = ranked.reduce((acc, ev) => {
       const k = String(ev.performance).toLowerCase();
       acc[k] = (acc[k] || 0) + 1;
       return acc;
     }, /** @type {Record<string, number>} */ ({}));
+
     const parts = [];
     if (ranked.length) parts.push(`${ranked.length} events`);
+
     const perfSummary = Object.entries(counts)
       .map(([k, n]) => `${n} ${k}`)
       .join(', ');
     if (perfSummary) parts.push(perfSummary);
+
     if (wxEntry) {
+      const normalize =
+        typeof window.normalizeWeather === 'function'
+          ? window.normalizeWeather
+          : (x) => String(x || '').toUpperCase();
+      const wxKey = normalize(wxEntry.weather);
       const full = /** @type {(x:any)=>string|undefined} */ (window.weatherFullName);
-      const name = full ? full(wxEntry.weather) : 'weather';
-      parts.push(name);
+      parts.push(full ? full(wxKey) : 'weather');
     }
+
     if (hasNote) parts.push('has note');
     if (parts.length) cell.setAttribute('aria-label', `${date}: ${parts.join('; ')}`);
   }

@@ -347,14 +347,3 @@ textarea {
 #recordsTab #calendarTab .calendar-day .dot[data-performance='poor'] {
   background: var(--perf-poor, #f87171);
 }
-
-#recordsTab #calendarTab .calendar-day .overflow {
-  font-size: 0.75em;
-  margin-left: 2px;
-  padding: 0 4px;
-  border-radius: 9999px;
-  min-width: 18px;
-  text-align: center;
-  line-height: 1.2;
-  border: 1px solid rgba(0, 0, 0, 0.15);
-}
