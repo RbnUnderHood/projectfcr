@@ -1,80 +1,112 @@
 /* === Base (global) — keep in styles.css === */
 
-* { margin: 0; padding: 0; box-sizing: border-box; }
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
 body {
-  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  font-family:
+    'Roboto',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    'Helvetica Neue',
+    Arial,
+    sans-serif;
   /* keep your existing background/color lines */
 }
 /* ==== Compact-10 bundle (whole app, safe + reversible) ==== */
 /* Tokens */
-:root{
-  --ui-font-body: clamp(14px, 3.2vw, 19px);     /* base text */
-  --ui-font-label: clamp(13px, 2.9vw, 18px);    /* form labels */
-  --ui-font-small: clamp(12px, 2.6vw, 14px);    /* nav labels, hints */
-  --ui-font-title: clamp(45px, 3.6vw, 20px);    /* small titles/cards */
-  --ui-pad-v: 2px;                               /* vertical padding (reduced) */
-  --ui-pad-h: 8px;                              /* horizontal padding */
-  --ui-min-tap: 44px;                            /* min touch size */
-  --ui-radius: 15px;                             /* slightly tighter corners */
-  --bottom-nav-h: 50px;                         /* height of the fixed bottom nav */
-  --bottom-gap: 8px;      /* comfy visual gap above nav (tweak 4–12px) */
+:root {
+  --ui-font-body: clamp(14px, 3.2vw, 19px); /* base text */
+  --ui-font-label: clamp(13px, 2.9vw, 18px); /* form labels */
+  --ui-font-small: clamp(12px, 2.6vw, 14px); /* nav labels, hints */
+  --ui-font-title: clamp(45px, 3.6vw, 20px); /* small titles/cards */
+  --ui-pad-v: 2px; /* vertical padding (reduced) */
+  --ui-pad-h: 8px; /* horizontal padding */
+  --ui-min-tap: 44px; /* min touch size */
+  --ui-radius: 15px; /* slightly tighter corners */
+  --bottom-nav-h: 50px; /* height of the fixed bottom nav */
+  --bottom-gap: 8px; /* comfy visual gap above nav (tweak 4–12px) */
 }
 
 /* shared panel shell used across views and inner tabs */
 .tab-content {
   display: none;
   background: #ffffff;
-  border: 2px solid #EFEBE9;
+  border: 2px solid #efebe9;
   border-radius: 16px;
   padding: 8px;
   padding-bottom: 0px;
-  box-shadow: 0 8px 24px rgba(0,0,0,.06);
-  .tab-content.active { display: block; }
-/* keep last CTAs clear of the fixed bottom nav */
-.tab-content{
-  padding-bottom: calc(var(--bottom-nav-h) + 2px + env(safe-area-inset-bottom));
-}
-/* keep content clear of the fixed bottom nav, outside the white cards */
-.container{
-  padding-bottom: calc(var(--bottom-nav-h) + var(--bottom-gap) + env(safe-area-inset-bottom));
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+  .tab-content.active {
+    display: block;
+  }
+  /* keep last CTAs clear of the fixed bottom nav */
+  .tab-content {
+    padding-bottom: calc(var(--bottom-nav-h) + 2px + env(safe-area-inset-bottom));
+  }
+  /* keep content clear of the fixed bottom nav, outside the white cards */
+  .container {
+    padding-bottom: calc(var(--bottom-nav-h) + var(--bottom-gap) + env(safe-area-inset-bottom));
+  }
 }
 
+.tab-content.active {
+  display: block;
 }
-
-.tab-content.active { display: block; }
 /* keep last CTAs clear of the fixed bottom nav */
-.tab-content{
+.tab-content {
   padding-bottom: calc(var(--bottom-nav-h) + 4px + env(safe-area-inset-bottom));
 }
 /* avoid extra scroll from last child margins */
-.tab-content > *:last-child{
+.tab-content > *:last-child {
   margin-bottom: 0;
 }
 
 /* Reusable card (same look as .tab-content but not tied to tab logic) */
-.tab-card{
-  background:#ffffff;
-  border:2px solid #EFEBE9;
-  border-radius:16px;
-  padding:8px;
-  box-shadow:0 8px 24px rgba(0, 0, 0, 0.253);
+.tab-card {
+  background: #ffffff;
+  border: 2px solid #efebe9;
+  border-radius: 16px;
+  padding: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.253);
 }
 
 /* shared form system */
-.input-section { display: grid; grid-template-columns: 1fr; gap: 8px; margin-bottom: 8px; }
-.input-group   { display: grid; gap: 8px; }
-.input-label   { font-weight: 700; color: #5D4037; font-size: 1rem; display: flex; align-items: center; gap: 8px; }
-.input-hint    { font-size: .9rem; color: #8D6E63; }
+.input-section {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.input-group {
+  display: grid;
+  gap: 8px;
+}
+.input-label {
+  font-weight: 700;
+  color: #5d4037;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.input-hint {
+  font-size: 0.9rem;
+  color: #8d6e63;
+}
 
 .input-field {
   padding: 18px 16px;
-  border: 2px solid #EFEBE9;
+  border: 2px solid #efebe9;
   border-radius: 16px;
   font-size: 1.05rem;
   font-weight: 500;
-  transition: all .3s ease;
-  background: #FFF8E1;
+  transition: all 0.3s ease;
+  background: #fff8e1;
   min-height: 58px;
   width: 100%;
   -webkit-appearance: none;
@@ -83,33 +115,56 @@ body {
   outline: none;
   border-color: #e9b1ff;
   background: #fff9f9;
-  box-shadow: 0 0 0 3px rgba(76,175,80,.2);
+  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
 }
 
 /* shared results layout */
-.results-section { display: none; grid-template-columns: 1fr; gap: 16px; margin-top: 16px; }
-.results-section.show { display: grid; }
-
-.result-value { font-size: 1.8rem; font-weight: 700; margin-bottom: 10px; }
-.result-value.excellent { color: #4CAF50; }
-.result-value.good      { color: #8BC34A; }
-.result-value.average   { color: #FFA000; }
-.result-value.poor      { color: #FF7043; }
-.result-description { color: #8D6E63; font-size: .95rem; line-height: 1.6; }
-
-/* Form modifier: center just this input group’s label (and optionally the field) */
-.input-group--center .input-label { 
-  display: block; 
-  text-align: center; 
+.results-section {
+  display: none;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  margin-top: 16px;
+}
+.results-section.show {
+  display: grid;
 }
 
-.form-vertical{
+.result-value {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+.result-value.excellent {
+  color: #4caf50;
+}
+.result-value.good {
+  color: #8bc34a;
+}
+.result-value.average {
+  color: #ffa000;
+}
+.result-value.poor {
+  color: #ff7043;
+}
+.result-description {
+  color: #8d6e63;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+/* Form modifier: center just this input group’s label (and optionally the field) */
+.input-group--center .input-label {
+  display: block;
+  text-align: center;
+}
+
+.form-vertical {
   display: grid;
   gap: var(--form-gap);
 }
 
 /* Labels centered, consistent spacing */
-.form-vertical .input-label{
+.form-vertical .input-label {
   display: block;
   text-align: center;
   margin: 0 0 var(--form-label-mb) 0;
@@ -119,13 +174,13 @@ body {
 }
 
 /* 1) Forms: labels + fields */
-.input-label{
+.input-label {
   font-size: var(--ui-font-label);
   line-height: 1.2;
 }
 .input-field,
 select,
-textarea{
+textarea {
   font-size: var(--ui-font-body);
   padding: calc(var(--ui-pad-v) - 2px) var(--ui-pad-h);
   min-height: var(--ui-min-tap);
@@ -133,68 +188,173 @@ textarea{
   box-sizing: border-box;
 }
 /* ——— reusable info icon + mini hints ——— */
-.input-label.has-i{ position: relative; padding-right: 18px; }
-.input-label.has-i::after{
-  content: "i";
+.input-label.has-i {
+  position: relative;
+  padding-right: 18px;
+}
+.input-label.has-i::after {
+  content: 'i';
   display: inline-flex;
-  align-items: center; justify-content: center;
-  width: 14px; height: 14px;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
   margin-left: 6px;
   border-radius: 50%;
-  border: 1px solid rgba(0,0,0,0.25);
-  font-size: 10px; font-weight: 700;
-  line-height: 1; color: #37474F; background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.25);
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+  color: #37474f;
+  background: #fff;
   vertical-align: middle;
 }
 
-
-.metric-title .info:hover{ opacity: 1; }
+.metric-title .info:hover {
+  opacity: 1;
+}
 /* DHP performance colors */
-.metric-card.dhp.great { background: #E6F4EA; }   /* green tint */
-.metric-card.dhp.ok    { background: #FFF7E0; }   /* amber tint */
-.metric-card.dhp.low   { background: #FFE9D6; }   /* orange tint */
-.metric-card.dhp.poor  { background: #FFE3E3; }   /* red tint */
+.metric-card.dhp.great {
+  background: #e6f4ea;
+} /* green tint */
+.metric-card.dhp.ok {
+  background: #fff7e0;
+} /* amber tint */
+.metric-card.dhp.low {
+  background: #ffe9d6;
+} /* orange tint */
+.metric-card.dhp.poor {
+  background: #ffe3e3;
+} /* red tint */
 
 /* Edit Entry: lock fields that must be changed in Edit Flock */
-#editModal label[for="editDate"],      #editModal #editDate,
-#editModal label[for="editBirds"],     #editModal #editBirds,
-#editModal label[for="editEggWeight"], #editModal #editEggWeight{
-  display:none !important;
+#editModal label[for='editDate'],
+#editModal #editDate,
+#editModal label[for='editBirds'],
+#editModal #editBirds,
+#editModal label[for='editEggWeight'],
+#editModal #editEggWeight {
+  display: none !important;
 }
 
 /* Edit Entry: inline toggle row like Calculator */
-#editModal #editAltToggleRow{
-  display: flex; align-items: center; gap: 8px;
+#editModal #editAltToggleRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 /* Quick Entry: inline toggle row like Calculator */
-#quickEntryModal #qeAltToggleRow{ display:flex; align-items:center; gap:8px; }
+#quickEntryModal #qeAltToggleRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
 
 /* Share the altfeed-box style with Quick Entry too */
-#quickEntryModal .altfeed-box{
-  --alt-radius: 10px; --frame-offset: 8px; --frame-width: 4px;
-  position: relative; border: none; border-radius: var(--alt-radius);
-  background: #ceebd0; padding: 8px 10px; margin-top: 6px;
+#quickEntryModal .altfeed-box {
+  --alt-radius: 10px;
+  --frame-offset: 8px;
+  --frame-width: 4px;
+  position: relative;
+  border: none;
+  border-radius: var(--alt-radius);
+  background: #ceebd0;
+  padding: 8px 10px;
+  margin-top: 6px;
 }
-#quickEntryModal .altfeed-box::before{
-  content:""; position:absolute; inset: calc(var(--frame-offset) * -1);
+#quickEntryModal .altfeed-box::before {
+  content: '';
+  position: absolute;
+  inset: calc(var(--frame-offset) * -1);
   border: var(--frame-width) dashed #c7c7c7;
   border-radius: calc(var(--alt-radius) + var(--frame-offset));
-  pointer-events:none;
+  pointer-events: none;
 }
-#quickEntryModal .altfeed-box .input-field{ background:#FFF8E1; border-color:#D7CCC8; }
-#quickEntryModal .altfeed-box .input-hint{ font-size:12px; line-height:1.2; color:#5d4037; margin-top:6px; }
-#quickEntryModal .altfeed-box .input-hint::before{ content:"💡 "; font-size:12px; }
+#quickEntryModal .altfeed-box .input-field {
+  background: #fff8e1;
+  border-color: #d7ccc8;
+}
+#quickEntryModal .altfeed-box .input-hint {
+  font-size: 12px;
+  line-height: 1.2;
+  color: #5d4037;
+  margin-top: 6px;
+}
+#quickEntryModal .altfeed-box .input-hint::before {
+  content: '💡 ';
+  font-size: 12px;
+}
 
 /* Grey out disabled controls in Edit modal */
-#editModal [disabled]{ opacity:.5; cursor:not-allowed; }
-
-#recordsTab #historyTab { 
-  padding-top: 0px; 
-  padding-left: 4px; 
-  padding-right: 4px; 
-  /* keep bottom at 8px if you like the extra space below, or set to 4px as well */
+#editModal [disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
+#recordsTab #historyTab {
+  padding-top: 0px;
+  padding-left: 4px;
+  padding-right: 4px;
+  /* keep bottom at 8px if you like the extra space below, or set to 4px as well */
+}
+/* Calendar cell decorations --------------------------------------------- */
+#recordsTab #calendarTab .calendar-day {
+  position: relative;
+}
 
+#recordsTab #calendarTab .calendar-day .day-badge {
+  position: absolute;
+  font-size: 0.9em;
+  line-height: 1;
+}
 
+#recordsTab #calendarTab .calendar-day .day-badge.note {
+  top: 4px;
+  left: 6px;
+}
+#recordsTab #calendarTab .calendar-day .day-badge.weather {
+  top: 4px;
+  right: 6px;
+}
 
+#recordsTab #calendarTab .calendar-day .dot-strip {
+  position: absolute;
+  left: 6px;
+  right: 6px;
+  bottom: 4px;
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+#recordsTab #calendarTab .calendar-day .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+  display: inline-block;
+}
+
+/* Performance colors (fallbacks; your CSS vars still win) */
+#recordsTab #calendarTab .calendar-day .dot[data-performance='excellent'] {
+  background: var(--perf-excellent, #4ade80);
+}
+#recordsTab #calendarTab .calendar-day .dot[data-performance='good'] {
+  background: var(--perf-good, #60a5fa);
+}
+#recordsTab #calendarTab .calendar-day .dot[data-performance='average'] {
+  background: var(--perf-average, #fbbf24);
+}
+#recordsTab #calendarTab .calendar-day .dot[data-performance='poor'] {
+  background: var(--perf-poor, #f87171);
+}
+
+#recordsTab #calendarTab .calendar-day .overflow {
+  font-size: 0.75em;
+  margin-left: 2px;
+  padding: 0 4px;
+  border-radius: 9999px;
+  min-width: 18px;
+  text-align: center;
+  line-height: 1.2;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+}
