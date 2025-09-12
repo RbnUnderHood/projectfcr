@@ -305,13 +305,14 @@ textarea {
 
 #recordsTab #calendarTab .calendar-day .day-badge {
   position: absolute;
-  font-size: 0.9em;
+  font-size: 0.8em;
   line-height: 1;
 }
 
 #recordsTab #calendarTab .calendar-day .day-badge.note {
-  top: 4px;
-  left: 6px;
+  top: 0px;
+  left: -6.5px;
+  text-shadow: #37474f 1px 2px 4px;
 }
 #recordsTab #calendarTab .calendar-day .day-badge.weather {
   top: 4px;
@@ -320,11 +321,11 @@ textarea {
 
 #recordsTab #calendarTab .calendar-day .dot-strip {
   position: absolute;
-  left: 6px;
-  right: 6px;
-  bottom: 4px;
+  left: 8px;
+  right: 8px;
+  bottom: 8px;
   display: flex;
-  gap: 4px;
+  gap: 5px;
   align-items: center;
 }
 
