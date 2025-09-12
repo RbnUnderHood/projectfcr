@@ -1,4 +1,49 @@
 'use strict';
+
+// ---- Day-level weather (one per date) ----
+window.dayWeather = window.dayWeather || {};
+
+function _normalizeWx(x) {
+  // prefer your normalizeWeather if present; else uppercase key
+  return typeof window.normalizeWeather === 'function'
+    ? window.normalizeWeather(x)
+    : String(x || '').toUpperCase();
+}
+
+function getDayWeather(dateStr) {
+  const w = window.dayWeather[dateStr];
+  return w ? _normalizeWx(w) : '';
+}
+
+function setDayWeather(dateStr, weather) {
+  const key = _normalizeWx(weather);
+  if (!key) return;
+  window.dayWeather[dateStr] = key;
+
+  // sync all events on that date to the canonical day weather
+  const arr = Array.isArray(window.calendarEvents)
+    ? window.calendarEvents
+    : (window.calendarEvents = []);
+  for (const ev of arr) {
+    if (ev && (ev.date === dateStr || ev.isoDate === dateStr)) {
+      ev.weather = key;
+    }
+  }
+  if (typeof saveCalendar === 'function') saveCalendar();
+}
+
+// Rebuild dayWeather on load (so it persists via events)
+function bootstrapDayWeatherFromEvents() {
+  const arr = Array.isArray(window.calendarEvents) ? window.calendarEvents : [];
+  for (const ev of arr) {
+    if (!ev || !ev.date || !ev.weather) continue;
+    if (!window.dayWeather[ev.date]) {
+      window.dayWeather[ev.date] = _normalizeWx(ev.weather);
+    }
+  }
+}
+document.addEventListener('DOMContentLoaded', bootstrapDayWeatherFromEvents);
+
 // Legacy painter disabled (kept as no-ops to avoid accidental calls)
 function normalizeCalendarDOM() {}
 function paintCalendarByDate() {}
@@ -471,7 +516,7 @@ function openQuickEntryModal(dateStr) {
   var an = byId('qeAltName');
   if (an) an.value = '';
 
-  _populateWeatherSelect('qeWeather', '');
+  _populateWeatherSelect('qeWeather', getDayWeather(dateStr) || '');
 
   // future day UX: notes-only → disable inputs
   var isFuture = _isFutureYMD(dateStr);
@@ -524,6 +569,7 @@ function submitQuickEntry() {
   var eggCount = parseInt(byId('qeEggs').value, 10);
   var weather = (byId('qeWeather') || {}).value || '';
   var notes = (byId('qeNotes') || {}).value || '';
+
   // Alt feed (Quick Entry)
   var altOn = !!(byId('qeAltToggle') && byId('qeAltToggle').checked);
   var altFeedKg = altOn ? parseDec((byId('qeAltKg') && byId('qeAltKg').value) || '0') : 0;
@@ -532,47 +578,28 @@ function submitQuickEntry() {
     ? String((byId('qeAltName') && byId('qeAltName').value) || '').trim()
     : '';
 
-  /* --- hard rule: no FCR in the future (notes-only allowed) --- */
+  // --- FUTURE DATES: notes-only; enforce day-level weather as well ---
   if (_isFutureYMD(dateStr)) {
     var noteOnly = String(notes || '').trim();
     if (!noteOnly) {
       alert('Future dates allow notes/reminders only.\nPlease enter a note.');
       return;
     }
-    // (optional) pick current flock for title; safe if qeFlock exists
-    var fidEl = byId('qeFlock');
-    var flock = null;
-    if (fidEl) {
-      var fid = fidEl.value;
-      flock = (Array.isArray(window.flocks)
-        ? window.flocks.find((x) => String(x.id) === String(fid))
-        : null) || {
-        id: fid,
-        name:
-          fidEl.options && fidEl.options[fidEl.selectedIndex]
-            ? fidEl.options[fidEl.selectedIndex].text
-            : 'Unnamed Flock',
-      };
-    }
-    if (typeof addNoteEvent === 'function') addNoteEvent(dateStr, noteOnly, weather, flock);
-    hideModal('quickEntryModal');
-    renderCalendar();
-    if (typeof window.openDay === 'function') openDay(dateStr); // show it immediately
-    return; // STOP: no FCR record on future dates
-  }
 
-  /* --- hard rule: no FCR in the future (notes-only allowed) --- */
-  if (_isFutureYMD(dateStr)) {
-    var noteOnly = String(notes || '').trim();
-    if (!noteOnly) {
-      alert('Future dates allow notes/reminders only.\nPlease enter a note.');
-      return;
-    }
+    // Canonicalize weather for the day (set if provided; otherwise keep existing)
+    if (weather) setDayWeather(dateStr, weather);
+    else weather = getDayWeather(dateStr) || '';
+
     if (typeof addNoteEvent === 'function') addNoteEvent(dateStr, noteOnly, weather);
     hideModal('quickEntryModal');
     renderCalendar();
-    return; // stop here: no FCR record, just a note event
+    if (typeof window.openDay === 'function') openDay(dateStr);
+    return; // stop here: no FCR on future dates
   }
+
+  // --- NORMAL DATES: canonicalize weather at the day level ---
+  if (weather) setDayWeather(dateStr, weather);
+  else weather = getDayWeather(dateStr) || '';
 
   if (!feedAmt || !eggCount) {
     alert('Please fill in Feed and Eggs with valid numbers');
@@ -602,7 +629,7 @@ function submitQuickEntry() {
     currencyCode: currencyCode,
     feedPricePerKg: feedPricePerKg,
     notes: notes,
-    weather: weather,
+    weather: weather, // <-- canonical day-level weather
   };
 
   if (isDuplicate(dateStr, f.id)) {
@@ -617,6 +644,7 @@ function submitQuickEntry() {
   if (typeof window.openDay === 'function') openDay(dateStr);
   if (typeof window.renderHistoryTable === 'function') window.renderHistoryTable();
 }
+
 // @ts-check
 
 /** priority: poor (3) > average (2) > good (1) > excellent (0) */
@@ -663,6 +691,7 @@ function decorateCalendarMonth(root = document) {
     const strip = /** @type {HTMLElement} */ (cell.querySelector('.dot-strip'));
     noteBadge.textContent = '';
     wxBadge.textContent = '';
+
     strip.textContent = '';
 
     // events for that date
@@ -673,19 +702,28 @@ function decorateCalendarMonth(root = document) {
     const hasNote = events.some((e) => String(e?.note || e?.notes || '').trim().length > 0);
     if (hasNote) noteBadge.textContent = '📝';
 
-    // weather → emoji ONLY (no raw text like "OPTIMAL")
+    // weather → emoji ONLY (prefer day-level weather if available)
+    const normalize =
+      typeof window.normalizeWeather === 'function'
+        ? window.normalizeWeather
+        : (x) => String(x || '').toUpperCase();
+    const map = /** @type {Record<string, {emoji:string}>|undefined} */ (window.WEATHER_BADGES);
+
     const wxEntry = events
       .filter((e) => e?.weather)
       .sort((a, b) => String(a.startTime || '').localeCompare(String(b.startTime || '')))[0];
 
-    if (wxEntry) {
-      const normalize =
-        typeof window.normalizeWeather === 'function'
-          ? window.normalizeWeather
-          : (x) => String(x || '').toUpperCase();
-      const map = /** @type {Record<string, {emoji:string}>|undefined} */ (window.WEATHER_BADGES);
-      const key = normalize(wxEntry.weather).toUpperCase();
-      wxBadge.textContent = map && map[key] && map[key].emoji ? map[key].emoji : '';
+    const dayWx = typeof getDayWeather === 'function' ? getDayWeather(date) : '';
+    const wxKey = dayWx || (wxEntry ? normalize(wxEntry.weather) : '');
+
+    // set emoji and mark key on the element so CSS can target it
+    if (wxKey) {
+      const emoji = map?.[String(wxKey).toUpperCase()]?.emoji || '';
+      wxBadge.textContent = emoji;
+      wxBadge.setAttribute('data-wx', String(wxKey).toUpperCase());
+    } else {
+      wxBadge.textContent = '';
+      wxBadge.removeAttribute('data-wx');
     }
 
     // dots (max 3)
@@ -713,12 +751,7 @@ function decorateCalendarMonth(root = document) {
       .join(', ');
     if (perfSummary) parts.push(perfSummary);
 
-    if (wxEntry) {
-      const normalize =
-        typeof window.normalizeWeather === 'function'
-          ? window.normalizeWeather
-          : (x) => String(x || '').toUpperCase();
-      const wxKey = normalize(wxEntry.weather);
+    if (wxKey) {
       const full = /** @type {(x:any)=>string|undefined} */ (window.weatherFullName);
       parts.push(full ? full(wxKey) : 'weather');
     }

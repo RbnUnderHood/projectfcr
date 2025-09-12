@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="css/reference.css">
   <link rel="stylesheet" href="css/flocks.css">
   <link rel="stylesheet" href="css/history.css">
-  <link rel="stylesheet" href="css/calendar.css">
+    <link rel="stylesheet" href="css/calendar.css">
   <!-- keep project-specific extras at the end -->
   <link rel="stylesheet" href="css/settings.css">
   <link rel="stylesheet" href="css/calculator.css">
@@ -1348,9 +1348,16 @@
       new MutationObserver(() => setTimeout(hydrateAll, 0))
         .observe(document.body, { childList: true, subtree: true });
 
-      // expose for later steps
-      window.WEATHER_BADGES = WEATHER_BADGES;
-      window.WX_MAP_OLD = MAP_OLD;
+      // expose for later steps (do NOT overwrite the map from weather.js)
+if (!window.WEATHER_BADGES || Array.isArray(window.WEATHER_BADGES)) {
+  // Convert our local array into the map shape expected by calendar.js
+  const BADGE_MAP = Object.fromEntries(WEATHER_BADGES.map(
+    b => [b.key, { emoji: b.icon, label: b.label }]
+  ));
+  window.WEATHER_BADGES = BADGE_MAP;
+}
+window.WX_MAP_OLD = MAP_OLD;
+
     })();
   </script>
   <!-- Bottom navigation -->

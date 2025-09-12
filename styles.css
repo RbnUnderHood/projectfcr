@@ -305,8 +305,9 @@ textarea {
 
 #recordsTab #calendarTab .calendar-day .day-badge {
   position: absolute;
-  font-size: 0.8em;
+  font-size: 0.7em;
   line-height: 1;
+  text-shadow: #37474f 1px 2px 4px;
 }
 
 #recordsTab #calendarTab .calendar-day .day-badge.note {
@@ -315,17 +316,17 @@ textarea {
   text-shadow: #37474f 1px 2px 4px;
 }
 #recordsTab #calendarTab .calendar-day .day-badge.weather {
-  top: 4px;
-  right: 6px;
+  top: 0px;
+  right: -3px;
 }
 
 #recordsTab #calendarTab .calendar-day .dot-strip {
   position: absolute;
   left: 8px;
   right: 8px;
-  bottom: 8px;
+  bottom: 3px;
   display: flex;
-  gap: 5px;
+  gap: 4px;
   align-items: center;
 }
 
@@ -338,10 +339,10 @@ textarea {
 
 /* Performance colors (fallbacks; your CSS vars still win) */
 #recordsTab #calendarTab .calendar-day .dot[data-performance='excellent'] {
-  background: var(--perf-excellent, #4ade80);
+  background: var(--perf-excellent, #01772c);
 }
 #recordsTab #calendarTab .calendar-day .dot[data-performance='good'] {
-  background: var(--perf-good, #60a5fa);
+  background: var(--perf-good, #42ff42);
 }
 #recordsTab #calendarTab .calendar-day .dot[data-performance='average'] {
   background: var(--perf-average, #fbbf24);
@@ -354,8 +355,13 @@ textarea {
   #calendarTab .calendar-day .dot-strip {
     gap: 3px;
   }
-  #calendarTab .calendar-day .dot {
-    width: 5px;
-    height: 5px;
-  }
+}
+#calendarTab .day-badge.weather[data-wx='OPTIMAL'] {
+  font-size: 0.2rem;
+} /* tweak size as you like */
+
+/* Bigger size only for OPTIMAL (✅) */
+#calendarTab .calendar-day .day-badge.weather[data-wx='OPTIMAL'] {
+  font-size: 0.6em !important; /* tweak value; !important ensures it overrides base size */
+  line-height: 1;
 }
