@@ -110,6 +110,7 @@ body {
   min-height: 58px;
   width: 100%;
   -webkit-appearance: none;
+  appearance: none;
 }
 .input-field:focus {
   outline: none;
@@ -346,4 +347,14 @@ textarea {
 }
 #recordsTab #calendarTab .calendar-day .dot[data-performance='poor'] {
   background: var(--perf-poor, #f87171);
+}
+/* Narrow screens: tighten the dots a touch */
+@media (max-width: 400px) {
+  #calendarTab .calendar-day .dot-strip {
+    gap: 3px;
+  }
+  #calendarTab .calendar-day .dot {
+    width: 5px;
+    height: 5px;
+  }
 }

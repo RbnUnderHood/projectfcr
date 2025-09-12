@@ -1,4 +1,11 @@
 'use strict';
+// Legacy painter disabled (kept as no-ops to avoid accidental calls)
+function normalizeCalendarDOM() {}
+function paintCalendarByDate() {}
+window.calendarByDate = {};
+window.buildCalendarByDate = function () {
+  return {};
+};
 
 /* ========= Calendar & Quick Entry =========
    Depends on: byId, showModal, hideModal, todayISO, fmtMoney (from js/utils.js)
@@ -769,17 +776,16 @@ function gotoTodayOnCalendar() {
 }
 
 /* ========= Expose ========= */
-window.addOrUpdateFcrEvent = addOrUpdateFcrEvent;
-window.renderCalendar = renderCalendar;
-window.changeMonth = changeMonth;
-window.openDay = openDay;
-window.showEventsForDate = showEventsForDate;
-
-window.openQuickEntryModal = openQuickEntryModal;
-window.closeQuickEntry = closeQuickEntry;
-window.submitQuickEntry = submitQuickEntry;
-window.addNoteEvent = addNoteEvent;
-window.gotoTodayOnCalendar = gotoTodayOnCalendar;
-window.gotoTodayOnCalendar = gotoTodayOnCalendar;
-window.addNoteEvent = addNoteEvent;
-window.gotoTodayOnCalendar = gotoTodayOnCalendar;
+Object.assign(window, {
+  addOrUpdateFcrEvent,
+  renderCalendar,
+  changeMonth,
+  openDay,
+  showEventsForDate,
+  openQuickEntryModal,
+  closeQuickEntry,
+  submitQuickEntry,
+  addNoteEvent,
+  gotoTodayOnCalendar,
+  decorateCalendarMonth,
+});
