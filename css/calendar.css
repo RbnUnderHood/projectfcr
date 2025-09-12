@@ -6,13 +6,16 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
+  gap: 0px;
   padding: 0px 0;                   /* ← no left/right padding */
   min-height: 40px;
-  margin: 0 0 6px 0;
+  margin: 0 0 0px 0;
+  margin-left: -3px;
+  margin-right: -3px;
+  margin-top: -3px;
   background: #5590ff;
   color: #000000;
-  border-radius: 8px;
+  border-radius: 13px;
   margin-bottom: 2px;
   box-shadow:0 2px 4px rgba(0, 0, 0, 0.219);
 }
@@ -31,7 +34,7 @@
 /* Month switcher row */
 #recordsTab #calendarTab .calendar-nav{
   display: grid;
-  grid-template-columns: 5px 3fr 50px; /* compact */
+  grid-template-columns: 50px 3fr 50px; /* compact */
   align-items: stretch;
   width: 100%;
   gap: 38px;
@@ -53,13 +56,13 @@
   display: grid;
   place-items: center;
   font-weight: 800;
-  font-size: 14px;           /* fits the chip */
+  font-size: 16px;           /* fits the chip */
   color: #9c682c;
-  background: #f8d095;
-  border-radius: 8px;
-  padding: 4px 2px;
+  background: #ffcf86;
+  border-radius: 15px;
+  padding: 5px 5px;
   line-height: 1.1;
-  margin-top: 2px;
+  margin-top: 1px;
   margin-bottom: 6px;
   box-shadow:0 2px 4px rgba(0, 0, 0, 0.219);
 }

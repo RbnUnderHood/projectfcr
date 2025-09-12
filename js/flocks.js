@@ -267,10 +267,12 @@ function openSettingsFromHint(ev){
     var btn = document.querySelector('[data-target="#settingsTab"], [data-target="settingsTab"], .nav-btn-settings');
     if (btn && btn.click) btn.click();
     else {
-      document.querySelectorAll('.tab-content').forEach(function(el){
-        el.style.display = (el.id === 'settingsTab') ? '' : 'none';
-      });
-    }
+  document.querySelectorAll('.tab-content').forEach(function (el) {
+    el.classList.toggle('active', el.id === 'settingsTab');
+    el.style.display = ''; // clear any old inline override
+  });
+}
+
   }
 
   // Nice UX: focus currency selector

@@ -42,8 +42,7 @@ body { padding-bottom: calc(56px + env(safe-area-inset-bottom)); }
 /* === Active nav highlight (pure CSS) === */
 .bottom-nav button {
   opacity: .7;
-  transition: transform .15s ease, box-shadow .15s ease, opacity .15s ease;
-  
+  transition: transform .15s ease, box-shadow .15s ease, opacity .15s ease;  
 }
 
 /* little pill indicator + full opacity on the active button */
