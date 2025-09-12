@@ -7,14 +7,7 @@
   align-items: center;
   margin-bottom: 0;
 }
-#recordsTab #historyTab .history-header{
-  /* keep the 3-col grid you already use to center the title */
-  background: var(--history-header-bg, #FFA000);
-  color: var(--history-header-fg, #000000);
-  border-radius: 12px 12px 0 0;    /* rounded top corners */
-  padding: 1px 1px;
-  margin: 0 0 0 0;                 /* sit flush to the table */
-}
+
 /* ==== History compact tune (scoped to the History panel only) ==== */
 #historyTab{
   --hist-font: clamp(1px, 2.9vw, 15px);
@@ -166,3 +159,24 @@
   border:none;border-radius:50%;width:40px;height:40px;
   display:flex;align-items:center;justify-content:center;
   cursor:pointer;transition:all .3s ease;font-size:18px;font-weight:bold}
+
+  /* Make the orange header sit flush with the top of the card */
+#historyTab .history-section { 
+  padding-top: 0; 
+  margin-top: 5px; 
+}
+
+/* Kill any first-child top margin that may be collapsing into the wrapper */
+#historyTab .history-section > *:first-child {
+  margin-top: 0;
+}
+
+/* Pull the banner over the card's inner padding (tab-content uses ~8px) */
+#historyTab .history-header {
+  margin-top: -8px;     /* match the inner padding of .tab-content */
+  margin-left: -0px;
+  margin-right: -0px;
+  border-radius: 12px 12px 0 0;
+  background: var(--history-header-bg, #FFA000);
+  color: var(--history-header-fg, #000000);  /* rounded top corners */
+}

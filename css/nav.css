@@ -39,3 +39,63 @@ body { padding-bottom: calc(56px + env(safe-area-inset-bottom)); }
   font-size: 12px;
   line-height: 1.1;
 }
+/* === Active nav highlight (pure CSS) === */
+.bottom-nav button {
+  opacity: .7;
+  transition: transform .15s ease, box-shadow .15s ease, opacity .15s ease;
+  
+}
+
+/* little pill indicator + full opacity on the active button */
+.bottom-nav button::after {
+  content: "";
+  display: block;
+  width: 0;
+  height: 0px;
+  margin: 0 auto;
+  border-radius: 999px;
+  transition: width .15s ease, height .15s ease, background-color .15s ease;
+}
+
+/* Calculator */
+body:has(#calculatorTab.active) .bottom-nav #navCalculator {
+  opacity: 1;
+  transform: translateY(-2px);
+  box-shadow: 0 3px 10px rgba(0,0,0,.12);
+}
+body:has(#calculatorTab.active) .bottom-nav #navCalculator::after {
+  width: 29px; height: 4px; background: #b833a1; margin-top: -2px;
+}
+
+/* Records */
+body:has(#recordsTab.active) .bottom-nav #navRecords {
+  opacity: 1;
+  transform: translateY(-2px);
+  box-shadow: 0 3px 10px rgba(0,0,0,.12);
+}
+body:has(#recordsTab.active) .bottom-nav #navRecords::after {
+  width: 29px; height: 4px; background: #FF9800; margin-top: -2pxx;
+}
+
+/* Flocks */
+body:has(#flocksTab.active) .bottom-nav #navFlocks {
+  opacity: 1;
+  transform: translateY(-2px);
+  box-shadow: 0 3px 10px rgba(0,0,0,.12);
+}
+body:has(#flocksTab.active) .bottom-nav #navFlocks::after {
+  width: 29px; height: 4px; background: #43A047; margin-top: -2px;
+}
+
+/* Reference */
+body:has(#referenceTab.active) .bottom-nav #navReference {
+  opacity: 1;
+  transform: translateY(-2px);
+  box-shadow: 0 3px 10px rgba(0,0,0,.12);
+}
+body:has(#referenceTab.active) .bottom-nav #navReference::after {
+  width: 29px; height: 4px; background: #3F51B5; margin-top: -2px;
+}
+.bottom-nav{
+  overflow: hidden;        /* clip shadows inside the bar */
+}

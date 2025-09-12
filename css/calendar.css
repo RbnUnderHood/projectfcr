@@ -25,17 +25,17 @@
   margin: 10px;
   font-weight: 700;
   font-size: 19px;                  /* compact title */
-  line-height: 1.2;
+  line-height: 1.0;
 }
 
 /* Month switcher row */
 #recordsTab #calendarTab .calendar-nav{
   display: grid;
-  grid-template-columns: 50px 1fr 50px; /* compact */
-  align-items: center;
+  grid-template-columns: 5px 3fr 50px; /* compact */
+  align-items: stretch;
   width: 100%;
   gap: 38px;
-  margin-bottom: 0px;
+  margin-bottom: 8px;
 }
 /* Borderless arrows (same look on all platforms) */
 #recordsTab #calendarTab .calendar-nav-btn{
