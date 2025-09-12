@@ -32,8 +32,8 @@
 }
 
 /* Add Flock panel — tips & spacing */
-#flocksTab .egg-tip{ font-size:12px; line-height:1.2; color:#5d4037; margin-top:6px; }
-#flocksTab .egg-tip::before{ content:"💡 "; font-size:12px; }
+#flocksTab .egg-tip{ font-size:12px; line-height:1.2; color:#5d4037; margin-top:6px; margin-bottom: 2px; }
+#flocksTab .egg-tip::before{ content:"💡 "; font-size:14px; }
 
 #flocksTab .input-hint.tip-box{ margin-bottom:10px; }
 #flocksTab .input-hint.tip-box + .input-group{ margin-top:10px; }
@@ -50,11 +50,6 @@
 }
 #flocksTab .currency-wrap .input-field{ padding-left: 1.8em; }
 
-/* Spacing around cost-per-bag field and Add button */
-#flocksTab #field-cost-per-bag{ margin-top: 6px; }
-#flocksTab #field-cost-per-bag .currency-wrap{ margin-top: 4px; }
-#flocksTab #addFlockBtn{ margin-top: 14px; }
-
 /* Card grid styles (if not added yet) */
 #flocksTab .flock-grid{ display:grid; gap:12px; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); }
 #flocksTab .flock-grid.single .flock-card{ grid-column:1 / -1; }
@@ -63,10 +58,155 @@
 #flocksTab .flock-card .flock-meta{ display:grid; grid-template-columns:auto auto; gap:4px 12px; font-size:13px; line-height:1.2; }
 #flocksTab .flock-card .meta-label{ opacity:.7; }
 #flocksTab .flock-card .card-actions{ margin-top:10px; display:flex; gap:8px; }
-#flocksTab .flock-card .card-actions button{ font-size:12px; padding:6px 10px; border-radius:10px; }
+#flocksTab .flock-card .card-actions button{ font-size:12px; padding:6px 2px; border-radius:10px; }
 
 /* Flocks header: flatten card + center title & pill (match Records) */
 
+/* Manage Flocks — 2-column grid */
+#flocksTab .flock-list{
+  display: grid;
+  gap: 12px;
+  grid-template-columns: 1fr;
+}
+@media (min-width: 480px){
+  #flocksTab .flock-list{ grid-template-columns: 1fr 1fr; }
+}
 
+/* Flock card shell (white card, same style family as others) */
+#flocksTab .flock-card{
+  position: relative;
+  background: #fff;
+  border: 2px solid #EFEBE9;
+  border-radius: 12px;
+  padding: 12px;
+  padding-top: 48px;                 /* space for the top strip */
+  box-shadow: 0 1px 2px rgba(0,0,0,.04);
+  overflow: hidden;
+}
 
+/* Top colored strip with score text from data-score */
+#flocksTab .flock-card::before{
+  content: attr(data-score);         /* e.g., "1.95" */
+  position: absolute;
+  left: -2px; right: -2px; top: -2px;
+  height: 34px;
+  display: flex; align-items: center; justify-content: flex-end;
+  padding: 0 10px;
+  font-weight: 800;
+  font-size: 16px;
+  border-radius: 10px 10px 0 0;
+  background: #e0e0e0;               /* default if no band */
+  color: #2c2c2c;
+}
+
+/* Band colors (visual only for now) */
+#flocksTab .flock-card[data-band="excellent"]::before{ background:#E6F4EA; color:#1b5e20; }
+#flocksTab .flock-card[data-band="good"]::before{       background:#F1F8E9; color:#2e7d32; }
+#flocksTab .flock-card[data-band="average"]::before{    background:#FFF7E0; color:#ef6c00; }
+#flocksTab .flock-card[data-band="poor"]::before{       background:#FFE3E3; color:#c62828; }
+
+/* Nice name & meta inside the card (optional) */
+#flocksTab .flock-card .flock-name{ font-weight:800; margin-bottom:6px; }
+#flocksTab .flock-card .flock-meta{ font-size:.9rem; color:#6b6b6b; }
+
+/* Manage Flocks — single column list with spacing */
+#flocksTab .flock-grid{
+  display: grid;
+  gap: 12px;
+  grid-template-columns: 1fr; /* one big column */
+}
+/* Manage Flocks — single column list with spacing */
+#flocksTab #flocksCardsGrid{
+  display: grid;
+  gap: 12px;
+  grid-template-columns: 1fr; /* one big column */
+}
+
+/* Each flock card (any direct child becomes a card) */
+#flocksTab #flocksCardsGrid > div{
+  position: relative;
+  background: #fffef6;
+  border: 2px solid #c9c9c9;
+  border-radius: 12px;
+  padding: 12px;
+  padding-top: 50px;                 /* space for the top strip */
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.247);
+  overflow: hidden;
+}
+
+/* Top colored strip; text comes from data-score (we'll add later via JS) */
+#flocksTab #flocksCardsGrid > div::before{
+  content: attr(data-score);         /* e.g., "1.95" */
+  position: absolute;
+  left: -2px; right: -2px; top: -2px;
+  height: 36px;
+  display: flex; align-items: center; justify-content: flex-end;
+  padding: 0 10px;
+  font-weight: 800; font-size: 21px;
+  border-radius: 10px 10px 0 0;
+  background: #e0e0e0;               /* default if no band yet */
+  color: #2c2c2c;
+}
+
+/* Band colors (match calendar colors) */
+#flocksTab #flocksCardsGrid > div[data-band="excellent"]::before{ background:#bde7c9; color:#1b5e20; }
+#flocksTab #flocksCardsGrid > div[data-band="good"]::before{       background:#F1F8E9; color:#2e7d32; }
+#flocksTab #flocksCardsGrid > div[data-band="average"]::before{    background:#FFF7E0; color:#ef6c00; }
+#flocksTab #flocksCardsGrid > div[data-band="poor"]::before{       background:#FFE3E3; color:#c62828; }
+
+/* ── Card content layout (scoped to Manage Flocks) ───────────────────────── */
+#flocksTab #flocksCardsGrid > div .flock-head{
+  display:flex; align-items:center; gap:8px;
+  font-weight:800; font-size:1.05rem; margin-bottom:4px;
+}
+#flocksTab #flocksCardsGrid > div .flock-dot{
+  width:8px; height:8px; border-radius:9999px; background:#2e7d32; /* green */
+}
+#flocksTab #flocksCardsGrid > div .flock-sub{
+  color:#6b6b6b; font-size:.92rem; margin-bottom:10px; display:flex; align-items:center; gap:6px;
+}
+#flocksTab #flocksCardsGrid > div .flock-sub .age-dot{
+  width:10px; height:10px; border-radius:50%; background:#ffb74d; display:inline-block;
+}
+
+/* 2×2 metric grid */
+#flocksTab #flocksCardsGrid > div .flock-metrics{
+  display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:10px 0;
+}
+#flocksTab #flocksCardsGrid > div .metric{
+  background:#FFF8E1; border:1px solid #E0E0E0; border-radius:12px; padding:10px;
+}
+#flocksTab #flocksCardsGrid > div .metric .value{
+  font-weight:800; font-size:1.2rem; line-height:1.1; margin-bottom:4px;
+}
+#flocksTab #flocksCardsGrid > div .metric .label{
+  color:#6b6b6b; font-size:.9rem;
+}
+
+/* savings ribbon */
+#flocksTab #flocksCardsGrid > div .savings{
+  margin:8px 0 10px;
+  background:#FFA726; color:#fff; border-radius:12px; padding:10px 12px;
+  font-weight:700; display:flex; align-items:center; gap:8px;
+  box-shadow:0 1px 2px rgba(0,0,0,.08);
+}
+#flocksTab #flocksCardsGrid > div .savings .icon{ font-size:1.1rem; }
+
+/* actions row */
+#flocksTab #flocksCardsGrid > div .flock-actions{
+  display:grid; grid-template-columns:1fr 1fr; gap:10px;
+}
+#flocksTab #flocksCardsGrid > div .btn-secondary{
+  appearance:none; border:1px solid; border-radius:12px; padding:12px;
+  background:#e8f8d5; font-weight:700; cursor:pointer;
+}
+#flocksTab #flocksCardsGrid > div .btn-ghost{
+  appearance:none; border:1px solid #E0E0E0; border-radius:12px; padding:12px;
+  background:#fff; font-weight:700; cursor:pointer;
+}
+
+/* make the numbers a tad tighter like your mock */
+#flocksTab #flocksCardsGrid > div .metric .value .u{
+  opacity:.7; font-weight:600; margin-left:4px; letter-spacing:.02em;
+}
 

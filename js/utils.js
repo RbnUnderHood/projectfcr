@@ -13,16 +13,32 @@ function hasClassId(id, cls) {
 function showModal(id) {
   var m = byId(id);
   if (!m) return;
-  // Ensure modals are direct children of <body> so they overlay correctly
+
+  // keep modals directly under <body> so they overlay correctly
   if (m.parentElement !== document.body) {
     document.body.appendChild(m);
   }
+
   m.style.display = 'flex';
+  m.setAttribute('aria-hidden', 'false');
+
+  // lock background (CSS: body.modal-open { overflow:hidden; } etc.)
+  document.body.classList.add('modal-open');
 }
+
 function hideModal(id) {
   var m = byId(id);
   if (!m) return;
+
   m.style.display = 'none';
+  m.setAttribute('aria-hidden', 'true');
+
+  // remove lock only if no other modal is still visible
+  var anyVisible = Array.prototype.some.call(
+    document.querySelectorAll('.modal'),
+    function (el) { return getComputedStyle(el).display !== 'none'; }
+  );
+  if (!anyVisible) document.body.classList.remove('modal-open');
 }
 
 // ---------- Date helper ----------
@@ -82,4 +98,32 @@ function parseDec(val) {
 }
 
 window.parseDec = parseDec;
+// ---- Quick Entry modal: Cancel / Delete (Clear) ----
+document.addEventListener('DOMContentLoaded', function () {
+  // Helper: clear all QE fields and hide the alt-feed box
+  function resetQuickEntryForm() {
+    var ids = ['qeFeedAmount','qeEggCount','qeNotes','qeWeather','qeAltFeedKg','qeAltFeedName'];
+    ids.forEach(function (id) {
+      var el = document.getElementById(id);
+      if (!el) return;
+      if (el.tagName === 'SELECT') el.value = '';
+      else el.value = '';
+    });
+    var t = document.getElementById('qeAltFeedToggle'); if (t) t.checked = false;
+    var box = document.getElementById('qeAltFeedBox');   if (box) box.style.display = 'none';
+  }
+
+  var cancelBtn = document.getElementById('qeCancelBtn');
+  if (cancelBtn) cancelBtn.addEventListener('click', function () {
+    resetQuickEntryForm();
+    hideModal('quickEntryModal');
+  });
+
+  var delBtn = document.getElementById('qeDeleteBtn'); // “Delete” behaves as Clear here
+  if (delBtn) delBtn.addEventListener('click', function () {
+    if (!confirm('Clear this quick entry?')) return;
+    resetQuickEntryForm();
+    hideModal('quickEntryModal');
+  });
+});
 

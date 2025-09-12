@@ -21,7 +21,7 @@
   --hist-font-small: clamp(12px, 2.6vw, 14px);
   --hist-cell-py: 1px;   /* vertical cell padding */
   --hist-cell-px: 2px;  /* horizontal cell padding */
-  --hist-radius: 10px;
+  --hist-radius: 2px;
 }
 /* Table: fonts + tighter, consistent padding */
 #historyTab table,

@@ -99,47 +99,116 @@ function renderFlockSelect() {
   }
 }
 
-// Flocks table in Flocks tab
+// Flocks table in Flocks tab (single column cards w/ top strip)
 function renderFlocks(){
   var grid = byId('flocksCardsGrid');
   if (!grid) return;
 
   var fl = Array.isArray(window.flocks) ? window.flocks : [];
   var cc = window.defaultCurrency || 'PYG';
+  var H  = Array.isArray(window.calculationHistory) ? window.calculationHistory : [];
   var html = '';
 
-  for (var i = 0; i < fl.length; i++){
-    var f = fl[i];
-    var name = f.name || ('Flock ' + (i+1));
-    var birds = (f.birds || f.birdCount || 0);
-    var age   = (f.ageWeeks != null ? f.ageWeeks + ' wk' : '—');
-    var eggW  = (f.eggWeight != null ? (f.eggWeight + ' g') : '—');
-    var bagKg = (f.feedBagKg > 0 ? f.feedBagKg : '—');
-    var bagCost = (f.feedBagCost > 0
-      ? (window.fmtMoney ? window.fmtMoney(cc, f.feedBagCost) : (cc + ' ' + f.feedBagCost))
-      : '—');
+  // helper: band from FCR (fallback if getPerformanceClass not present)
+  function bandFromFcr(v){
+    if (typeof window.getPerformanceClass === 'function') return window.getPerformanceClass(v);
+    var x = parseFloat(v);
+    if (!isFinite(x)) return '';
+    if (x <= 2.0) return 'excellent';
+    if (x <= 2.4) return 'good';
+    if (x <= 2.8) return 'average';
+    return 'poor';
+  }
 
+  // helper: latest record for a flockId
+  function latestForFlock(fid){
+    var best = null;
+    for (var i=0;i<H.length;i++){
+      var r = H[i];
+      if (!r || r.flockId !== fid) continue;
+      if (!best || String(r.date) > String(best.date) || (r.date===best.date && (r._idx||i) > (best._idx||-1))){
+        best = r; best._idx = i;
+      }
+    }
+    return best;
+  }
+
+  // helpers to print values
+  function money(v, code){
+    if (!isFinite(v)) return '—';
+    if (typeof window.fmtMoney === 'function') return window.fmtMoney(v, code || cc);
+    return (code || cc) + ' ' + (+v).toFixed(2);
+  }
+  function gramsFromKg(v){
+    if (v == null || v === '-') return '—';
+    if (typeof window.fmtGramsFromKg === 'function') return window.fmtGramsFromKg(v);
+    var n = parseFloat(v);
+    if (!isFinite(n)) return '—';
+    return Math.round(n * 1000) + ' g';
+  }
+
+  for (var i = 0; i < fl.length; i++){
+    var f     = fl[i];
+    var name  = f.name || ('Flock ' + (i+1));
+    var birds = (f.birds || f.birdCount || 0);
+    var ageW  = (f.ageWeeks != null ? parseInt(f.ageWeeks,10) : null);
+    var ageTxt= (ageW != null ? (ageW + ' weeks old') : '—');
+
+    // price/kg
     var pricePerKg = 0;
     if (f.feedPricePerKg > 0) pricePerKg = f.feedPricePerKg;
     else if (f.feedBagCost > 0 && f.feedBagKg > 0) pricePerKg = f.feedBagCost / f.feedBagKg;
-    var priceText = pricePerKg
-      ? (window.fmtMoney ? window.fmtMoney(cc, pricePerKg) : (cc + ' ' + pricePerKg.toFixed(2)))
-      : '—';
+
+    // latest calc (for score + metrics)
+    var last = latestForFlock(f.id);
+    var score = last && last.fcrValue ? String(last.fcrValue) : '';
+    var band  = last && last.fcrValue ? bandFromFcr(last.fcrValue) : '';
+
+    var costPerEgg  = last ? money(last.costPerEgg, last.currencyCode) : '—';
+    var feedPerEgg  = last ? gramsFromKg(last.feedPerEgg) : '—';
+    var feedPerBird = last ? gramsFromKg(last.feedPerBird) : '—';
+    var dailyCost   = last ? money(last.costFeedTotal, last.currencyCode) : '—';
+
+    // optional “savings” ribbon from alt feed
+    var savedTxt = (last && isFinite(last.approxSaved) && last.approxSaved > 0)
+      ? ('Saved ' + money(last.approxSaved, last.currencyCode).replace(/^—\s*/,'') + ' with kitchen scraps')
+      : '';
 
     html += ''
-      + '<div class="flock-card" data-index="'+i+'" onclick="openEditFlock('+i+')">'
-      +   '<div class="flock-title">🐓 ' + escapeHtml(name) + '</div>'
-      +   '<div class="flock-meta">'
-      +     '<div class="meta-label">Birds</div><div>' + birds + '</div>'
-      +     '<div class="meta-label">Age</div><div>' + age + '</div>'
-      +     '<div class="meta-label">Egg wt</div><div>' + eggW + '</div>'
-      +     '<div class="meta-label">Bag kg</div><div>' + bagKg + '</div>'
-      +     '<div class="meta-label">Bag cost</div><div>' + bagCost + '</div>'
-      +     '<div class="meta-label">Price/kg</div><div>' + priceText + '</div>'
+      + '<div class="flock-card" data-index="'+i+'"'
+      +       (band  ? ' data-band="'+band+'"'   : '')
+      +       (score ? ' data-score="'+escapeHtml(score)+'"' : '')
+      +       '>'
+
+      // header: name + little status dot
+      +   '<div class="flock-head">'
+      +     '<span class="flock-dot" aria-hidden="true"></span>'
+      +     '<div class="flock-name">'+ escapeHtml(name) +'</div>'
       +   '</div>'
-      +   '<div class="card-actions">'
-      +     '<button type="button" class="calendar-nav-btn" onclick="event.stopPropagation(); openEditFlock('+i+')">Edit</button>'
-      +     '<button type="button" class="delete-btn" title="Delete" onclick="event.stopPropagation(); deleteFlock('+i+')">×</button>'
+
+      // sub: age
+      +   '<div class="flock-sub">'
+      +     '<span class="age-dot" aria-hidden="true"></span>'
+      +     '<span>'+ escapeHtml(ageTxt) +'</span>'
+      +   '</div>'
+
+      // 2x2 metrics
+      +   '<div class="flock-metrics">'
+      +     '<div class="metric"><div class="value">'+ costPerEgg +'</div><div class="label">Cost per Egg</div></div>'
+      +     '<div class="metric"><div class="value">'+ feedPerEgg +'</div><div class="label">Feed per Egg</div></div>'
+      +     '<div class="metric"><div class="value">'+ dailyCost +'</div><div class="label">Daily Feed Cost</div></div>'
+      +     '<div class="metric"><div class="value">'+ feedPerBird +'</div><div class="label">Feed/Bird/Day</div></div>'
+      +   '</div>';
+
+    if (savedTxt){
+      html += '<div class="savings"><span class="icon">🌿</span><span>'+ escapeHtml(savedTxt) +'</span></div>';
+    }
+
+    // actions (keep Edit/Delete for now)
+    html += ''
+      +   '<div class="flock-actions">'
+      +     '<button type="button" class="btn-secondary" onclick="event.stopPropagation(); openEditFlock(' + i + ')">Edit</button>'
+      +     '<button type="button" class="btn-ghost" onclick="event.stopPropagation(); deleteFlock('+i+')" title="Delete">Delete</button>'
       +   '</div>'
       + '</div>';
   }
@@ -147,6 +216,7 @@ function renderFlocks(){
   grid.innerHTML = html;
   grid.classList.toggle('single', fl.length === 1);
 }
+
 window.renderFlocks = renderFlocks;
 
 function escapeHtml(s){ return String(s).replace(/[&<>"]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m])); }

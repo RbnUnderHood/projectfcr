@@ -6,6 +6,20 @@ body {
   font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
   /* keep your existing background/color lines */
 }
+/* ==== Compact-10 bundle (whole app, safe + reversible) ==== */
+/* Tokens */
+:root{
+  --ui-font-body: clamp(14px, 3.2vw, 19px);     /* base text */
+  --ui-font-label: clamp(13px, 2.9vw, 18px);    /* form labels */
+  --ui-font-small: clamp(12px, 2.6vw, 14px);    /* nav labels, hints */
+  --ui-font-title: clamp(45px, 3.6vw, 20px);    /* small titles/cards */
+  --ui-pad-v: 2px;                               /* vertical padding (reduced) */
+  --ui-pad-h: 8px;                              /* horizontal padding */
+  --ui-min-tap: 44px;                            /* min touch size */
+  --ui-radius: 15px;                             /* slightly tighter corners */
+  --bottom-nav-h: 50px;                         /* height of the fixed bottom nav */
+  --bottom-gap: 8px;      /* comfy visual gap above nav (tweak 4–12px) */
+}
 
 /* shared panel shell used across views and inner tabs */
 .tab-content {
@@ -14,22 +28,41 @@ body {
   border: 2px solid #EFEBE9;
   border-radius: 16px;
   padding: 8px;
+  padding-bottom: 0px;
   box-shadow: 0 8px 24px rgba(0,0,0,.06);
+  .tab-content.active { display: block; }
+/* keep last CTAs clear of the fixed bottom nav */
+.tab-content{
+  padding-bottom: calc(var(--bottom-nav-h) + 2px + env(safe-area-inset-bottom));
+}
+/* keep content clear of the fixed bottom nav, outside the white cards */
+.container{
+  padding-bottom: calc(var(--bottom-nav-h) + var(--bottom-gap) + env(safe-area-inset-bottom));
+}
+
 }
 
 .tab-content.active { display: block; }
+/* keep last CTAs clear of the fixed bottom nav */
+.tab-content{
+  padding-bottom: calc(var(--bottom-nav-h) + 4px + env(safe-area-inset-bottom));
+}
+/* avoid extra scroll from last child margins */
+.tab-content > *:last-child{
+  margin-bottom: 0;
+}
 
 /* Reusable card (same look as .tab-content but not tied to tab logic) */
 .tab-card{
-  background:#fff;
+  background:#ffffff;
   border:2px solid #EFEBE9;
   border-radius:16px;
   padding:8px;
-  box-shadow:0 8px 24px rgba(0,0,0,.06);
+  box-shadow:0 8px 24px rgba(0, 0, 0, 0.253);
 }
 
 /* shared form system */
-.input-section { display: grid; grid-template-columns: 1fr; gap: 16px; margin-bottom: 16px; }
+.input-section { display: grid; grid-template-columns: 1fr; gap: 8px; margin-bottom: 8px; }
 .input-group   { display: grid; gap: 8px; }
 .input-label   { font-weight: 700; color: #5D4037; font-size: 1rem; display: flex; align-items: center; gap: 8px; }
 .input-hint    { font-size: .9rem; color: #8D6E63; }
@@ -85,20 +118,6 @@ body {
   line-height: 1.2;
 }
 
-/* ==== Compact-10 bundle (whole app, safe + reversible) ==== */
-/* Tokens */
-:root{
-  --ui-font-body: clamp(14px, 3.2vw, 19px);     /* base text */
-  --ui-font-label: clamp(13px, 2.9vw, 18px);    /* form labels */
-  --ui-font-small: clamp(12px, 2.6vw, 14px);    /* nav labels, hints */
-  --ui-font-title: clamp(45px, 3.6vw, 20px);    /* small titles/cards */
-  --ui-pad-v: 2px;                               /* vertical padding (reduced) */
-  --ui-pad-h: 8px;                              /* horizontal padding */
-  --ui-min-tap: 44px;                            /* min touch size */
-  --ui-radius: 15px;                             /* slightly tighter corners */
-  
-}
-
 /* 1) Forms: labels + fields */
 .input-label{
   font-size: var(--ui-font-label);
@@ -128,18 +147,7 @@ textarea{
   vertical-align: middle;
 }
 
-/* Smaller title + tiny info bubble */
-.metric-title.small { font-size: 0.95rem; }
-.metric-title .info{
-  display:inline-block;
-  font-size: 0.75rem;
-  border: 1px solid currentColor;
-  border-radius: 50%;
-  width: 1.1em; height: 1.1em; line-height: 1.1em;
-  text-align: center;
-  margin-left: 6px;
-  opacity: 0.75;
-}
+
 .metric-title .info:hover{ opacity: 1; }
 /* DHP performance colors */
 .metric-card.dhp.great { background: #E6F4EA; }   /* green tint */
@@ -186,6 +194,7 @@ textarea{
   padding-right: 4px; 
   /* keep bottom at 8px if you like the extra space below, or set to 4px as well */
 }
+
 
 
 
