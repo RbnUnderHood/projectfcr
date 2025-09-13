@@ -1,7 +1,7 @@
 /* ===================== Records > History (scoped) ===================== */
 
 /* Header: keep layout; (colors/borders already defined elsewhere if any) */
-#recordsTab #historyTab .history-header{
+#recordsTab #historyTab .history-header {
   display: grid !important;
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
@@ -9,22 +9,22 @@
 }
 
 /* ==== History compact tune (scoped to the History panel only) ==== */
-#historyTab{
+#historyTab {
   --hist-font: clamp(1px, 2.9vw, 15px);
   --hist-font-small: clamp(12px, 2.6vw, 14px);
-  --hist-cell-py: 1px;   /* vertical cell padding */
-  --hist-cell-px: 2px;  /* horizontal cell padding */
+  --hist-cell-py: 1px; /* vertical cell padding */
+  --hist-cell-px: 2px; /* horizontal cell padding */
   --hist-radius: 2px;
 }
 /* Table: fonts + tighter, consistent padding */
 #historyTab table,
-#historyTab .history-table{
+#historyTab .history-table {
   width: 100%;
   font-size: var(--hist-font);
   border-collapse: separate;
   border-spacing: 0;
 }
-.tab-content .tab-header h2{
+.tab-content .tab-header h2 {
   font-size: clamp(20px, 5.2vw, 26px);
   font-weight: 800;
   line-height: 1.15;
@@ -33,28 +33,30 @@
   text-align: center;
 }
 
-#recordsTab #historyTab .history-title{
+#recordsTab #historyTab .history-title {
   grid-column: 2 !important;
   justify-self: center !important;
   margin: 0;
 }
 
 /* “Clear all” ghost icon button */
-#recordsTab #historyTab #clearAllBtn.icon-btn{
+#recordsTab #historyTab #clearAllBtn.icon-btn {
   grid-column: 3 !important;
   justify-self: end !important;
   all: unset;
   cursor: pointer;
   display: grid;
   place-items: center;
-  width: 42px; height: 42px;
-  font-size: 16px; line-height: 1;
+  width: 42px;
+  height: 42px;
+  font-size: 16px;
+  line-height: 1;
   color: #e74b24;
   border-radius: 12px;
 }
 
 /* Table fundamentals */
-#recordsTab #historyTab .history-table{
+#recordsTab #historyTab .history-table {
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
@@ -62,108 +64,184 @@
 }
 
 /* Sticky header row */
-#recordsTab #historyTab .history-table thead th{
+#recordsTab #historyTab .history-table thead th {
   position: sticky;
-  top: -1px;                 /* tucks under banner neatly */
+  top: -1px; /* tucks under banner neatly */
   z-index: 4;
   background-clip: padding-box;
 }
 
 /* Scroll container (if you use the split head/body layout) */
-#recordsTab #historyTab .history-head{
+#recordsTab #historyTab .history-head {
   box-sizing: border-box;
 }
-#recordsTab #historyTab .history-scroll{
+#recordsTab #historyTab .history-scroll {
   max-height: calc(100vh - 260px);
   overflow: auto;
   -webkit-overflow-scrolling: touch;
 }
 
 /* Zebra rows (only inside the scroll area if used) */
-#recordsTab #historyTab .history-table tr:nth-child(even){
+#recordsTab #historyTab .history-table tr:nth-child(even) {
   background-color: #fff0c0;
 }
 
 /* Hide Date column (col 1) in UI */
 #recordsTab #historyTab .history-table th:nth-child(1),
-#recordsTab #historyTab .history-table td:nth-child(1){
+#recordsTab #historyTab .history-table td:nth-child(1) {
   display: none !important;
 }
 
 /* Visible columns sizing (Flock, Feed, Eggs, FCR, Weather) */
 #recordsTab #historyTab .history-table th:nth-child(2),
-#recordsTab #historyTab .history-table td:nth-child(2){  /* Flock */
+#recordsTab #historyTab .history-table td:nth-child(2) {
+  /* Flock */
   width: 34% !important;
 }
 #recordsTab #historyTab .history-table th:nth-child(3),
-#recordsTab #historyTab .history-table td:nth-child(3){  /* Feed (kg) */
-  width: 14% !important; text-align: center;
+#recordsTab #historyTab .history-table td:nth-child(3) {
+  /* Feed (kg) */
+  width: 14% !important;
+  text-align: center;
 }
 #recordsTab #historyTab .history-table th:nth-child(4),
-#recordsTab #historyTab .history-table td:nth-child(4){  /* Eggs */
-  width: 14% !important; text-align: center;
+#recordsTab #historyTab .history-table td:nth-child(4) {
+  /* Eggs */
+  width: 14% !important;
+  text-align: center;
 }
 #recordsTab #historyTab .history-table th:nth-child(5),
-#recordsTab #historyTab .history-table td:nth-child(5){  /* FCR */
-  width: 10% !important; text-align: center;
+#recordsTab #historyTab .history-table td:nth-child(5) {
+  /* FCR */
+  width: 10% !important;
+  text-align: center;
 }
 #recordsTab #historyTab .history-table th:nth-child(6),
-#recordsTab #historyTab .history-table td:nth-child(6){  /* Weather */
-  width: 28% !important; text-align: center;
+#recordsTab #historyTab .history-table td:nth-child(6) {
+  /* Weather */
+  width: 28% !important;
+  text-align: center;
 }
 
-
 /* FCR color classes */
-#recordsTab #historyTab .history-table td.fcr-good {  color:#1b5e20; font-weight:700; }  /* ≤ 2.0 */
-#recordsTab #historyTab .history-table td.fcr-ok   {  color:#2ecc71; font-weight:600; }  /* 2.1–2.4 */
-#recordsTab #historyTab .history-table td.fcr-fair {  color:#ef6c00; }                   /* 2.5–2.8 */
-#recordsTab #historyTab .history-table td.fcr-poor {  color:#c62828; font-weight:700; }  /* > 2.8 */
+#recordsTab #historyTab .history-table td.fcr-good {
+  color: #1b5e20;
+  font-weight: 700;
+} /* ≤ 2.0 */
+#recordsTab #historyTab .history-table td.fcr-ok {
+  color: #2ecc71;
+  font-weight: 600;
+} /* 2.1–2.4 */
+#recordsTab #historyTab .history-table td.fcr-fair {
+  color: #ef6c00;
+} /* 2.5–2.8 */
+#recordsTab #historyTab .history-table td.fcr-poor {
+  color: #c62828;
+  font-weight: 700;
+} /* > 2.8 */
 
 /* Flock picker (compact select in header) */
-#recordsTab #historyTab th.col-flock{ padding: 4px 6px; }
-#recordsTab #historyTab .flock-head{ display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
-#recordsTab #historyTab #historyFlockFilter{
+#recordsTab #historyTab th.col-flock {
+  padding: 4px 6px;
+}
+#recordsTab #historyTab .flock-head {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+#recordsTab #historyTab #historyFlockFilter {
   font-size: 11px;
   line-height: 1.05;
   padding: 1px 6px;
   height: 25px;
-  border: 1px solid rgba(0,0,0,0.15);
+  border: 1px solid rgba(0, 0, 0, 0.15);
   border-radius: 8px;
   background: #fff;
   max-width: 98px;
-  appearance: auto;       /* keep native caret */
+  appearance: auto; /* keep native caret */
   min-height: 0;
 }
 
 /* History is view-only (no pointer on rows) */
-#recordsTab #historyTab .history-table tr { cursor: default; }
+#recordsTab #historyTab .history-table tr {
+  cursor: default;
+}
 
-#recordsTab #historyTab .history-table{
+#recordsTab #historyTab .history-table {
   border-collapse: separate;
   border-spacing: 0;
   margin-top: 0 !important;
 }
 
-.history-section{margin-top:25px}
-.history-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
-.history-title{font-size:1.2rem;font-weight:700;color:#5D4037;display:flex;align-items:center;
-  gap:8px}
-.history-wrapper{overflow-x:hidden;border-radius:12px;border:2px solid #EFEBE9}
-.history-table{width:100%;border-collapse:collapse;font-size:.85rem;min-width:0}
-.history-table th,.history-table td{padding:12px 10px;text-align:left;border-bottom:1px solid #EFEBE9}
-.history-table th{background:#fff2e2;font-weight:600;color:#5D4037;position:sticky;top:0}
-.history-table tr:nth-child(even){background-color:#fffbf0}
-.row-click{cursor:pointer}
+.history-section {
+  margin-top: 25px;
+}
+.history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.history-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #5d4037;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.history-wrapper {
+  overflow-x: hidden;
+  border-radius: 12px;
+  border: 2px solid #efebe9;
+}
+.history-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+  min-width: 0;
+}
+.history-table th,
+.history-table td {
+  padding: 12px 10px;
+  text-align: left;
+  border-bottom: 1px solid #efebe9;
+}
+.history-table th {
+  background: #fff2e2;
+  font-weight: 600;
+  color: #5d4037;
+  position: sticky;
+  top: 0;
+}
+.history-table tr:nth-child(even) {
+  background-color: #fffbf0;
+}
+.row-click {
+  cursor: pointer;
+}
 
-.delete-btn{background:#FF7043;color:#fff;
-  border:none;border-radius:50%;width:40px;height:40px;
-  display:flex;align-items:center;justify-content:center;
-  cursor:pointer;transition:all .3s ease;font-size:18px;font-weight:bold}
+.delete-btn {
+  background: #ff7043;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 18px;
+  font-weight: bold;
+}
 
-  /* Make the orange header sit flush with the top of the card */
-#historyTab .history-section { 
-  padding-top: 0; 
-  margin-top: 5px; 
+/* Make the orange header sit flush with the top of the card */
+#historyTab .history-section {
+  padding-top: 0;
+  margin-top: 5px;
 }
 
 /* Kill any first-child top margin that may be collapsing into the wrapper */
@@ -173,10 +251,16 @@
 
 /* Pull the banner over the card's inner padding (tab-content uses ~8px) */
 #historyTab .history-header {
-  margin-top: -8px;     /* match the inner padding of .tab-content */
+  margin-top: -8px; /* match the inner padding of .tab-content */
   margin-left: -0px;
   margin-right: -0px;
   border-radius: 12px 12px 0 0;
-  background: var(--history-header-bg, #FFA000);
-  color: var(--history-header-fg, #000000);  /* rounded top corners */
+  background: var(--history-header-bg, #ffa000);
+  color: var(--history-header-fg, #000000); /* rounded top corners */
+}
+#recordsTab #historyTab {
+  padding-top: 0px;
+  padding-left: 4px;
+  padding-right: 4px;
+  /* keep bottom at 8px if you like the extra space below, or set to 4px as well */
 }

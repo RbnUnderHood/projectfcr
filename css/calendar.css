@@ -211,3 +211,107 @@
     height: 5px;
   }
 }
+/* Calendar cell decorations --------------------------------------------- */
+#recordsTab #calendarTab .calendar-day {
+  position: relative;
+}
+
+#recordsTab #calendarTab .calendar-day .day-badge {
+  position: absolute;
+  font-size: 0.7em;
+  line-height: 1;
+  text-shadow: #37474f 1px 2px 4px;
+}
+
+#recordsTab #calendarTab .calendar-day .day-badge.note {
+  top: 0px;
+  left: -6.5px;
+  text-shadow: #37474f 1px 2px 4px;
+}
+#recordsTab #calendarTab .calendar-day .day-badge.weather {
+  top: 0px;
+  right: 1px;
+}
+
+#recordsTab #calendarTab .calendar-day .dot-strip {
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  bottom: 3px;
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+#recordsTab #calendarTab .calendar-day .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+  display: inline-block;
+}
+
+/* Performance colors (fallbacks; your CSS vars still win) */
+#recordsTab #calendarTab .calendar-day .dot[data-performance='excellent'] {
+  background: var(--perf-excellent, #01772c);
+}
+#recordsTab #calendarTab .calendar-day .dot[data-performance='good'] {
+  background: var(--perf-good, #42ff42);
+}
+#recordsTab #calendarTab .calendar-day .dot[data-performance='average'] {
+  background: var(--perf-average, #fbbf24);
+}
+#recordsTab #calendarTab .calendar-day .dot[data-performance='poor'] {
+  background: var(--perf-poor, #f87171);
+}
+/* Narrow screens: tighten the dots a touch */
+@media (max-width: 400px) {
+  #calendarTab .calendar-day .dot-strip {
+    gap: 3px;
+  }
+}
+#calendarTab .day-badge.weather[data-wx='OPTIMAL'] {
+  font-size: 0.2rem;
+} /* tweak size as you like */
+
+/* Bigger size only for OPTIMAL (✅) */
+#calendarTab .calendar-day .day-badge.weather[data-wx='OPTIMAL'] {
+  font-size: 0.6em !important; /* tweak value; !important ensures it overrides base size */
+  line-height: 1;
+}
+#calendarTab .calendar-day {
+  display: grid;
+  place-items: start; /* default */
+}
+/* knobs */
+#calendarTab {
+  --dot-size: 6px; /* dot diameter */
+  --dot-gap: 4px;
+  --dot-strip-bottom: 6px; /* distance from bottom to dots */
+  --num-gap-above-dots: 6px; /* distance between number baseline and dots */
+}
+
+/* keep cells positioned */
+#calendarTab .calendar-day {
+  position: relative;
+}
+
+/* Dots: centered at the bottom */
+#calendarTab .calendar-day .dot-strip {
+  position: absolute;
+  bottom: var(--dot-strip-bottom);
+  left: 50%;
+  transform: translateX(-0%);
+  display: flex;
+  gap: var(--dot-gap);
+}
+
+/* Number: centered horizontally and exactly N px above dots */
+#calendarTab .calendar-day-number {
+  position: absolute;
+  bottom: calc(var(--dot-strip-bottom) + var(--dot-size) + var(--num-gap-above-dots));
+  left: 50%;
+  transform: translateX(-50%);
+  line-height: 0;
+  z-index: 1; /* badges are z-index: 2 */
+  font-variant-numeric: tabular-nums; /* avoids digit width jitter */
+}
