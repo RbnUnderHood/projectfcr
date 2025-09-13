@@ -1,136 +1,314 @@
 /* =========================== COMPONENTS =========================== */
 /* Cards (shared look) */
-.result-card{
-  background:#fff;
-  border:2px solid #EFEBE9;
-  border-radius:16px;
-  padding:16px;
-  box-shadow:0 6px 16px rgba(0,0,0,.08);
+.result-card {
+  background: #fff;
+  border: 2px solid #efebe9;
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
 }
-.result-title{
-  font-size:1.2rem;
-  font-weight:700;
-  color:#5D4037;
-  margin-bottom:8px;
-  display:flex;
-  align-items:center;
-  gap:10px;
+.result-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #5d4037;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 /* Metric cards + grids */
-.metrics-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:12px; }
-.metric-card{
-  border:2px solid #EFEBE9;
-  background:#FFF8E1;
-  border-radius:16px;
-  padding:12px;
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
 }
-.metric-title{ font-weight:700; color:#5D4037; margin-bottom:6px; }
-.metric-value{ font-size:1.2rem; font-weight:700; color:#3E2723; }
+.metric-card {
+  border: 2px solid #efebe9;
+  background: #fff8e1;
+  border-radius: 16px;
+  padding: 12px;
+}
+.metric-title {
+  font-weight: 700;
+  color: #5d4037;
+  margin-bottom: 6px;
+}
+.metric-value {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #3e2723;
+}
 
 /* Generic buttons */
-.calculate-btn{
-  width:100%; padding:18px; border-radius:16px;
-  background:linear-gradient(135deg,#4CAF50,#66BB6A);
-  color:#fff; border:none; font-size:1rem; font-weight:700; cursor:pointer;
-  box-shadow:0 6px 18px rgba(76,175,80,.3);
+.calculate-btn {
+  width: 100%;
+  padding: 18px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #4caf50, #66bb6a);
+  color: #fff;
+  border: none;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(76, 175, 80, 0.3);
 }
-.calculate-btn:active{ transform:scale(.98); }
-.export-btn{ background:linear-gradient(135deg,#4CAF50,#66BB6A); }
-.clear-btn{  background:linear-gradient(135deg,#FF7043,#FF8A65); }
-.export-btn,.clear-btn{
-  color:#fff; border:none; padding:18px; font-size:1rem; font-weight:600;
-  border-radius:16px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center;
-  gap:8px; min-height:54px; width:100%; box-shadow:0 4px 10px rgba(0,0,0,.15);
+.calculate-btn:active {
+  transform: scale(0.98);
 }
-.btn-primary{
-  appearance:none; border:0; background:#4CAF50; color:#fff;
-  font-weight:700; padding:10px 14px; border-radius:9999px;
-  min-height:44px; cursor:pointer;
+.export-btn {
+  background: linear-gradient(135deg, #4caf50, #66bb6a);
 }
-.btn-primary:disabled{ opacity:.6; cursor:not-allowed; }
+.clear-btn {
+  background: linear-gradient(135deg, #ff7043, #ff8a65);
+}
+.export-btn,
+.clear-btn {
+  color: #fff;
+  border: none;
+  padding: 18px;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 16px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 54px;
+  width: 100%;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+.btn-primary {
+  appearance: none;
+  border: 0;
+  background: #4caf50;
+  color: #fff;
+  font-weight: 700;
+  padding: 10px 14px;
+  border-radius: 9999px;
+  min-height: 44px;
+  cursor: pointer;
+}
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
 
 /* Ghost button (white with border) */
-.btn-ghost{
-  background:#dddddd;
-  border:0px dashed rgba(0,0,0,.25);
-  color:#222;
-  padding:12px 16px;
-  min-height:44px;
-  font-weight:700;
-  cursor:pointer;
-  border-radius: var(--btn-radius,16px);
+.btn-ghost {
+  background: #dddddd;
+  border: 0px dashed rgba(0, 0, 0, 0.25);
+  color: #222;
+  padding: 12px 16px;
+  min-height: 44px;
+  font-weight: 700;
+  cursor: pointer;
+  border-radius: var(--btn-radius, 16px);
 }
-.btn-ghost:active{ transform: scale(.98); }
-
-
+.btn-ghost:active {
+  transform: scale(0.98);
+}
 
 /* Alerts */
-.alert{
-  margin:10px 0 0; padding:10px 12px; border-radius:8px; font-size:.95rem; line-height:1.3;
+.alert {
+  margin: 10px 0 0;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  line-height: 1.3;
 }
-.alert.notice{  background:#FFF8E1; border:1px solid #FFECB3; color:#6D4C41; }
-.alert.warning{ background:#FFEBEE; border:1px solid #FFCDD2; color:#C62828; font-weight:600; }
+.alert.notice {
+  background: #fff8e1;
+  border: 1px solid #ffecb3;
+  color: #6d4c41;
+}
+.alert.warning {
+  background: #ffebee;
+  border: 1px solid #ffcdd2;
+  color: #c62828;
+  font-weight: 600;
+}
 
 /* Badges / chips */
-.badge{ display:inline-flex; align-items:center; gap:6px; padding:6px 10px; border-radius:999px; font-weight:700; font-size:.8rem; }
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.8rem;
+}
 
 /* Modals */
-.modal{
-  display:none; position:fixed; inset:0; background-color:rgba(0,0,0,.5);
-  z-index:1000; justify-content:center; align-items:center; padding:20px;
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
 }
-.modal-content{
-  background:#fff; padding:25px; border-radius:20px; box-shadow:0 10px 30px rgba(0,0,0,.2);
-  width:100%; max-width:520px; text-align:center; max-height:80vh; overflow-y:auto; border:2px solid #EFEBE9;
+.modal-content {
+  background: #fff;
+  padding: 25px;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  max-width: 520px;
+  text-align: center;
+  max-height: 80vh;
+  overflow-y: auto;
+  border: 2px solid #efebe9;
 }
-.modal-title{ font-size:1.2rem; font-weight:700; color:#5D4037; margin-bottom:10px; }
-.modal-text{ color:#5D4037; line-height:1.6; font-size:1rem; margin-bottom:20px; }
-.modal-buttons{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.modal-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #5d4037;
+  margin-bottom: 10px;
+}
+.modal-text {
+  color: #5d4037;
+  line-height: 1.6;
+  font-size: 1rem;
+  margin-bottom: 20px;
+}
+.modal-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
 
 /* Reusable “Tip” box (dashed frame) */
-.input-hint.tip-box{
-  --tip-radius: 2px; --tip-frame-offset: 4px; --tip-frame-width: 2px;
-  position: relative; display:block; padding:6px 12px; margin-top:6px;
-  border-radius: var(--tip-radius); background:#ceebd0; line-height:1.2; font-size:13px; color:#5d4037;
+.input-hint.tip-box {
+  --tip-radius: 2px;
+  --tip-frame-offset: 4px;
+  --tip-frame-width: 2px;
+  position: relative;
+  display: block;
+  padding: 6px 12px;
+  margin-top: 6px;
+  border-radius: var(--tip-radius);
+  background: #ceebd0;
+  line-height: 1.2;
+  font-size: 13px;
+  color: #5d4037;
 }
-.input-hint.tip-box::before{
-  content:""; position:absolute; inset: calc(var(--tip-frame-offset) * -1);
+.input-hint.tip-box::before {
+  content: '';
+  position: absolute;
+  inset: calc(var(--tip-frame-offset) * -1);
   border: var(--tip-frame-width) dashed #c7c7c7;
   border-radius: calc(var(--tip-radius) + var(--tip-frame-offset));
-  pointer-events:none;
+  pointer-events: none;
 }
-.input-hint.tip-box .tip-link{ text-decoration: underline; font-weight: 600; }
-.input-hint.tip-box.tip-mini{ font-size:11px; padding:2px 6px; border-radius:6px; }
-.input-hint.tip-box.tip-right{ width:max-content; margin-left:auto; }
-
-.result-card{background:#fff;border-radius:16px;padding:16px;box-shadow:0 6px 16px rgba(0,0,0,.08);border:2px solid #EFEBE9}
-
-.metrics-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-.metric-card{border:2px solid #EFEBE9;background:#FFF8E1;border-radius:16px;padding:12px}
-.metric-title{font-weight:700;color:#5D4037;margin-bottom:6px}
-.metric-value{font-size:1.2rem;font-weight:700;color:#3E2723}
-
-@media(min-width:640px){
-  .input-section{grid-template-columns:1fr 1fr}
-  .results-section.show{grid-template-columns:1fr 1fr}
-  .metrics-grid{grid-template-columns:repeat(4,1fr)}
+.input-hint.tip-box .tip-link {
+  text-decoration: underline;
+  font-weight: 600;
+}
+.input-hint.tip-box.tip-mini {
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 6px;
+}
+.input-hint.tip-box.tip-right {
+  width: max-content;
+  margin-left: auto;
 }
 
-.calculate-btn{width:100%;padding:18px;border-radius:16px;background:linear-gradient(135deg,#4CAF50,#66BB6A);color:#fff;border:none;font-size:1rem;font-weight:700;cursor:pointer;box-shadow:0 6px 18px rgba(76,175,80,.3)}
-.calculate-btn:active{transform:scale(.98)}
+.result-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+  border: 2px solid #efebe9;
+}
+
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+.metric-card {
+  border: 2px solid #efebe9;
+  background: #fff8e1;
+  border-radius: 16px;
+  padding: 12px;
+}
+.metric-title {
+  font-weight: 700;
+  color: #5d4037;
+  margin-bottom: 6px;
+}
+.metric-value {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #3e2723;
+}
+
+@media (min-width: 640px) {
+  .input-section {
+    grid-template-columns: 1fr 1fr;
+  }
+  .results-section.show {
+    grid-template-columns: 1fr 1fr;
+  }
+  .metrics-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.calculate-btn {
+  width: 100%;
+  padding: 18px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #4caf50, #66bb6a);
+  color: #fff;
+  border: none;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(76, 175, 80, 0.3);
+}
+.calculate-btn:active {
+  transform: scale(0.98);
+}
 
 /* Disabled Calculate button */
-.calculate-btn[disabled]{
-  opacity: .5;
+.calculate-btn[disabled] {
+  opacity: 0.5;
   pointer-events: none;
-  filter: grayscale(.4);
+  filter: grayscale(0.4);
 }
 
-.export-btn,.clear-btn{color:#fff;border:none;padding:18px;font-size:1rem;font-weight:600;border-radius:16px;cursor:pointer;transition:all .3s ease;display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:54px;width:100%;box-shadow:0 4px 10px rgba(0,0,0,.15)}
-.export-btn{background:linear-gradient(135deg,#4CAF50,#66BB6A)}
+.export-btn,
+.clear-btn {
+  color: #fff;
+  border: none;
+  padding: 18px;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 54px;
+  width: 100%;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+.export-btn {
+  background: linear-gradient(135deg, #4caf50, #66bb6a);
+}
 
-.clear-btn{background:linear-gradient(135deg,#FF7043,#FF8A65)}
+.clear-btn {
+  background: linear-gradient(135deg, #ff7043, #ff8a65);
+}
 
 /* Alt-feed ratio alerts */
 .alert {
@@ -141,14 +319,14 @@
   line-height: 1.3;
 }
 .alert.notice {
-  background: #FFF8E1;
-  border: 1px solid #FFECB3;
-  color: #6D4C41;
+  background: #fff8e1;
+  border: 1px solid #ffecb3;
+  color: #6d4c41;
 }
 .alert.warning {
-  background: #FFEBEE;
-  border: 1px solid #FFCDD2;
-  color: #C62828;
+  background: #ffebee;
+  border: 1px solid #ffcdd2;
+  color: #c62828;
   font-weight: 600;
 }
 /* Place the alt-feed alert nicely under the FCR card */
@@ -156,22 +334,68 @@
   margin: 0px 0 0px;
 }
 
-.badge{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;font-weight:700;font-size:.8rem;letter-spacing:.2px}
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.8rem;
+  letter-spacing: 0.2px;
+}
 
-.modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background-color:rgba(0,0,0,.5);z-index:1000;justify-content:center;align-items:center;padding:20px}
-.modal-content{background:#fff;padding:25px;border-radius:20px;box-shadow:0 10px 30px rgba(0,0,0,.2);width:100%;max-width:520px;text-align:center;max-height:80vh;overflow-y:auto;border:2px solid #EFEBE9}
-.modal-title{font-size:1.2rem;font-weight:700;color:#5D4037;margin-bottom:10px}
-.modal-text{color:#5D4037;line-height:1.6;font-size:1rem;margin-bottom:20px}
-.modal-buttons{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+.modal-content {
+  background: #fff;
+  padding: 25px;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  max-width: 520px;
+  text-align: center;
+  max-height: 80vh;
+  overflow-y: auto;
+  border: 2px solid #efebe9;
+}
+.modal-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #5d4037;
+  margin-bottom: 10px;
+}
+.modal-text {
+  color: #5d4037;
+  line-height: 1.6;
+  font-size: 1rem;
+  margin-bottom: 20px;
+}
+.modal-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
 
 /* Generic Tip box */
-.input-hint.tip-box{
+.input-hint.tip-box {
   /* tweak these as you like */
   --tip-radius: 1px;
   --tip-frame-offset: 4px;
   --tip-frame-width: 2px;
-  --tip-bg: #ceebd0;      /* background */
-  --tip-border: #c7c7c7;  /* dashed color */
+  --tip-bg: #ceebd0; /* background */
+  --tip-border: #c7c7c7; /* dashed color */
 
   position: relative;
   display: block;
@@ -184,74 +408,78 @@
 }
 
 /* Avoid double frames inside the Alt Feed card */
-.altfeed-box .input-hint.tip-box{ background: transparent; }
-.altfeed-box .input-hint.tip-box::before{ display: none; }
+.altfeed-box .input-hint.tip-box {
+  background: transparent;
+}
+.altfeed-box .input-hint.tip-box::before {
+  display: none;
+}
 
 /* === Segmented control (canonical) === */
-.segmented{
-  display:inline-flex;
-  align-items:center;
-  gap:6px;
-  padding:4px;
-  border:1px solid rgba(0,0,0,.12);
-  border-radius:9999px;
-  background:#fff;
-  box-shadow:0 1px 2px rgba(0,0,0,.04);
+.segmented {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 9999px;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
 }
-.segmented .seg-btn{
-  appearance:none;
-  border:0;
-  background:transparent;
-  color:#5D4037;
-  font-weight:700;
-  padding:6px 12px;
-  border-radius:9999px;
-  cursor:pointer;
+.segmented .seg-btn {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: #5d4037;
+  font-weight: 700;
+  padding: 6px 12px;
+  border-radius: 9999px;
+  cursor: pointer;
 }
-.segmented .seg-btn.active{
-  background:rgba(0,0,0,.06);
-  box-shadow:inset 0 0 0 1px rgba(0,0,0,.08);
+.segmented .seg-btn.active {
+  background: rgba(0, 0, 0, 0.06);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
 }
 
 /* === Result cards (canonical) === */
-.result-card{
-  background:#fff;
-  border:2px solid #EFEBE9;
-  border-radius:12px;
-  padding:12px;
-  box-shadow:0 1px 2px rgba(0,0,0,.04);
+.result-card {
+  background: #fff;
+  border: 2px solid #efebe9;
+  border-radius: 12px;
+  padding: 12px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
 }
 
 /* Flattened header wrapper (used by tab titles + segmented) */
-.result-card.flat{
-  background:transparent;
-  border:0;
-  box-shadow:none;
-  padding:0;
-  margin:4px 0 8px 0;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
+.result-card.flat {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  padding: 0;
+  margin: 4px 0 8px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-:root{
+:root {
   --btn-radius: 16px; /* set the pilliness you want app-wide */
 }
 
 .btn-primary,
 .btn-secondary,
-.btn-ghost{
+.btn-ghost {
   border-radius: var(--btn-radius);
 }
 /* === Modal footer: sticky row with 3 actions === */
 /* Give room so last inputs aren't hidden by the sticky bar */
-.modal-content{
+.modal-content {
   /* keep your existing properties */
   padding-bottom: 0px; /* was ~25px */
 }
 
 /* Sticky footer that spans edge-to-edge inside the rounded modal */
-.modal-footer{
+.modal-footer {
   position: sticky;
   bottom: 0;
   z-index: 2;
@@ -266,7 +494,7 @@
   padding: 12px 16px 16px;
 
   /* extend across the modal’s inner padding so it covers the corners */
-  margin-left: -25px;   /* match .modal-content horizontal padding */
+  margin-left: -25px; /* match .modal-content horizontal padding */
   margin-right: -25px;
 
   /* mimic the modal’s rounded bottom so nothing peeks around */
@@ -274,23 +502,24 @@
   border-bottom-right-radius: 20px;
 
   /* soft divider; remove old border-top */
-  box-shadow: 0 -6px 12px rgba(0,0,0,.08);
+  box-shadow: 0 -6px 12px rgba(0, 0, 0, 0.08);
   border-top: 0;
 }
 
 /* subtle fade so scrolled content doesn’t hard-cut against the bar */
-.modal-footer::before{
-  content: "";
+.modal-footer::before {
+  content: '';
   position: absolute;
-  left: 0; right: 0;
-  top: -16px; height: 16px;
-  background: linear-gradient(to bottom, rgba(255,255,255,0), #fff);
+  left: 0;
+  right: 0;
+  top: -16px;
+  height: 16px;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0), #fff);
   pointer-events: none;
 }
 
-
-.modal-footer .btn-cancel{
-  background: #e9e9e9;        /* your preferred soft grey */
+.modal-footer .btn-cancel {
+  background: #e9e9e9; /* your preferred soft grey */
   color: #111;
   border: 0;
   border-radius: var(--btn-radius);
@@ -298,13 +527,14 @@
   font-weight: 700;
 }
 
-.modal-footer .btn-primary{
+.modal-footer .btn-primary {
   border-radius: var(--btn-radius);
   min-height: 44px;
 }
 
-.modal-footer .btn-danger{     /* uses your orange “danger” look */
-  background: linear-gradient(135deg,#FF7043,#FF8A65);
+.modal-footer .btn-danger {
+  /* uses your orange “danger” look */
+  background: linear-gradient(135deg, #ff7043, #ff8a65);
   color: #fff;
   border: 0;
   border-radius: var(--btn-radius);
@@ -313,10 +543,60 @@
 }
 
 /* ensure grid children fill their columns */
-.modal-footer{ justify-items: stretch; align-items: center; }
-.modal-footer > button{ width: 100%; }
-
+.modal-footer {
+  justify-items: stretch;
+  align-items: center;
+}
+.modal-footer > button {
+  width: 100%;
+}
 
 /* Lock page + dim nav while a modal is open */
-body.modal-open { overflow: hidden; }
-body.modal-open .bottom-nav { pointer-events: none; filter: grayscale(.3) opacity(.9); }
+body.modal-open {
+  overflow: hidden;
+}
+body.modal-open .bottom-nav {
+  pointer-events: none;
+  filter: grayscale(0.3) opacity(0.9);
+}
+
+/* Edit modal: lock a stable width and full-width fields */
+#editModal .modal-content {
+  width: 100% !important;
+  max-width: 520px !important; /* tweak if you want a wider/narrower panel */
+  box-sizing: border-box;
+}
+
+#editModal input,
+#editModal select,
+#editModal textarea {
+  width: 100% !important; /* prevents any “disabled makes me smaller” quirks */
+  box-sizing: border-box;
+}
+
+/* purely visual — keep the “disabled” look without layout shifts */
+#editModal [disabled] {
+  opacity: 0.75;
+  cursor: not-allowed;
+}
+/* Fix: flex item sizing so edit/note modals fill available width */
+#editModal .modal-content,
+#noteModal .modal-content {
+  /* let the panel grow to the available width instead of content-size */
+  flex: 1 1 min(520px, 94vw);
+  width: flex; /* width:100% is ignored in flex sizing; use flex-basis instead */
+  max-width: min(520px, 94vw);
+  min-width: min(360px, 94vw); /* keep it comfy on narrow screens */
+  box-sizing: border-box;
+}
+/* Make the *panel that contains a form* claim a sane width inside the overlay */
+#noteModal > *:has(form),
+#editModal > *:has(form) {
+  flex: 0 0 min(520px, 94vw);
+  width: min(520px, 94vw);
+  max-width: min(520px, 94vw);
+  max-height: min(90vh, 680px);
+  overflow: auto;
+  box-sizing: border-box;
+  margin: 0 auto; /* center even if parent wrappers don't */
+}

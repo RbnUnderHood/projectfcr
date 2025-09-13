@@ -201,6 +201,17 @@ function gotoTodayOnCalendar() {
 
 /* ----- Calendar events API ----- */
 function addOrUpdateFcrEvent(rec, oldId) {
+  // === SPEC-1 PATCH A2: Canonical weather on save ===
+  try {
+    const ymd = String(rec?.date || rec?.isoDate || '');
+    if (ymd && rec?.weather) {
+      setDayWeather(ymd, rec.weather); // normalizes + updates all same-day events + save
+    }
+  } catch (e) {
+    console.warn('SPEC-1 A2: setDayWeather failed', e);
+  }
+  // === end SPEC-1 PATCH A2 ===
+
   // Remove previous event with old id if editing
   if (oldId) {
     var kept = [];
@@ -339,6 +350,22 @@ function renderCalendar() {
     blank.className = 'calendar-day empty';
     days.appendChild(blank);
   }
+  // === SPEC-1 PATCH A3 (rev): Bootstrap when first run OR when map is empty ===
+  const __wxEmpty = !window.dayWeather || Object.keys(window.dayWeather).length === 0;
+  if (!window.__wxBootstrapped || __wxEmpty) {
+    window.__wxBootstrapped = true;
+    try {
+      bootstrapDayWeatherFromEvents();
+    } catch (e) {
+      console.warn('SPEC-1 A3: bootstrap error', e);
+    }
+  }
+  try {
+    decorateCalendarMonth();
+  } catch (e) {
+    console.warn('SPEC-1 A3: decorate error', e);
+  }
+  // === end SPEC-1 PATCH A3 (rev) ===
 }
 // Wire click once on the days grid (idempotent)
 var daysGrid = byId('calendarDays');
